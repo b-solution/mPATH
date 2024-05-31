@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "issue_id" });
 
       this.belongsTo(models.Contract);
-      this.belongsTo(models.ProjectContract);
+      this.belongsTo(models.ProjectContract, { foreignKey: "project_contract_id" });
       this.belongsTo(models.ProjectContractVehicle);
       this.hasMany(models.Checklist, { as: "listable", foreignKey: "listable_id" });
       this.hasMany(models.RelatedTask, {
@@ -65,6 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         let project_id = options.project_id;
         let facility_id = options.facility_id;
         console.log("Params-again-and", params);
+        console.log("options-again-and", options);
         const issueParams = params;
         const issue = this;
         console.log("Issue-Testing: ", issue);
@@ -97,6 +98,7 @@ module.exports = (sequelize, DataTypes) => {
           where: { project_id: project_id, facility_id: facility_id },
           raw: true,
         });
+        console.log("Issue Facility----", facility_project);
         iParams["facility_project_id"] = facility_project.id;
         console.log("**********iParams", iParams);
 

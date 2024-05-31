@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // // define association here
       this.hasMany(models.ProjectUser);
-      // this.belongsToMany(models.User,{ through: models.ProjectUser})
-      this.hasMany(models.FacilityProject);
+      this.belongsToMany(models.User, { through: models.ProjectUser, foreignKey: "user_id" });
+      this.hasMany(models.FacilityProject, { foreignKey: "project_id" });
 
       this.belongsToMany(models.Facility, { through: models.FacilityProject, foreignKey: "facility_id" });
       // this.belongsToMany(models.FacilityGroup,{ through: models.FacilityProject })

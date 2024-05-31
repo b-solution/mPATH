@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.FacilityGroup, { foreignKey: "facility_group_id" });
 
       // this.belongsTo(models.User,{ as: 'Creator', foreignKey: 'creator_id' });
-      this.hasMany(models.FacilityProject, { onDelete: "CASCADE" });
+      this.hasMany(models.FacilityProject, { foreignKey: "facility_id", onDelete: "CASCADE" });
       this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "facility_id", otherKey: "" });
       this.belongsToMany(models.Task, { through: models.FacilityProject, foreignKey: "facility_id" });
       this.belongsToMany(models.TaskType, { through: models.Task, foreignKey: "facility_project_id", otherKey: "" });

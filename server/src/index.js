@@ -45,6 +45,8 @@ const issueSeveritiesRoutes = require("./routes/issueSeveritiesRoutes");
 const issueStageRoutes = require("./routes/issueStageRoutes");
 const issueTypeRoutes = require("./routes/issueTypeRoutes");
 const facilitiesRoutes = require("./routes/facilitiesRoutes");
+const facilityGroupRoutes = require("./routes/facilityGroupsRoutes");
+const sortRoutes = require("./routes/sortRoutes");
 // fastify.addHook('onRequest', function(request, reply, done) {
 // 	let body = qs.parse(request.body)
 // 	let query = qs.parse(request.query)
@@ -106,6 +108,8 @@ fastify.register(issueSeveritiesRoutes);
 fastify.register(issueStageRoutes);
 fastify.register(issueTypeRoutes);
 fastify.register(facilitiesRoutes);
+fastify.register(facilityGroupRoutes);
+fastify.register(sortRoutes);
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
   try {

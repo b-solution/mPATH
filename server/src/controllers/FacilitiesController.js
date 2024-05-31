@@ -1,7 +1,6 @@
 const { db } = require("../database/models");
 const { _ } = require("lodash");
 const { getCurrentUser } = require("../utils/helpers.js");
-const facility = require("../database/models/facility");
 
 const show = async (req, res) => {
   try {
@@ -11,6 +10,7 @@ const show = async (req, res) => {
     if (projectIds.includes(req.query.project_id)) {
       project = await db.Project.findOne({ where: { id: req.query.project_id, status: "1" } });
     }
+    console.log("Project---", project);
     const facilityProject = await db.FacilityProject.findOne({
       include: [
         {
@@ -41,6 +41,7 @@ const show = async (req, res) => {
       ],
       where: { facility_id: req.params.id, project_id: project.id },
     });
+    console.log("ShowFP---", facilityProject);
     return { facilityProject: await facilityProject.toJSON() };
   } catch (error) {
     return { error };
@@ -100,12 +101,72 @@ const destroy = async (req, res) => {
 };
 const update = async (req, res) => {
   try {
-    const facility = await db.Facility.findByPk(req.params.id);
-  } catch (error) {}
+    const facility = await db.Facility.findByPk(req.params.id, {
+      include: [
+        {
+          model: db.FacilityGroup,
+        },
+      ],
+    });
+    if (req.body.facility) {
+      if (req.body.facility.facility_group_name && req.body.facility.facility_group_name !== "undefined") {
+        const updatedFacilityGroupName = await db.FacilityGroup.update(
+          {
+            name: req.body.facility.facility_group_name,
+          },
+          { where: { id: facility.facility_group_id } }
+        );
+        facility.set(req.body.facility);
+        await facility.save();
+      }
+    }
+    const facility_project = await db.FacilityProject.findOne({ where: { project_id: facility.project_id } });
+    facility_project.set(req.body);
+    await facility_project.save();
+    return { facility: await facility.toJSON() };
+  } catch (error) {
+    console.log(error);
+  }
+};
+const duplicate_to_program = async (req, res) => {
+  console.log("duplicate:--", req.body);
+  try {
+    let result = null;
+    const facility_project = await db.FacilityProject.findOne({
+      where: { facility_id: req.body.facility_id, project_id: req.body.source_program_id },
+    });
+    if (facility_project) {
+      result = await facility_project.duplicateToProgram(req.body.target_program_id, req.body.target_facility_group_id);
+      console.log("Get-Result----", result);
+    }
+    if (result.status) {
+      return { msg: result.message };
+    }
+  } catch (error) {
+    return { msg: error };
+  }
+};
+const move_to_program = async (req, res) => {
+  try {
+    let result = null;
+    const facility_project = await db.FacilityProject.findOne({
+      where: { facility_id: req.body.facility_id, project_id: req.body.source_program_id },
+    });
+    if (facility_project) {
+      result = await facility_project.moveToProgram(req.body.target_program_id, req.body.target_facility_group_id);
+      console.log("Result---", result);
+      return { msg: result.message };
+    }
+  } catch (error) {
+    return { msg: error };
+  }
 };
 module.exports = {
   show,
   index,
   create,
   destroy,
+  update,
+  duplicate_to_program,
+  move_to_program,
 };

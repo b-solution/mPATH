@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // // define association here
       this.belongsTo(models.User);
       // this.belongsTo(models.Project);
-      this.hasMany(models.RoleUser);
+      this.hasMany(models.RoleUser, { foreignKey: "role_id" });
       this.belongsToMany(models.User, { through: models.RoleUser, foreignKey: "", otherKey: "" });
       this.hasMany(models.RolePrivilege);
     }

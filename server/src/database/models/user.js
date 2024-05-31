@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       // // define association here
       this.belongsTo(models.Organization);
       this.hasMany(models.ProjectUser, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
-      // this.belongsToMany(models.Project,{through: models.ProjectUser, foreignKey: 'user_id',otherKey: 'project_id' })
+      this.belongsToMany(models.Project, { through: models.ProjectUser, foreignKey: "user_id", otherKey: "project_id" });
       // this.belongsToMany(models.FacilityProject,{ through: models.ProjectUser, foreignKey: 'user_id',otherKey: 'project_id' })
       // // this.belongsToMany(models.Project,{through: models.ProjectUser, foreignKey: 'user_id',otherKey: 'project_id' })
       // this.hasMany(models.Facility,{ foreignKey: 'creator_id' })

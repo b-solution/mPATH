@@ -268,6 +268,7 @@ const index = async (req, res) => {
       next_page: page < Math.ceil(count / perPage) ? page + 1 : null,
     };
   } catch (error) {
+    console.log(error);
     console.error("Error fetching issues:", error);
     // res.status(500).json({ error: "Internal Server Error" });
   }
@@ -383,12 +384,13 @@ const create_bulk_duplicate = async (req, res) => {
 const createIssue = async (req, issueData) => {
   let user = await getCurrentUser(req.headers["x-token"]);
   let issue = db.Issue.build();
-  return await issue.createOrUpdateIssue(issueData, { user: user, project_id: req.params.program_id, facility_id: issueData.facility_project_id });
+  return await issue.createOrUpdateIssue(issueData, { user: user, project_id: req.params.program_id, facility_id: req.params.project_id });
 };
 const batch_update = async (req, res) => {
   try {
     const qs = require("qs");
     const allIsues = req.body;
+    console.log("Allissues:--", allIsues);
     for (let issue of allIsues) {
       const getIssue = await db.Issue.findOne({
         attributes: [
@@ -421,6 +423,36 @@ const batch_update = async (req, res) => {
       });
       getIssue.set(issue);
       await getIssue.save();
+      console.log(
+        await db.Issue.findAll({
+          attributes: [
+            "id",
+            "title",
+            "description",
+            "issue_type_id",
+            "issue_severity_id",
+            "facility_project_id",
+            "start_date",
+            "due_date",
+            "progress",
+            "auto_calculate",
+            "watched",
+            "watched_at",
+            "issue_stage_id",
+            "kanban_order",
+            "task_type_id",
+            "important",
+            "draft",
+            "on_hold",
+            "reportable",
+            "contract_id",
+            "project_contract_id",
+            "project_contract_vehicle_id",
+            "owner_id",
+            "owner_type",
+          ],
+        })
+      );
     }
     return { msg: "Issues updated Successfully" };
   } catch (error) {

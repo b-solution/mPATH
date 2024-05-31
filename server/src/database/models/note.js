@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.User);
       this.belongsTo(models.Issue, { foreignKey: "noteable_id", constraints: false });
       this.belongsTo(models.Task, { foreignKey: "noteable_id", constraints: false });
-
+      this.belongsTo(models.FacilityProject, { foreignKey: "noteable_id", constraints: false });
       // // this.hasMany(models.NoteFile)
     }
     async toJSON() {
