@@ -160,12 +160,13 @@ const destroy = async (req, res) => {
   }
 };
 const index = async (req, res) => {
+  console.log("hi-md-----");
   const qs = require("qs");
   try {
     const params = qs.parse(req.params);
     const page = req.query.page || 1;
     const perPage = 15;
-    console.log("Params--ss--:", params);
+    console.log("Params--ss--:", params.project_id);
     // Fetch all issues with the necessary associations
     const { count, rows: allIssues } = await db.Issue.findAndCountAll({
       attributes: [
@@ -215,16 +216,17 @@ const index = async (req, res) => {
         { model: db.IssueSeverity },
       ],
       where: {
-        [Op.or]: [
-          { facility_project_id: params.project_id },
-          { project_contract_id: params.project_id },
-          { project_contract_vehicle_id: params.project_id },
-        ],
+        facility_project_id: params.project_id,
+        // [Op.or]: [
+        //   { facility_project_id: params.project_id },
+        //   { project_contract_id: params.project_id },
+        //   { project_contract_vehicle_id: params.project_id },
+        // ],
       },
       limit: perPage,
       offset: (page - 1) * perPage,
     });
-    console.log("All-Issues:--", allIssues);
+    console.log("All-Issues:--", allIssues, count);
     // Get all issue users
     const issueUserIds = allIssues.map((issue) => issue.id);
     console.log("issueUserIds---", issueUserIds);
@@ -233,11 +235,9 @@ const index = async (req, res) => {
       attributes: ["issue_id", "user_id"],
     });
     console.log("allIssueUsers---", allIssueUsers);
-    // Extract user IDs
     const allUserIds = allIssueUsers.map((issueUser) => issueUser.user_id);
     const uniqueUserIds = [...new Set(allUserIds)];
     console.log("uniqueUserIds---", uniqueUserIds);
-    // // Get all users and their organizations
     const allUsers = await db.User.findAll({
       where: { id: allUserIds },
       include: db.Organization,
@@ -248,10 +248,11 @@ const index = async (req, res) => {
       where: { id: allOrganizationIds },
     });
     console.log("allOrganizations---", allOrganizations);
-    // // Prepare the response
+    // console.log("AllJson---: ", allIssues);
+
     const issuesJson = await Promise.all(
       allIssues.map(async (issue) => {
-        const issueData = issue.toJSON();
+        const issueData = await issue.toJSON();
         return {
           ...issueData,
           organizations: allOrganizations,
@@ -260,13 +261,13 @@ const index = async (req, res) => {
         };
       })
     );
-    console.log("IssueJson---: ", issuesJson);
-    return {
+    console.log("IssueJson---HHH: ", issuesJson);
+    res.send({
       issues: issuesJson,
       total_pages: Math.ceil(count / perPage),
       current_page: page,
       next_page: page < Math.ceil(count / perPage) ? page + 1 : null,
-    };
+    });
   } catch (error) {
     console.log(error);
     console.error("Error fetching issues:", error);

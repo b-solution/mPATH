@@ -9,7 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.ProjectContract)
+      this.hasMany(models.ProjectContract);
+      this.belongsTo(models.ContractCustomer, { foreignKey: "contract_customer_id" });
+      this.belongsTo(models.ContractVehicle, { foreignKey: "contract_vehicle_id" });
+      this.belongsTo(models.ContractAwardTo, { foreignKey: "contract_award_type_id" });
+      this.belongsTo(models.ContractPop, { foreignKey: "contract_pop_id" });
+      this.belongsTo(models.ContractNaic, { foreignKey: "contract_naic_id" });
+      this.belongsTo(models.ContractAwardType, { foreignKey: "contract_award_type_id" });
+      this.belongsTo(models.ContractType, { foreignKey: "contract_type_id" });
+      this.belongsTo(models.ContractCurrentPop, { foreignKey: "contract_current_pop_id" });
+      this.belongsTo(models.ContractNumber, { foreignKey: "contract_number_id" });
+      this.belongsTo(models.User, { foreignKey: "user_id" });
     }
   }
   ContractProjectDatum.init(

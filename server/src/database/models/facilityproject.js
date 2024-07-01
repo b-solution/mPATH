@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Status);
       this.hasMany(models.Task, { foreignKey: "facility_project_id" });
       // // this.belongsToMany(models.TaskType,{through: models.Task, foreignKey: '', otherKey: '' });
-      this.belongsTo(models.Issue);
+      this.belongsTo(models.Issue, { foreignKey: "issue_id" });
       this.hasMany(models.Risk, { foreignKey: "facility_project_id" });
       this.hasMany(models.Lesson, { foreignKey: "facility_project_id" });
       this.hasMany(models.Note, {
@@ -47,7 +47,6 @@ module.exports = (sequelize, DataTypes) => {
         };
         delete duplicateFacilityData.id;
         const duplicateFacility = await db.Facility.create(duplicateFacilityData);
-        console.log("Dup Facility---", duplicateFacility.get({ palin: true }));
         const facilityProj = await db.FacilityProject.findOne({
           attributes: [
             "id",
@@ -70,7 +69,6 @@ module.exports = (sequelize, DataTypes) => {
         const facilityProjectData = facilityProj.get({
           plain: true,
         });
-        console.log("facilityProjectData", facilityProjectData);
         const duplicateFacilityProjectData = {
           ...facilityProjectData,
           project_id: targetProgram.id,
@@ -154,16 +152,13 @@ module.exports = (sequelize, DataTypes) => {
     async moveToProgram(targetProgramId, targetFacilityGroupId = null) {
       const { db } = require("./index.js");
       try {
-        console.log("Move to Program", targetProgramId);
         // Assuming `this` is the facilityProject instance
         const FacProjId = await db.FacilityProject.findOne({
           attributes: ["id"],
           where: { facility_id: this.facility_id },
         });
         const sourceProgram = await this.getProject();
-        console.log("Hi---", sourceProgram);
         const targetProgram = await db.Project.findByPk(targetProgramId);
-        console.log("targetProgrem---", targetProgram, FacProjId.id);
         // Find role users with portfolio roles
         const portfolioRoleRoleUsers = await db.RoleUser.findAll({
           where: {
@@ -205,12 +200,11 @@ module.exports = (sequelize, DataTypes) => {
           ])
         );
         await db.ProjectUser.destroy({ where: { project_id: targetProgram.id } });
-        const projectUsers = await db.ProjectUser.bulkCreate(
+        await db.ProjectUser.bulkCreate(
           userIds.map((uid) => {
             return { user_id: uid, project_id: targetProgram.id };
           })
         );
-        console.log("targetProgram--", projectUsers);
         // Update project_id for portfolio role users
         await db.RoleUser.update(
           { project_id: targetProgram.id },
@@ -226,7 +220,6 @@ module.exports = (sequelize, DataTypes) => {
             id: programSpecificRoleRoleUsers.map((user) => user.role_id),
           },
         });
-        console.log("Other Role---", otherRoles);
 
         const dupOtherRoles = {};
         for (const otherRole of otherRoles) {

@@ -39,7 +39,7 @@ const preferences = async (req, res) => {
 
 const current_user = async (req, res) => {
   try {
-    var decoded = jwt.verify(req.query.token, process.env.JWT_SECRET_KEY);
+    var decoded = jwt.verify(req.headers["x-token"], process.env.JWT_SECRET_KEY);
     console.log("current user api", decoded);
     let user = await db.User.findOne({ where: { id: decoded.userId } });
 

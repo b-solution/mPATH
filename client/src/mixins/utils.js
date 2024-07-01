@@ -1,5 +1,5 @@
 export const API_BASE_PATH = "http://localhost:3000/api/v1"
-
+export const Admin_PANEL_URL = "http://localhost:3000"
 // mixins Utils
 export default {
   data() {

@@ -37,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
         let user = options.user;
         let project_id = options.project_id;
         let facility_id = options.facility_id;
-        const lessonParams = params.lesson;
+        const lessonParams = params;
+        console.log("lessonParams", lessonParams);
         const lesson = this;
         const iParams = { ...lessonParams };
         const user_ids = iParams.user_ids;
@@ -46,7 +47,21 @@ module.exports = (sequelize, DataTypes) => {
         // const subLessonIds = iParams.subLessonIds;
         // const notesAttributes = iParams.notesAttributes;
 
-        let facility_project = await db.FacilityProject.findOne({ where: { project_id: project_id, facility_id: facility_id }, raw: true });
+        let facility_project = await db.FacilityProject.findOne({
+          attributes: [
+            "id",
+            "facility_id",
+            "project_id",
+            "due_date",
+            "status_id",
+            "progress",
+            "color",
+            "facility_group_id",
+            "project_facility_group_id",
+          ],
+          where: { project_id: project_id, facility_id: facility_id },
+          raw: true,
+        });
         iParams["facility_project_id"] = facility_project.id;
         console.log("**********iParams", iParams);
 
@@ -319,6 +334,8 @@ module.exports = (sequelize, DataTypes) => {
       _resource["contract_nickname"] = "";
       _resource["vehicle_nickname"] = "";
       var facility_group = await facility_project.getFacilityGroup();
+      console.log("Facility-Project--", facility_project);
+      console.log("Facility-Group--", facility_group);
       _resource["project_group"] = facility_group.name;
       var category = await this.getTaskType();
       _resource["category"] = category ? category.name : null;

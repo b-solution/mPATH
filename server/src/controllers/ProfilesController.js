@@ -100,6 +100,7 @@ const index = async (req, res) => {
   try {
     // Fetch user profile using req.userId
     const user_db = await db.User.findByPk(req.userId);
+    console.log("User Db---", user_db);
     if (!user_db) {
       return res.code(404).json({ error: "User not found" });
     } else {

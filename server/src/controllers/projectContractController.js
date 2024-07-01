@@ -17,14 +17,15 @@ const index = async (req, res) => {
         console.log("Loop Project Contract: ", projectContract.ContractProjectDatum);
         contracts.push(await projectContract.ContractProjectDatum.toJSON({ project_contract: projectContract }));
       }
-      console.log("Contracts---: ", contracts);
+      console.log("Contracts---: ", contracts[0]);
       const totalCount = contracts.length;
       console.log("Total-Count: ", totalCount);
-      return { contracts: contracts, total_count: totalCount };
+      return res.send({ contracts: contracts, total_count: totalCount });
+      // return { contracts: await contracts[0].toJSON(), total_count: totalCount };
     }
   } catch (error) {
     return {
-      error: "You are not authorized to see contracts!",
+      error: "You are not authorized to see contracts!" + error,
     };
   }
 };

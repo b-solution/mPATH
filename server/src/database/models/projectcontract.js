@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Project);
       //this.belongsTo(models.ContractProject);
       //this.belongsTo(models.ContractFacilityGroup);
-      this.belongsTo(models.FacilityGroup);
+      this.belongsTo(models.FacilityGroup, { foreignKey: "facility_group_id" });
       this.hasMany(models.Task, { foreignKey: "project_contract_id" });
       this.hasMany(models.Issue, { foreignKey: "project_contract_id" });
       // this.hasMany(models.Risk);
@@ -22,9 +22,11 @@ module.exports = (sequelize, DataTypes) => {
       // this.hasMany(models.Note)
     }
     async toJSON() {
+      console.log("hello contract----");
       // let _response = this.get({plain: true})
       let contractProjectData = await this.getContractProjectDatum({ plain: true });
       let _response = await contractProjectData.toJSON();
+      console.log("Response---Data-----", _response);
       // var contractProjectDataResponse = await contractProjectData.toJSON()
 
       // _response.contractProjectDataResponse = contractProjectDataResponse
@@ -32,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       _response.facility_group = await this.getFacilityGroup();
       _response.facility_group_id = _response.facility_group.id;
       _response.contract_customer = await contractProjectData.getContractCustomer();
-      let contract_vehicle = await contractProjectData.getContractVehicle();
-      _response.contract_vehicle = await contract_vehicle.toJSON();
+      console.log("_response.contract_customer----", _response.contract_customer);
+      _response.contract_vehicle = await contractProjectData.getContractVehicle();
       _response.contract_award_to = await contractProjectData.getContractAwardTo();
       _response.contract_pop = await contractProjectData.getContractPop();
       _response.contract_naic = await contractProjectData.getContractNaic();

@@ -23,7 +23,14 @@ module.exports = (sequelize, DataTypes) => {
       // this.belongsTo(models.Contract);
       // this.belongsTo(models.ProjectContract);
       // this.belongsTo(models.ProjectContractVehicle);
-      this.hasMany(models.Checklist, { as: "listable", foreignKey: "listable_id" });
+      this.hasMany(models.Checklist, {
+        foreignKey: "listable_id",
+        constraints: false,
+        scope: {
+          listable_type: "Risk",
+        },
+      });
+      // this.hasMany(models.Checklist, { as: "listable", foreignKey: "listable_id" });
       // this.hasMany(models.RelatedTask);
       // this.hasMany(models.RelatedRisk);
       // this.hasMany(models.RelatedRisk);
@@ -33,13 +40,14 @@ module.exports = (sequelize, DataTypes) => {
     }
     async createOrUpdateRisk(params, options) {
       try {
+        console.log("options----", options, params);
         const { db } = require("./index.js");
         let user = options.user;
         let project_id = options.project_id;
         let facility_id = options.facility_id;
-        const riskParams = params.risk;
-        const risk = this;
+        const riskParams = params;
         const iParams = { ...riskParams };
+        console.log("iParams", iParams);
         const user_ids = iParams.user_ids;
         // const subTaskIds = iParams.subTaskIds;
         // const subRiskIds = iParams.subRiskIds;
@@ -53,28 +61,42 @@ module.exports = (sequelize, DataTypes) => {
         if (!iParams.actual_effort) {
           iParams.actual_effort = 0.0;
         }
-        let facility_project = await db.FacilityProject.findOne({ where: { project_id: project_id, facility_id: facility_id }, raw: true });
+        let facility_project = await db.FacilityProject.findOne({
+          attributes: [
+            "id",
+            "facility_id",
+            "project_id",
+            "due_date",
+            "status_id",
+            "progress",
+            "color",
+            "facility_group_id",
+            "project_facility_group_id",
+          ],
+          where: { project_id: project_id, facility_id: facility_id },
+          raw: true,
+        });
         iParams["facility_project_id"] = facility_project.id;
-        iParams["risk_approach"] = risk.getRiskApproachValue(iParams["risk_approach"]);
+        iParams["risk_approach"] = this.getRiskApproachValue(iParams["risk_approach"]);
         console.log("**********iParams", iParams);
 
-        risk.setAttributes(iParams);
+        this.setAttributes(iParams);
 
-        console.log("***risk.planned_effort", risk.planned_effort);
+        console.log("***risk.planned_effort", this.planned_effort);
 
         if (iParams.project_contract_id) {
-          risk.project_contract_id = params.project_contract_id;
+          this.project_contract_id = params.project_contract_id;
         } else if (iParams.project_contract_vehicle_id) {
-          risk.project_contract_vehicle_id = params.project_contract_vehicle_id;
+          this.project_contract_vehicle_id = params.project_contract_vehicle_id;
         }
 
-        const allChecklists = await db.Checklist.findAll({ where: { listable_id: risk.id, listable_type: "Risk" } });
+        const allChecklists = await db.Checklist.findAll({ where: { listable_id: this.id, listable_type: "Risk" } });
 
-        await risk.save();
+        await this.save();
 
-        await risk.assignUsers(params);
-        await risk.manageNotes(iParams);
-        await risk.manageChecklists(iParams);
+        await this.assignUsers(params);
+        await this.manageNotes(iParams);
+        await this.manageChecklists(iParams);
         // if (subTaskIds && subTaskIds.length > 0) {
         //   const relatedTaskObjs = subTaskIds.map((sid) => ({
         //     relatableId: risk.id,
@@ -149,12 +171,12 @@ module.exports = (sequelize, DataTypes) => {
 
         // NOTE: This is not working inside the Transaction block.
         // Reproduce: Create a new risk with a file and link both, and it is giving an error
-        risk.addResourceAttachment(params);
+        //risk.addResourceAttachment(params);
 
         // await risk.updateClosed();
 
         // await risk.reload();
-        return risk;
+        return this;
       } catch (error) {
         // Handle the error
         console.error("Error in execution", error);
@@ -333,7 +355,22 @@ module.exports = (sequelize, DataTypes) => {
         _resource.checklists.push(checklist);
       }
 
-      let facility_project = await this.getFacilityProject();
+      let facility_project = await db.FacilityProject.findOne({
+        attributes: [
+          "id",
+          "facility_id",
+          "project_id",
+          "due_date",
+          "status_id",
+          "progress",
+          "color",
+          "facility_group_id",
+          "project_facility_group_id",
+        ],
+        where: { id: _resource["facility_project_id"] },
+        raw: true,
+      });
+      console.log("Json--", facility_project);
       let facility = await db.Facility.findOne({ where: { id: facility_project.facility_id } });
       let risk_users = await this.getRiskUsers();
       let notes = await db.Note.findAll({ where: { noteable_type: "Risk", noteable_id: this.id }, order: [["created_at", "DESC"]], raw: true });
@@ -481,10 +518,11 @@ module.exports = (sequelize, DataTypes) => {
     async addResourceAttachment(params) {
       const { addAttachment } = require("../../utils/helpers");
       addAttachment(params, this);
+      console.log("Attachment:--P", params);
       const { db } = require("./index.js");
 
       var linkFiles = params.file_links;
-      const attachmentFiles = params.risk.risk_files;
+      const attachmentFiles = params.risk.risk_files || [];
 
       if (linkFiles && linkFiles.length > 0) {
         for (var f of linkFiles) {
@@ -627,6 +665,7 @@ module.exports = (sequelize, DataTypes) => {
       }[v];
     }
     getRiskApproachValue(v) {
+      console.log("Hi hello: ", v);
       return {
         avoid: 0,
         mitigate: 1,

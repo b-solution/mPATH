@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Status extends Model {
     /**
@@ -10,32 +8,34 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-//       // define association here
-//       this.hasMany(models.ProjectStatus);
-// this.belongsToMany(models.Project,{through: models.ProjectStatus, foreignKey: '', otherKey: '' })
-
+      //       // define association here
+      this.hasMany(models.ProjectStatus);
+      this.belongsToMany(models.Project, { through: models.ProjectStatus, foreignKey: "status_id", otherKey: "" });
     }
-    static async notStarted(){
+    static async notStarted() {
       const { db } = require("./index.js");
       const [status, created] = await db.Status.findOrCreate({
-        where: {name: 'Not Started'},
+        where: { name: "Not Started" },
         defaults: {
-          color: "#000000"
-        }
+          color: "#000000",
+        },
       });
-      return status
+      return status;
     }
   }
-  Status.init({
-    name: DataTypes.STRING,
-    color: DataTypes.STRING
-  }, {
-    sequelize,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    tableName: 'statuses',
-    modelName: 'Status',
-    underscored: true
-  });
+  Status.init(
+    {
+      name: DataTypes.STRING,
+      color: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+      tableName: "statuses",
+      modelName: "Status",
+      underscored: true,
+    }
+  );
   return Status;
 };

@@ -19,19 +19,19 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.FacilityProject, { foreignKey: "project_id" });
 
       this.belongsToMany(models.Facility, { through: models.FacilityProject, foreignKey: "facility_id" });
-      // this.belongsToMany(models.FacilityGroup,{ through: models.FacilityProject })
 
       this.hasMany(models.ProjectFacilityGroup);
+      this.belongsToMany(models.FacilityGroup, { through: models.ProjectFacilityGroup, foreignKey: "project_id" });
 
       // // this.belongsToMany(models.ProjectGroup,{through: models.ProjectFacilityGroup, foreignKey: 'project_id' })
-      this.belongsToMany(models.Issue, { through: models.FacilityProject, foreignKey: "project_id" });
+      this.belongsToMany(models.Issue, { through: models.FacilityProject, foreignKey: "issue_id" });
       // // this.belongsToMany(models.Risk,{through: models.FacilityProject, foreignKey: 'project_id' })
       // // this.belongsToMany(models.Lesson,{through: models.FacilityProject, as: "ProjectLesson", foreignKey: 'project_id', otherKey: 'facility_id'  })
 
       // this.belongsTo(models.ProjectType)
 
       this.hasMany(models.ProjectStatus);
-      // this.belongsToMany(models.Status,{through: models.ProjectStatus, foreignKey: 'project_id' })
+      this.belongsToMany(models.Status, { through: models.ProjectStatus, foreignKey: "status_id" });
       this.hasMany(models.ProjectTaskType);
       this.belongsToMany(models.TaskType, { through: models.ProjectTaskType, foreignKey: "project_id" });
       // this.hasMany(models.ProjectIssueType)
@@ -47,8 +47,8 @@ module.exports = (sequelize, DataTypes) => {
 
       // this.hasMany(models.ProjectIssueStage)
       // this.belongsToMany(models.IssueStage,{through: models.ProjectIssueStage, foreignKey: 'project_id' })
-      // this.hasMany(models.FavoriteFilter)
-      // this.hasMany(models.QueryFilter)
+      this.hasMany(models.FavoriteFilter);
+      this.hasMany(models.QueryFilter);
 
       // this.hasMany(models.ProjectLessonStage)
       // this.belongsToMany(models.LessonStage,{through: models.ProjectLessonStage, foreignKey: 'project_id' })
@@ -382,7 +382,25 @@ module.exports = (sequelize, DataTypes) => {
 
       // Facilities
       response.facilities = [];
-      let facility_projects = await db.FacilityProject.findAll({ where: { project_id: this.id, id: authorized_facility_project_ids } });
+      let facility_projects = await db.FacilityProject.findAll({
+        attributes: [
+          "id",
+          "facility_id",
+          "project_id",
+          "due_date",
+          "status_id",
+          "progress",
+          "color",
+          "facility_group_id",
+          "project_facility_group_id",
+          "issue_id",
+          "created_at",
+          "updated_at",
+          "StatusId",
+          "IssueId",
+        ],
+        where: { project_id: this.id, id: authorized_facility_project_ids },
+      });
       let facility_project_ids = _.uniq(
         _.map(facility_projects, function (f) {
           return f.id;
@@ -554,7 +572,22 @@ module.exports = (sequelize, DataTypes) => {
       response.project_users = await this.getProjectUsers();
 
       // Contracts
-      let project_contracts = await db.ProjectContract.findAll({ where: { project_id: this.id, id: authorized_project_contract_ids } });
+      let project_contracts = await db.ProjectContract.findAll({
+        attributes: [
+          "id",
+          "project_id",
+          "contract_project_datum_id",
+          "user_id",
+          "facility_group_id",
+          "progress",
+          "ContractProjectDatumId",
+          "created_at",
+          "updated_at",
+          "ProjectId",
+        ],
+        where: { project_id: this.id, id: authorized_project_contract_ids },
+      });
+      console.log("proj----", project_contracts);
       let project_contract_ids = authorized_project_contract_ids;
       let contract_project_datum_ids = _.uniq(
         _.map(project_contracts, function (pc) {

@@ -94,10 +94,11 @@ async function addAttachment(params, resource) {
     // attachmentFiles = params.issue.issue_files;
     blobName = "issue_files";
   } else if (recordType == "Risk") {
-    attachmentFiles = params.risk.risk_files;
-    blobName = "risk_files";
+    // attachmentFiles = params.risk.risk_files;
+    // blobName = "risk_files";
   } else if (recordType == "Lesson") {
-    attachmentFiles = params.lesson.lesson_files;
+    console.log(params);
+    attachmentFiles = params.lesson_files;
     blobName = "lesson_files";
   }
 

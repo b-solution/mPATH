@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
+      this.hasMany(models.IssueUser, { onDelete: "CASCADE", hooks: true });
+      this.belongsToMany(models.Issue, { through: models.IssueUser, foreignKey: "issue_id", otherKey: "" });
       this.belongsTo(models.Organization);
       this.hasMany(models.ProjectUser, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
       this.belongsToMany(models.Project, { through: models.ProjectUser, foreignKey: "user_id", otherKey: "project_id" });
@@ -28,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.Role, { through: models.RoleUser, foreignKey: "user_id", otherKey: "role_id" });
       this.hasMany(models.RolePrivilege, { foreignKey: "user_id" });
       this.hasMany(models.UserPreference, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
+      this.hasMany(models.QueryFilter);
     }
     toJSON() {
       let h = { ...super.toJSON() };
@@ -482,32 +485,43 @@ module.exports = (sequelize, DataTypes) => {
         if (projectContract) {
           projectContract = await (projectContract instanceof db.ProjectContract
             ? projectContract
-            : await db.ProjectContract.findByPk(projectContract.toString()));
-
+            : await db.ProjectContract.findOne({
+                attributes: ["id", "project_id", "contract_project_datum_id", "user_id", "facility_group_id", "progress"],
+                where: { id: projectContract.toString() },
+              }));
+          console.log("projectContract---", projectContract);
           const programId = projectContract.project_id.toString();
+          console.log("-----", roleUsers[0].project_contract_id == programId, roleUsers[0].project_contract_id == projectContract.id);
+          console.log("-----", roleUsers[1].project_contract_id == programId, roleUsers[1].project_contract_id == projectContract.id);
 
+          console.log("Role Users", Number(roleUsers[0].project_contract_id) == Number(projectContract.id));
           roleIds = _.chain(roleUsers)
-            .filter((ru) => ru.project_id === parseInt(programId) && ru.project_contract_id === projectContract.id)
+            .filter((ru) => Number(ru.project_id) === Number(programId) && Number(ru.project_contract_id) === Number(projectContract.id))
             .map("role_id")
             .compact()
             .uniq()
             .value();
-
+          console.log("After Ids Roles----", roleIds);
           roleType = db.RolePrivilege.CONTRACT_PRIVILEGES_ROLE_TYPES.find((rt) => rt.includes(resource));
+          console.log("Role-Type: ", roleType);
         } else if (projectContractVehicle) {
           projectContractVehicle = await (projectContractVehicle instanceof db.ProjectContractVehicle
             ? projectContractVehicle
             : await db.ProjectContractVehicle.findByPk(projectContractVehicle.toString()));
-
           const programId = projectContractVehicle.project_id.toString();
+          console.log("Project Vehicle--", roleUsers[1].project_id, programId);
+          console.log("projectContractVehicle--", projectContractVehicle);
           roleIds = _.chain(roleUsers)
-            .filter((ru) => ru.project_id === parseInt(programId) && ru.project_contract_vehicle_id === projectContractVehicle.id)
+            .filter(
+              (ru) => Number(ru.project_id) === Number(programId) && Number(ru.project_contract_vehicle_id) === Number(projectContractVehicle.id)
+            )
             .map("role_id")
             .compact()
             .uniq()
             .value();
-
+          console.log("After Ids Roles----", roleIds);
           roleType = db.RolePrivilege.CONTRACT_PRIVILEGES_ROLE_TYPES.find((rt) => rt.includes(resource));
+          console.log("Role Type--", roleType);
         } else {
           const programId = program instanceof db.Project ? program.id.toString() : program.toString();
           const projectId = project instanceof db.Facility ? project.id.toString() : project.toString();
@@ -535,10 +549,9 @@ module.exports = (sequelize, DataTypes) => {
             .compact()
             .uniq()
             .value();
-
+          console.log("Role-Ids-Again:", roleIds);
           roleType = db.RolePrivilege.PROJECT_PRIVILEGES_ROLE_TYPES.find((rt) => rt.includes(resource));
           console.log("Role-Type: ", roleType);
-          console.log("Role-Ids-Again:", roleIds);
         }
 
         let rolePrivileges = _.filter(_rolePrivileges, function (rp) {
@@ -737,13 +750,16 @@ module.exports = (sequelize, DataTypes) => {
           })
         );
 
-        var pcs = await db.ProjectContract.findAll({ where: { id: authorized_project_contract_ids, project_id: options.project_ids } });
+        var pcs = await db.ProjectContract.findAll({
+          attributes: ["id", "project_id", "user_id", "progress", "contract_project_datum_id", "facility_group_id"],
+          where: { id: authorized_project_contract_ids, project_id: options.project_ids },
+        });
         authorized_project_contract_ids = compactAndUniq(
           _.map(pcs, function (f) {
             return f.id;
           })
         );
-
+        console.log("PCS---", pcs, authorized_project_contract_ids);
         var pcvs = await db.ProjectContractVehicle.findAll({
           where: { id: authorized_project_contract_vehicle_ids, project_id: options.project_ids },
         });

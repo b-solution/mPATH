@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
-      this.hasMany(models.Facility);
+      this.hasMany(models.Facility, { foreignKey: "facility_group_id" });
       this.hasMany(models.FacilityProject, { foreignKey: "facility_group_id" });
-      // this.hasMany(models.ProjectContract);
-      // this.hasMany(models.ProjectContractVehicle);
+      this.hasMany(models.ProjectContract, { foreignKey: "facility_group_id" });
+      this.hasMany(models.ProjectContractVehicle, { foreignKey: "facility_group_id" });
       this.hasMany(models.ProjectFacilityGroup);
-      // this.belongsToMany(models.Project,{through: models.ProjectFacilityGroup, foreignKey: '', otherKey: '' });
-      // this.hasMany(models.Contract)
+      this.belongsToMany(models.Project, { through: models.ProjectFacilityGroup, foreignKey: "facility_group_id", otherKey: "" });
+      this.hasMany(models.Contract, { foreignKey: "facility_group_id" });
     }
     toJSON() {
       let h = { ...super.toJSON() };

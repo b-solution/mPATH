@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       // // define association here
       this.belongsTo(models.TaskType);
       this.belongsTo(models.TaskStage);
-      this.hasMany(models.TaskUser, { onDelete: "CASCADE", hooks: true });
+      this.hasMany(models.TaskUser, { foreignKey: "task_id", onDelete: "CASCADE", hooks: true });
       // this.belongsToMany(models.User,{through: models.TaskUser, foreignKey: '', otherKey: '' });
       // // this.hasMany(models.TaskFile);
       // this.hasMany(models.Note);
@@ -284,7 +284,8 @@ module.exports = (sequelize, DataTypes) => {
 
       // Add checklists
       _resource.checklists = [];
-      let checklists = await db.Checklist.findAll({ where: { listable_id: _resource.id, listable_type: "Task" }, raw: true });
+      console.log("resource---", _resource, this);
+      let checklists = await db.Checklist.findAll({ where: { listable_id: this.id, listable_type: "Task" }, raw: true });
       var checklist_ids = _.uniq(
         checklists.map(function (e) {
           return e.id;
@@ -318,7 +319,8 @@ module.exports = (sequelize, DataTypes) => {
         _resource["vehicle_nickname"] = contractVehicle.name;
         _resource["project_id"] = projectContractVehicle.project_id;
       } else {
-        let facility_project = await this.getFacilityProject();
+        let facility_project = await db.FacilityProject.findOne({ where: { id: this.facility_project_id } });
+        console.log("task--- facility:", facility_project);
         let facility = await db.Facility.findOne({ where: { id: facility_project.facility_id } });
 
         _resource["facility_id"] = facility.id;
@@ -326,6 +328,7 @@ module.exports = (sequelize, DataTypes) => {
         _resource["contract_nickname"] = null;
         _resource["vehicle_nickname"] = null;
         _resource["project_id"] = facility_project.project_id;
+        // _resource["project_id"] = 1;
       }
 
       let task_users = await this.getTaskUsers();
@@ -370,9 +373,9 @@ module.exports = (sequelize, DataTypes) => {
         _resource["user_names"].push(_uh.full_name);
       }
 
-      _resource["sub_tasks"] = await db.RelatedTask.findAll({ where: { relatable_type: "Task", relatable_id: _resource.id }, raw: true });
-      _resource["sub_issues"] = await db.RelatedIssue.findAll({ where: { relatable_type: "Task", relatable_id: _resource.id }, raw: true });
-      _resource["sub_risks"] = await db.RelatedRisk.findAll({ where: { relatable_type: "Task", relatable_id: _resource.id }, raw: true });
+      _resource["sub_tasks"] = await db.RelatedTask.findAll({ where: { relatable_type: "Task", relatable_id: this.id }, raw: true });
+      _resource["sub_issues"] = await db.RelatedIssue.findAll({ where: { relatable_type: "Task", relatable_id: this.id }, raw: true });
+      _resource["sub_risks"] = await db.RelatedRisk.findAll({ where: { relatable_type: "Task", relatable_id: this.id }, raw: true });
       _resource["sub_task_ids"] = _.map(_resource["sub_tasks"], function (u) {
         u.id;
       });
@@ -556,6 +559,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   Task.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true, // Ensure id is marked as primary key
+        autoIncrement: true,
+      },
       text: DataTypes.STRING,
       description: DataTypes.TEXT,
       due_date: DataTypes.DATE,

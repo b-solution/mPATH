@@ -11,12 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
-      this.belongsTo(models.IssueType);
-      this.belongsTo(models.IssueStage);
-      this.belongsTo(models.TaskType);
-      this.belongsTo(models.IssueSeverity);
+      this.belongsTo(models.IssueType, { foreignKey: "issue_type_id" });
+      this.belongsTo(models.IssueStage, { foreignKey: "issue_stage_id" });
+      this.belongsTo(models.TaskType, { foreignKey: "task_type_id" });
+      this.belongsTo(models.IssueSeverity, { foreignKey: "issue_severity_id" });
       this.hasMany(models.IssueUser, { onDelete: "CASCADE", hooks: true });
-      this.belongsToMany(models.User, { through: models.IssueUser, foreignKey: "", otherKey: "" });
+      this.belongsToMany(models.User, { through: models.IssueUser, foreignKey: "user_id", otherKey: "" });
       //this.hasMany(models.IssueFile);
       this.hasMany(models.Note, {
         foreignKey: "noteable_id",
@@ -26,11 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
       this.hasMany(models.FacilityProject, { onDelete: "CASCADE" });
-      this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "issue_id" });
+      this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "project_id" });
 
-      this.belongsTo(models.Contract);
+      this.belongsTo(models.Contract, { foreignKey: "contract_id" });
       this.belongsTo(models.ProjectContract, { foreignKey: "project_contract_id" });
-      this.belongsTo(models.ProjectContractVehicle);
+      this.belongsTo(models.ProjectContractVehicle, { foreignKey: "project_contract_vehicle_id" });
       this.hasMany(models.Checklist, { as: "listable", foreignKey: "listable_id" });
       this.hasMany(models.RelatedTask, {
         foreignKey: "relatable_id",
@@ -374,7 +374,7 @@ module.exports = (sequelize, DataTypes) => {
         });
         _resource.checklists.push(checklist);
       }
-
+      console.log("this-----ok", this);
       let facility_project = await db.FacilityProject.findOne({
         // attributes: [
         //   "id",
@@ -394,7 +394,6 @@ module.exports = (sequelize, DataTypes) => {
       console.log("Facility----", facility);
       let issue_users = await db.IssueUser.findAll();
       console.log("Issue-User: ", issue_users);
-      console.log("Id----", this);
       let notes = await db.Note.findAll({ where: { noteable_type: "Issue", noteable_id: this.id }, order: [["created_at", "DESC"]], raw: true });
       let all_user_ids = _.compact(
         _.uniq(
@@ -439,20 +438,15 @@ module.exports = (sequelize, DataTypes) => {
         _resource["user_ids"].push(_uh.id);
         _resource["user_names"].push(_uh.full_name);
       }
-      console.log("Resource Id: ", _resource.id);
       _resource["sub_tasks"] = await db.RelatedTask.findAll({ where: { relatable_type: "Task", relatable_id: _resource.id }, raw: true });
-      console.log("sub_tasks: ", _resource["sub_tasks"]);
       _resource["sub_issues"] = await db.RelatedIssue.findAll({ where: { relatable_type: "Task", relatable_id: _resource.id }, raw: true });
-      console.log("sub_issues: ", _resource["sub_issues"]);
       _resource["sub_risks"] = await db.RelatedRisk.findAll({ where: { relatable_type: "Task", relatable_id: _resource.id }, raw: true });
-      console.log("sub_risks: ", _resource["sub_risks"]);
       _resource["sub_task_ids"] = _.map(_resource["sub_tasks"], function (u) {
         return u.id;
       });
       _resource["sub_issue_ids"] = _.map(_resource["sub_issues"], function (u) {
         return u.id;
       });
-      console.log("Sub-Issue-Resource: ", _resource);
       _resource["sub_risk_ids"] = _.map(_resource["sub_risks"], function (u) {
         return u.id;
       });
@@ -494,7 +488,6 @@ module.exports = (sequelize, DataTypes) => {
       _resource["issue_stage_id"] = parseInt(_resource["issue_stage_id"]);
       _resource["due_date_duplicate"] = [];
       _resource["attach_files"] = [];
-      console.log("Resource-First: ", _resource);
       let blobs = await db.ActiveStorageBlob.findAll({ where: { record_type: "Issue", record_id: this.id } });
       blobs = blobs.filter(
         (file, index, self) => index === self.findIndex((t) => t.id === file.id && t.name === file.name && t.uri === file.uri) // Remove duplicates
@@ -543,7 +536,6 @@ module.exports = (sequelize, DataTypes) => {
       _resource["last_update"] = _resource["notes"][0];
 
       _resource["class_name"] = "Issue";
-      console.log("Return-Resource: ", _resource);
       return _resource;
     }
   }

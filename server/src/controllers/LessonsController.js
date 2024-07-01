@@ -45,10 +45,29 @@ const index = async (req, res) => {
     if (params.program_id && params.project_id) {
       let program_id = params.program_id;
       let facility_id = params.project_id;
-      let facility_project = await db.FacilityProject.findOne({ where: { project_id: program_id, facility_id: facility_id }, raw: true });
+      let facility_project = await db.FacilityProject.findOne({
+        attributes: [
+          "id",
+          "facility_id",
+          "project_id",
+          "due_date",
+          "status_id",
+          "progress",
+          "color",
+          "facility_group_id",
+          "project_facility_group_id",
+        ],
+        where: { project_id: program_id, facility_id: facility_id },
+        raw: true,
+      });
+      console.log("Facility-Project---", facility_project.id);
       allLessons = await db.Lesson.findAll({ where: { facility_project_id: facility_project.id } });
     } else if (params.project_contract_id) {
-      let project_contract = await db.ProjectContract.findOne({ where: { id: params.project_contract_id }, raw: true });
+      let project_contract = await db.ProjectContract.findOne({
+        attributes: ["id", "project_id", "contract_project_datum_id", "user_id", "facility_group_id", "progress"],
+        where: { id: params.project_contract_id },
+        raw: true,
+      });
       allLessons = await db.Lesson.findAll({ where: { project_contract_id: project_contract.id } });
     } else if (params.project_contract_vehicle_id) {
       let project_contract_vehicle = await db.ProjectContractVehicle.findOne({ where: { id: params.project_contract_vehicle_id }, raw: true });
@@ -69,7 +88,7 @@ const index = async (req, res) => {
 const show = async (req, res) => {
   try {
     let lesson = await db.Lesson.findOne({ where: { id: req.params.id } });
-
+    console.log("Lesson--:", lesson);
     return { lesson: await lesson.toJSON() };
   } catch (error) {
     res.code(500);
@@ -89,7 +108,7 @@ const create = async (req, res) => {
     printParams(req);
 
     let lesson = db.Lesson.build();
-
+    console.log("Lesson-Build--", lesson);
     let user = await getCurrentUser(req.headers["x-token"]);
     await lesson.createOrUpdateLesson(body, { user: user, project_id: req.params.program_id, facility_id: req.params.project_id });
 
@@ -109,11 +128,11 @@ const update = async (req, res) => {
     let query = qs.parse(req.query);
     printParams(req);
 
-    let lessonParams = body.lesson;
+    let lessonParams = body;
 
     let user = await getCurrentUser(req.headers["x-token"]);
     let lesson = await db.Lesson.findOne({ where: { id: req.params.id } });
-
+    console.log("Lesson--", lesson);
     lesson.set(lessonParams);
     await lesson.save();
 
@@ -145,19 +164,23 @@ const count = async (req, res) => {
 
     const authorizedProgramIds = await user.authorizedProgramIds();
     const projectId = parseInt(params.program_id);
-    console.log("****** authorizedProgramIds", authorizedProgramIds);
-    if (!projectId || !authorizedProgramIds.includes(projectId)) {
+    console.log("****** authorizedProgramIds", authorizedProgramIds, projectId);
+    if (!projectId || !authorizedProgramIds.includes(String(projectId))) {
+      console.log("New Error");
       throw new Error("Access Denied");
     }
     let authorizedData = await user.getAuthorizedData({ project_ids: [projectId] });
+    console.log("authorizedData--", authorizedData);
     let authorizedFacilityProjectIds = authorizedData.authorized_facility_project_ids;
+    console.log("authorizedFacilityProjectIds--", authorizedFacilityProjectIds);
     let authorizedProjectContractIds = authorizedData.authorized_project_contract_ids;
+    console.log("authorizedProjectContractIds--", authorizedProjectContractIds);
     let authorizedProjectContractVehicleIds = authorizedData.authorized_project_contract_vehicle_ids;
-
-    if (projectId && authorizedProgramIds.includes(parseInt(projectId))) {
+    console.log("authorizedProjectContractVehicleIds--", authorizedProjectContractVehicleIds);
+    if (projectId && authorizedProgramIds.includes(String(projectId))) {
       let lessonIds = [];
       let cLessonIds = [];
-
+      console.log("Hello ProjectId----");
       if (authorizedProjectContractIds.length > 0) {
         var pcLessons = await db.Lesson.findAll({ where: { project_contract_id: authorizedProjectContractIds } });
         cLessonIds = _.map(pcLessons, function (f) {
@@ -167,6 +190,7 @@ const count = async (req, res) => {
 
       if (authorizedProjectContractVehicleIds.length > 0) {
         var pvLessons = await db.Lesson.findAll({ where: { project_contract_vehicle_id: authorizedProjectContractVehicleIds } });
+        console.log("Hi lesson--", pvLessons);
         cLessonIds = cLessonIds.concat(
           _.map(pvLessons, function (f) {
             return f.id;
@@ -176,7 +200,7 @@ const count = async (req, res) => {
 
       if (authorizedFacilityProjectIds.length > 0) {
         lessonIds = await db.Lesson.findAll({ where: { facility_project_id: authorizedFacilityProjectIds } });
-
+        console.log("authorizedFacilityProjectIds", authorizedFacilityProjectIds);
         let lessonsCount = lessonIds.length;
         let cLessonsCount = cLessonIds.length;
         let progress = lessonIds.filter((id) => id.draft === true).length;
@@ -189,6 +213,7 @@ const count = async (req, res) => {
       }
     } else if (projectId && query.facility_id) {
       let facilityProject = await db.FacilityProject.findOne({ where: { project_id: projectId, facility_id: query.facility_id } });
+      console.log("F-Proj:--", facilityProject);
       if (facilityProject) {
         let lessonsCount = await db.Lesson.count({ where: { facility_project_id: facilityProject.id } });
         let progress = await db.Lesson.count({ where: { facility_project_id: facilityProject.id, draft: true } });

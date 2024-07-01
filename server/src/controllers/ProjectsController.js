@@ -44,7 +44,7 @@ const show = async (req, res) => {
     console.log("User: ", user);
     // Fetch all users from the database
     const program = await db.Project.findOne({ where: { id: programId } });
-    console.log("Program :", program);
+    console.log("Program---- :", program);
     let response = await program.build_json_response({ user: user });
 
     //As response contains all data, we will add data in steps.
