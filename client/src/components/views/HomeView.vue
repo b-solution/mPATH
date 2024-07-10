@@ -4,9 +4,9 @@
       <login-view></login-view>
     </div>
     <div v-else>
-      <nav class="navbar navbar-expand-lg blue-gradient navbar-light" id="nav-wrap">
+      <nav class="navbar navbar-expand-lg blue-gradient navbar-light border-bottom border-muted" id="nav-wrap">
         <a class="navbar-brand pt-0" href="/">
-          <img :src="mhLogo" /></a>
+          <img class="" :src="mhLogo" /></a>
         <button aria-controls="navbartoggler" aria-expanded="false" aria-label="Toggle navigation"
           class="navbar-toggler ml-auto" data-target="#navbartoggler" data-toggle="collapse" type="button">
           <span class="navbar-toggler-icon"></span>
@@ -15,16 +15,15 @@
           <ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
           <ul class="navbar-nav my-2 my-lg-0">
             <li class="nav-item">
-              <a class="nav-link" :href="adminPanelUrl" data-turbolinks="false" data-cy="admin_panel">Admin
+              <a class="nav-link" @click="setAdminPanel" :href="adminPanelUrl" data-turbolinks="false"
+                data-cy="admin_panel">Admin
                 Panel</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" target="_blank" href="https://mpath.atlassian.net/wiki/spaces/MUG/overview">Help</a>
             </li>
-            <li class="nav-item">
-              <div v-if="this.getCurrentUser">
-                <router-link :to="`/profile`">Welcome,{{ this.getCurrentUser.email }}</router-link>
-              </div>
+            <li class="nav-item mt-2" v-if="this.getCurrentUser">
+              <router-link :to="`/profile`">Welcome,{{ this.getCurrentUser.firstName }}</router-link>
             </li>
             <li class="nav-item">
               <a id="__logout" class="nav-link" data-cy="logout" rel="nofollow" data-method="delete"
@@ -44,18 +43,21 @@
 </template>
 
 <script>
+import axios from "axios";
+
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import LoginView from './LoginView.vue'
 import Tabsbar from './../shared/tabsbar.vue'
 import FilterSidebar from './../shared/filter_sidebar.vue'
 import SettingsSidebar from '../views/settings/SettingsSidebar.vue'
 import AuthorizationService from '../../services/authorization_service'
-import { Admin_PANEL_URL } from '../../mixins/utils'
+import { Admin_PANEL_URL, API_BASE_PATH } from '../../mixins/utils'
+
 export default {
   name: 'HomeView',
   data() {
     return {
-      mhLogo: 'microhealthllc.png',
+      mhLogo: 'mpath.png',
       adminPanelUrl: `${Admin_PANEL_URL}/admin`
     }
   },
@@ -79,6 +81,28 @@ export default {
     async logoutClick(e) {
       this.nullifyLocalStorage()
       this.$router.push(`/login`)
+      await setAdminPanel()
+    },
+    async setAdminPanel() {
+      console.log("Admin------", this.$store)
+      axios({
+        method: "POST",
+        url: `${API_BASE_PATH}/admin`,
+        headers: {
+          'x-token': this.$store.getters.getToken
+        },
+      })
+        .then((response) => {
+          console.log("AuthResponse", response)
+        })
+        .catch((err) => {
+          console.log("Error", err);
+          this.errorTrue = true
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+
     },
     isProgramListView() {
       return this.$route.name && this.$route.name.includes('ProgramListView')

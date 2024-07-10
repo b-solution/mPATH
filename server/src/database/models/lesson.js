@@ -272,7 +272,11 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
 
-    async toJSON() {
+    toJSON() {
+      let _resource = this.get({ plain: true });
+      return _resource;
+    }
+    async TO_JSON() {
       const { db } = require("./index.js");
       const { getCurrentUser, printParams, compactAndUniq, validUrl } = require("../../utils/helpers.js");
 

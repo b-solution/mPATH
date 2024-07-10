@@ -273,8 +273,11 @@ module.exports = (sequelize, DataTypes) => {
         // console.log("*****delete_note_ids", delete_note_ids)
       }
     }
-
-    async toJSON() {
+    toJSON() {
+      let _resource = this.get({ plain: true });
+      return _resource;
+    }
+    async TO_JSON() {
       const { db } = require("./index.js");
       const { validUrl } = require("../../utils/helpers.js");
 

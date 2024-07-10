@@ -1,6 +1,5 @@
 "use strict";
 const { _ } = require("lodash");
-
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Issue extends Model {
@@ -16,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.TaskType, { foreignKey: "task_type_id" });
       this.belongsTo(models.IssueSeverity, { foreignKey: "issue_severity_id" });
       this.hasMany(models.IssueUser, { onDelete: "CASCADE", hooks: true });
-      this.belongsToMany(models.User, { through: models.IssueUser, foreignKey: "user_id", otherKey: "" });
+      this.belongsToMany(models.User, { through: models.IssueUser, foreignKey: "issue_id" , otherKey: "user_id" });
       //this.hasMany(models.IssueFile);
       this.hasMany(models.Note, {
         foreignKey: "noteable_id",
@@ -60,7 +59,6 @@ module.exports = (sequelize, DataTypes) => {
 
     async createOrUpdateIssue(params, options) {
       try {
-        const { db } = require("./index.js");
         let user = options.user;
         let project_id = options.project_id;
         let facility_id = options.facility_id;
@@ -205,7 +203,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
     async manageChecklists(params) {
-      const { db } = require("./index.js");
       if (params.checklists_attributes) {
         var create_checklist = [];
         var delete_checklist_ids = [];
@@ -233,7 +230,6 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async manageNotes(params) {
-      const { db } = require("./index.js");
       if (params.notes_attributes) {
         var create_notes = [];
         var delete_note_ids = [];
@@ -257,8 +253,6 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async assignUsers(params) {
-      const { db } = require("./index.js");
-
       const accountableResourceUsers = [];
       const responsibleResourceUsers = [];
       const consultedResourceUsers = [];
@@ -347,8 +341,11 @@ module.exports = (sequelize, DataTypes) => {
       const { addAttachment } = require("../../utils/helpers");
       addAttachment(params, this);
     }
-
-    async toJSON() {
+    toJSON() {
+      let _resource = this.get({ plain: true });
+      return _resource;
+    }
+    async To_JSON() {
       const { db } = require("./index.js");
 
       let _resource = this.get({ plain: true });
@@ -376,17 +373,6 @@ module.exports = (sequelize, DataTypes) => {
       }
       console.log("this-----ok", this);
       let facility_project = await db.FacilityProject.findOne({
-        // attributes: [
-        //   "id",
-        //   "facility_id",
-        //   "project_id",
-        //   "due_date",
-        //   "status_id",
-        //   "progress",
-        //   "color",
-        //   "facility_group_id",
-        //   "project_facility_group_id",
-        // ],
         where: { id: this.facility_project_id },
       });
       console.log("Facility-Project----: ", facility_project);

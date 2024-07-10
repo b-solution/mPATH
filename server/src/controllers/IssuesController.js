@@ -35,7 +35,7 @@ const show = async (req, res) => {
     });
 
     console.log("Issue-Show: ", issue);
-    return { issue: await issue.toJSON() };
+    return { issue: await issue.To_JSON() };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching issue " + error };
@@ -59,7 +59,7 @@ const create = async (req, res) => {
     let issue = db.Issue.build();
     let user = await getCurrentUser(req.headers["x-token"]);
     await issue.createOrUpdateIssue(params, { user: user, project_id: req.params.program_id, facility_id: req.params.project_id });
-    return { issue: await issue.toJSON(), msg: "Issue created successfully" };
+    return { issue: await issue.To_JSON(), msg: "Issue created successfully" };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching issue " + error };
@@ -111,7 +111,7 @@ const update = async (req, res) => {
     await issue.manageChecklists(issueParams);
     await issue.addResourceAttachment(params);
     console.log("Updated-Issue: ", issue);
-    return { issue: await issue.toJSON(), msg: "Issue updated successfully" };
+    return { issue: await issue.To_JSON(), msg: "Issue updated successfully" };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching issue " + error };
@@ -159,6 +159,24 @@ const destroy = async (req, res) => {
     return { error: "Error in issue destroy" };
   }
 };
+const indexSample = async (req, res) => {
+  try {
+    const allIssues = await db.Issue.findAll();
+    console.log("IndexSample-----", allIssues);
+    const issuesJson = await Promise.all(
+      allIssues.map(async (issue) => {
+        const issueData = await issue.To_JSON();
+        return {
+          issueData,
+        };
+      })
+    );
+    res.send({ issues: issuesJson });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const index = async (req, res) => {
   console.log("hi-md-----");
   const qs = require("qs");
@@ -252,7 +270,7 @@ const index = async (req, res) => {
 
     const issuesJson = await Promise.all(
       allIssues.map(async (issue) => {
-        const issueData = await issue.toJSON();
+        const issueData = await issue.To_JSON();
         return {
           ...issueData,
           organizations: allOrganizations,
@@ -316,7 +334,7 @@ const create_duplicate = async (req, res) => {
     const duplicateIssue = await createIssue(req, issueData);
     // const duplicateIssue = await issue.createOrUpdateIssue(issueData, { user: user, project_id: params.program_id, facility_id: params.project_id });
     console.log("Issue------", duplicateIssue);
-    return { issue: await duplicateIssue.toJSON(), msg: "Duplicate issue created successfully" };
+    return { issue: await duplicateIssue.To_JSON(), msg: "Duplicate issue created successfully" };
   } catch (error) {
     return { error: "Duplicate issue not created successfully" };
   }
@@ -469,4 +487,5 @@ module.exports = {
   create_duplicate,
   create_bulk_duplicate,
   batch_update,
+  indexSample,
 };

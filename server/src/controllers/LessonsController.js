@@ -22,7 +22,7 @@ const program_lessons = async (req, res) => {
     console.log("Lessons---", lessons);
     var response = [];
     for (var l of lessons) {
-      var _l = await l.toJSON();
+      var _l = await l.TO_JSON();
       response.push(_l);
     }
     return { lessons: response };
@@ -76,7 +76,7 @@ const index = async (req, res) => {
 
     let res_lessons = [];
     for (var l of allLessons) {
-      res_lessons.push(await l.toJSON());
+      res_lessons.push(await l.TO_JSON());
     }
     return { lessons: res_lessons };
   } catch (error) {
@@ -89,7 +89,7 @@ const show = async (req, res) => {
   try {
     let lesson = await db.Lesson.findOne({ where: { id: req.params.id } });
     console.log("Lesson--:", lesson);
-    return { lesson: await lesson.toJSON() };
+    return { lesson: await lesson.TO_JSON() };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching lesson " + error.stack };
@@ -112,7 +112,7 @@ const create = async (req, res) => {
     let user = await getCurrentUser(req.headers["x-token"]);
     await lesson.createOrUpdateLesson(body, { user: user, project_id: req.params.program_id, facility_id: req.params.project_id });
 
-    return { lesson: await lesson.toJSON(), msg: "Lesson created successfully" };
+    return { lesson: await lesson.TO_JSON(), msg: "Lesson created successfully" };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching lesson " + error.stack };
@@ -140,7 +140,7 @@ const update = async (req, res) => {
     await lesson.addLessonDetail(lessonParams, user);
     await lesson.addResourceAttachment(body);
 
-    return { lesson: await lesson.toJSON(), msg: "Lesson updated successfully" };
+    return { lesson: await lesson.TO_JSON(), msg: "Lesson updated successfully" };
   } catch (error) {
     res.code(500);
     console.log(error.stack);

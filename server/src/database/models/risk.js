@@ -320,8 +320,11 @@ module.exports = (sequelize, DataTypes) => {
         const riskUsers = await db.RiskUser.bulkCreate(recordsToImport);
       }
     }
-
-    async toJSON() {
+    toJSON() {
+      let _resource = this.get({ plain: true });
+      return _resource;
+    }
+    async TO_JSON() {
       const { db } = require("./index.js");
 
       let _resource = this.get({ plain: true });

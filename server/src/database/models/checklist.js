@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       //this.belongsTo(models.Listable);
       this.belongsTo(models.User);
       this.belongsTo(models.Risk, { foreignKey: "listable_id", constraints: false });
+      this.belongsTo(models.Issue, { foreignKey: "listable_id", constraints: false });
       this.hasMany(models.ProgressList, { foreignKey: "checklist_id" });
     }
   }

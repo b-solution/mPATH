@@ -2,7 +2,6 @@
 const { fn, Op, Model, QueryTypes } = require("sequelize");
 
 const { _ } = require("lodash");
-
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -13,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // // define association here
       this.hasMany(models.IssueUser, { onDelete: "CASCADE", hooks: true });
-      this.belongsToMany(models.Issue, { through: models.IssueUser, foreignKey: "issue_id", otherKey: "" });
+      this.belongsToMany(models.Issue, { through: models.IssueUser, foreignKey: "user_id", otherKey: "issue_id" });
       this.belongsTo(models.Organization);
       this.hasMany(models.ProjectUser, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
       this.belongsToMany(models.Project, { through: models.ProjectUser, foreignKey: "user_id", otherKey: "project_id" });
@@ -25,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.ContractPrivilege, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
       this.hasMany(models.FacilityPrivilege, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
       this.hasMany(models.ProjectPrivilege, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
-      // this.hasMany(models.Contract,{ foreignKey: 'user_id' })
+      this.hasMany(models.Contract, { foreignKey: "user_id" });
       this.hasMany(models.RoleUser, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
       this.belongsToMany(models.Role, { through: models.RoleUser, foreignKey: "user_id", otherKey: "role_id" });
       this.hasMany(models.RolePrivilege, { foreignKey: "user_id" });
@@ -901,9 +900,9 @@ module.exports = (sequelize, DataTypes) => {
         get() {
           return `${this.first_name} ${this.last_name}`;
         },
-        set(value) {
-          throw new Error("Do not try to set the `fullName` value!");
-        },
+        // set(value) {
+        //   throw new Error("Do not try to set the `fullName` value!");
+        // },
       },
       email: {
         type: DataTypes.STRING,
@@ -946,24 +945,5 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     }
   );
-  // User.hasMany(ProjectUser);
-  // User.hasMany(Project);
-  // User.hasMany(Facility, {});
-  // User.hasMany(FacilityProject, {});
-  // User.hasMany(Risk, {});
-  // User.hasOne(Privilege, {});
-  // User.hasMany(QueryFilter, {});
-  // User.hasMany(ContractPrivilege, {});
-  // User.hasMany(FacilityPrivilege, {});
-  // User.hasMany(ProjectPrivilege, {});
-  // User.hasMany(Contract, {});
-  // User.hasMany(RoleUser, {});
-  // User.hasMany(Role, {});
-  // User.hasMany(RolePrivilege, {});
-
-  // User.hasMany(Facility, {});
-  // User.belongsTo(Organization, {});
-  // User.belongsTo(Organization, {});
-
   return User;
 };

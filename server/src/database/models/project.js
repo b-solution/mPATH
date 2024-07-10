@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.ProjectFacilityGroup);
       this.hasMany(models.RoleUser);
       this.hasMany(models.ProjectContract);
-      this.belongsToMany(models.ContractProjectDatum, { through: models.ProjectContract, foreignKey: "project_id" });
+      this.belongsToMany(models.ContractProjectDatum, { through: models.ProjectContract, foreignKey: "contract_project_datum_id" });
       this.hasMany(models.ProjectContractVehicle);
       // this.belongsToMany(models.ContractVehicle,{ through: models.ProjectContractVehicle,foreignKey: 'project_id' })
       // // this.hasMany(models.ProjectContractVehicleGroup)
@@ -65,6 +65,7 @@ module.exports = (sequelize, DataTypes) => {
     toJSON() {
       let h = { ...super.toJSON() };
       h["status"] = this.getStatus(h["status"]);
+      console.log("------hi-----:", h);
       return h;
     }
     getStatus(v) {

@@ -5,7 +5,7 @@ const { getCurrentUser } = require("../utils/helpers");
 const show = async (req, res) => {
   try {
     let risk = await db.Risk.findOne({ where: { id: req.params.id } });
-    return { risk: await risk.toJSON() };
+    return { risk: await risk.TO_JSON() };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching risk " + error };
@@ -30,7 +30,7 @@ const create = async (req, res) => {
     let user = await getCurrentUser(req.headers["x-token"]);
     await risk.createOrUpdateRisk(params, { user: user, project_id: req.params.program_id, facility_id: req.params.project_id });
     console.log("new risk", risk);
-    return { risk: await risk.toJSON(), msg: "Risk created successfully" };
+    return { risk: await risk.TO_JSON(), msg: "Risk created successfully" };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching risk " + error };
@@ -56,7 +56,7 @@ const update = async (req, res) => {
     await risk.manageChecklists(riskParams);
     // await risk.addResourceAttachment(params);
 
-    return { risk: await risk.toJSON(), msg: "Risk updated successfully" };
+    return { risk: await risk.TO_JSON(), msg: "Risk updated successfully" };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching riskParams " + error };
@@ -72,7 +72,7 @@ const create_duplicate = async (req, res) => {
     // delete riskData.id;
     // const duplicateRisk = await db.Risk.create(riskData);
     // await duplicateRisk.save();
-    return { duplicateedRisk: await duplicatedRisk.toJSON(), message: "Duplicate Risk created successfully" };
+    return { duplicateedRisk: await duplicatedRisk.TO_JSON(), message: "Duplicate Risk created successfully" };
   } catch (error) {
     return { message: error };
   }
@@ -164,7 +164,7 @@ const batch_update = async (req, res) => {
       await db.Risk.update(updateData, { where: { id: riskId } });
     }
     const facilityProject = await db.FacilityProject.findByPk(req.params.project_id);
-    return { facilityProject: facilityProject.toJSON() };
+    return { facilityProject: facilityProject.TO_JSON() };
   } catch (error) {
     return { message: error };
   }

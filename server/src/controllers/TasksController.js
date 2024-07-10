@@ -28,7 +28,7 @@ const create = async (req, res) => {
     let user = await getCurrentUser(req.headers["x-token"]);
     await task.createOrUpdateTask(params, { user: user, project_id: params.program_id, facility_id: params.project_id });
 
-    return { task: await task.toJSON(), msg: "Task created successfully" };
+    return { task: await task.TO_JSON(), msg: "Task created successfully" };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching task " + error };
@@ -55,7 +55,7 @@ const update = async (req, res) => {
     // task = await task.update(params)
     // console.log("after update", task)
 
-    return { task: await task.toJSON(), msg: "Task updated successfully" };
+    return { task: await task.TO_JSON(), msg: "Task updated successfully" };
   } catch (error) {
     res.code(500);
     return { error: "Error fetching task " + error };
@@ -139,7 +139,7 @@ const destroy = async (req, res) => {
 
     let task = await db.Task.findOne({ where: { id: req.params.id } });
     console.log("Destroy: ", task);
-    //var resJSON = await task.toJSON();
+    //var resJSON = await task.TO_JSON();
     //console.log("Json: ", resJSON);
     await task.destroy();
 

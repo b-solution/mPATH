@@ -1,7 +1,6 @@
-const dotenv = require("dotenv");
-const path = require("path");
+require("dotenv").config();
 
-dotenv.config();
+const path = require("path");
 const fastify = require("fastify")({
   logger: true,
 });
@@ -50,6 +49,7 @@ const facilityGroupRoutes = require("./routes/facilityGroupsRoutes");
 const sortRoutes = require("./routes/sortRoutes");
 const statusRoutes = require("./routes/statusesRoutes");
 const facilityProjectRoutes = require("./routes/facilityProjectRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 // fastify.addHook('onRequest', function(request, reply, done) {
 // 	let body = qs.parse(request.body)
 // 	let query = qs.parse(request.query)
@@ -65,6 +65,7 @@ const facilityProjectRoutes = require("./routes/facilityProjectRoutes");
 
 const { db } = require("./database/models"); // import models
 const { matchPath } = require("react-router");
+const setAdminPanel = require("./utils/admin");
 const PORT = 3000;
 
 fastify.register(cors, {
@@ -116,7 +117,7 @@ fastify.register(facilityGroupRoutes);
 fastify.register(sortRoutes);
 fastify.register(statusRoutes);
 fastify.register(facilityProjectRoutes);
-
+fastify.register(adminRoutes);
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
   try {
@@ -131,171 +132,7 @@ async function assertDatabaseConnectionOk() {
 
 async function init() {
   await assertDatabaseConnectionOk();
-
-  const [AdminJsModule, AdminJsFastify, AdminJSSequelize] = await Promise.all([
-    import("adminjs"),
-    import("@adminjs/fastify"),
-    import("@adminjs/sequelize"),
-  ]);
-  AdminJsModule.AdminJS.registerAdapter({
-    Resource: AdminJSSequelize.Resource,
-    Database: AdminJSSequelize.Database,
-  });
-
-  const adminJsInstance = new AdminJsModule.AdminJS({
-    resources: [
-      {
-        resource: db.Status,
-        options: {
-          navigation: {
-            name: "Facilities Related",
-          },
-        },
-      },
-      {
-        resource: db.FacilityGroup,
-        options: {
-          navigation: {
-            name: "Facilities Related",
-          },
-        },
-      },
-      {
-        resource: db.Organization,
-        options: {
-          navigation: {
-            name: "Users Related",
-          },
-        },
-      },
-      {
-        resource: db.User,
-        options: {
-          navigation: {
-            name: "Users Related",
-          },
-        },
-      },
-      {
-        resource: db.Issue,
-        options: {
-          navigation: {
-            name: "Issues Related",
-          },
-          actions: {
-            myCustomAction: {
-              actionType: "resource",
-              component: false,
-              handler: (request, response, context) => {
-                console.log("res----", response);
-                const { record, currentAdmin } = context;
-                return {
-                  record: record.toJSON(currentAdmin),
-                  msg: "Hello world",
-                };
-              },
-            },
-          },
-        },
-      },
-      {
-        resource: db.IssueType,
-        options: {
-          navigation: {
-            name: "Issues Related",
-          },
-        },
-      },
-      {
-        resource: db.IssueSeverity,
-        options: {
-          navigation: {
-            name: "Issues Related",
-          },
-        },
-      },
-      {
-        resource: db.IssueStage,
-        options: {
-          navigation: {
-            name: "Issues Related",
-          },
-        },
-      },
-      {
-        resource: db.Lesson,
-        options: {
-          navigation: {
-            name: "Lessons Related",
-          },
-        },
-      },
-      {
-        resource: db.LessonDetail,
-        options: {
-          navigation: {
-            name: "Lessons Related",
-          },
-        },
-      },
-      {
-        resource: db.LessonStage,
-        options: {
-          navigation: {
-            name: "Lessons Related",
-            icon: "Lesoon",
-          },
-        },
-      },
-      {
-        resource: db.Effort,
-        options: {
-          navigation: {
-            name: "Efforts Related",
-          },
-        },
-      },
-      {
-        resource: db.Task,
-        options: {
-          navigation: {
-            name: "Tasks Related",
-          },
-        },
-      },
-      {
-        resource: db.TaskStage,
-        options: {
-          navigation: {
-            name: "Tasks Related",
-          },
-        },
-      },
-      {
-        resource: db.Project,
-        options: {
-          navigation: {
-            name: "Projects Related",
-          },
-        },
-      },
-      {
-        resource: db.ProjectType,
-        options: {
-          navigation: {
-            name: "Projects Related",
-          },
-        },
-      },
-      db.ProjectContractVehicle,
-      db.Contract,
-      db.ProjectContract,
-      db.TaskType,
-      // db.ProjectContractVehicle,
-    ],
-    rootPath: "/admin",
-  });
-  await AdminJsFastify.buildRouter(adminJsInstance, fastify);
+  await setAdminPanel(db, fastify);
   fastify.listen({ port: PORT }, (err, address) => {
     if (err) throw err;
     console.log(`Sequelize + Express server started on port ${PORT}`);

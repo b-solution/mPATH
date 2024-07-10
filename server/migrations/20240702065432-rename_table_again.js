@@ -1,13 +1,14 @@
 "use strict";
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // Rename the table
-    await queryInterface.renameTable("ContractProjectData", "contract_project_data");
+    await queryInterface.renameTable("contract_project_datum", "contract_project_data");
   },
 
   down: async (queryInterface, Sequelize) => {
     // Revert the table name change
-    await queryInterface.renameTable("contract_project_data", "ContractProjectData");
+    await queryInterface.renameTable("contract_project_data", "contract_project_datum");
   },
 };

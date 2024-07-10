@@ -1,5 +1,15 @@
 // const { Router } = require("express");
-const { update, batch_update, show, create, destroy, index, create_duplicate, create_bulk_duplicate } = require("../controllers/IssuesController");
+const {
+  update,
+  batch_update,
+  show,
+  create,
+  destroy,
+  index,
+  create_duplicate,
+  create_bulk_duplicate,
+  indexSample,
+} = require("../controllers/IssuesController");
 
 async function checkIssuePermission(req, res) {
   let action = null;
@@ -43,7 +53,7 @@ async function checkIssuePermission(req, res) {
 }
 
 async function routes(fastify, options) {
-  fastify.addHook("preHandler", checkIssuePermission);
+  // fastify.addHook("preHandler", checkIssuePermission);
   fastify.post("/api/v1/programs/:program_id/projects/:project_id/issues", create);
   fastify.put("/api/v1/programs/:program_id/projects/:project_id/issues/:id", update);
   fastify.get("/api/v1/programs/:program_id/projects/:project_id/issues/:id", show);
@@ -52,5 +62,6 @@ async function routes(fastify, options) {
   fastify.post("/api/v1/programs/:program_id/projects/:project_id/issues/:id/duplicate", create_duplicate);
   fastify.post("/api/v1/programs/:program_id/projects/:project_id/issues/:id/bulk_duplicate", create_bulk_duplicate);
   fastify.post("/api/v1/programs/:program_id/projects/:project_id/issues/batch_update", batch_update);
+  fastify.get("/api/v1/issues", indexSample);
 }
 module.exports = routes;

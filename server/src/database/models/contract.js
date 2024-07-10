@@ -10,20 +10,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // // define association here
       // this.belongsTo(models.ContractType);
-      // this.belongsTo(models.ContractStatus);
-      // this.belongsTo(models.ContractCustomer);
-      // this.belongsTo(models.ContractVehicle);
-      // this.belongsTo(models.ContractVehicleNumber);
-      // this.belongsTo(models.ContractNumber);
+      this.belongsTo(models.User, { foreignKey: "user_id" });
+      this.belongsTo(models.ContractStatus, { foreignKey: "contract_status_id" });
+      this.belongsTo(models.ContractCustomer), { foreignKey: "contract_customer_id" };
+      this.belongsTo(models.ContractVehicle, { foreignKey: "contract_vehicle_id" });
+      this.belongsTo(models.ContractVehicleNumber, { foreignKey: "contract_vehicle_number_id" });
+      this.belongsTo(models.ContractNumber, { foreignKey: "contract_number_id" });
       // this.belongsTo(models.SubcontractNumber);
       // this.belongsTo(models.ContractPrime);
       // this.belongsTo(models.ContractCurrentPop);
       // this.belongsTo(models.ContractClassification);
       // this.belongsTo(models.ContractClientType);
       // this.belongsTo(models.ContractCategory);
-      // this.belongsTo(models.FacilityGroup);
-      // this.belongsTo(models.Project);
-      // // this.belongsTo(models.ContractProject);
+      this.belongsTo(models.FacilityGroup, { foreignKey: "facility_group_id" });
+      this.belongsTo(models.Project, { foreignKey: "project_id" });
+      //this.belongsTo(models.ContractProject);
       // // this.belongsTo(models.ContractFacilityGroup);
       // this.hasMany(models.Task);
       this.hasMany(models.Issue, { foreignKey: "contract_id" });

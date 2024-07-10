@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class ContractVehicleNumber extends Model {
     /**
@@ -11,19 +9,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
-      // this.hasMany(models.Contract)
-
+      this.hasMany(models.Contract);
     }
   }
-  ContractVehicleNumber.init({
-    name: DataTypes.STRING
-  }, {
-    sequelize,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    tableName: 'contract_vehicle_numbers',
-    modelName: 'ContractVehicleNumber',
-    underscored: true
-  });
+  ContractVehicleNumber.init(
+    {
+      name: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+      tableName: "contract_vehicle_numbers",
+      modelName: "ContractVehicleNumber",
+      underscored: true,
+    }
+  );
   return ContractVehicleNumber;
 };
