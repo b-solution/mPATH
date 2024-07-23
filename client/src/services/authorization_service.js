@@ -57,6 +57,7 @@ const AuthorizationService = {
   },
   getRolePrivileges: (project_id) => {
     let portfolioProgramID = project_id
+    console.log('Testing roles-privs:')
     if (!portfolioProgramID) {
       let ww = window.location.pathname.split('/')
       let portfolioProgramID = ww[ww.length - 2]

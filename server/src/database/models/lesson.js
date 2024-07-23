@@ -16,13 +16,42 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.LessonStage);
       this.hasMany(models.LessonUser, { onDelete: "CASCADE", hooks: true });
       this.belongsToMany(models.User, { through: models.LessonUser, foreignKey: "lesson_id", otherKey: "" });
-      // // this.belongsTo(models.FacilityProject,{ foreignKey: '' , as: 'LessonFacilityProject' });
-      this.belongsTo(models.FacilityProject, { foreignKey: "facility_project_id" });
+      this.belongsTo(models.FacilityProject, { foreignKey: "facility_project_id", as: "FacilityProjects" });
+      //this.belongsTo(models.FacilityProject, { foreignKey: "facility_project_id" });
+      this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "lesson_id" });
       // this.belongsTo(models.ProjectContract);
       // this.belongsTo(models.ProjectContractVehicle);
       // this.hasMany(models.Note);
       // // this.hasMany(models.LessonFile);
-      // this.hasMany(models.LessonDetail);
+      this.hasMany(models.LessonDetail);
+      this.hasMany(models.RelatedTask, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Lesson",
+        },
+      });
+      this.hasMany(models.RelatedIssue, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Lesson",
+        },
+      });
+      this.hasMany(models.RelatedRisk, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Lesson",
+        },
+      });
+      this.hasMany(models.Note, {
+        foreignKey: "noteable_id",
+        constraints: false,
+        scope: {
+          noteable_type: "Lesson",
+        },
+      });
       // this.hasMany(models.RelatedTask);
       // this.hasMany(models.RelatedIssue);
       // this.hasMany(models.RelatedLesson);

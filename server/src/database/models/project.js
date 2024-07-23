@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // // define association here
       this.hasMany(models.ProjectUser);
-      this.belongsToMany(models.User, { through: models.ProjectUser, foreignKey: "user_id" });
+      this.belongsToMany(models.User, { through: models.ProjectUser, foreignKey: "project_id", otherKey: "user_id" });
       this.hasMany(models.FacilityProject, { foreignKey: "project_id" });
 
       this.belongsToMany(models.Facility, { through: models.FacilityProject, foreignKey: "facility_id" });
@@ -24,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.FacilityGroup, { through: models.ProjectFacilityGroup, foreignKey: "project_id" });
 
       // // this.belongsToMany(models.ProjectGroup,{through: models.ProjectFacilityGroup, foreignKey: 'project_id' })
-      this.belongsToMany(models.Issue, { through: models.FacilityProject, foreignKey: "issue_id" });
-      // // this.belongsToMany(models.Risk,{through: models.FacilityProject, foreignKey: 'project_id' })
-      // // this.belongsToMany(models.Lesson,{through: models.FacilityProject, as: "ProjectLesson", foreignKey: 'project_id', otherKey: 'facility_id'  })
+      this.belongsToMany(models.Issue, { through: models.FacilityProject, foreignKey: "project_id", otherKey: "issue_id" });
+      this.belongsToMany(models.Risk, { through: models.FacilityProject, foreignKey: "project_id" });
+      this.belongsToMany(models.Lesson, { through: models.FacilityProject, foreignKey: "project_id", otherKey: "lesson_id" });
 
       // this.belongsTo(models.ProjectType)
 
@@ -57,9 +57,13 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.ProjectFacilityGroup);
       this.hasMany(models.RoleUser);
       this.hasMany(models.ProjectContract);
-      this.belongsToMany(models.ContractProjectDatum, { through: models.ProjectContract, foreignKey: "contract_project_datum_id" });
+      this.belongsToMany(models.ContractProjectDatum, {
+        through: models.ProjectContract,
+        foreignKey: "project_id",
+        other_key: "contract_project_datum_id",
+      });
       this.hasMany(models.ProjectContractVehicle);
-      // this.belongsToMany(models.ContractVehicle,{ through: models.ProjectContractVehicle,foreignKey: 'project_id' })
+      //this.belongsToMany(models.ContractVehicle, { through: models.ProjectContractVehicle, foreignKey: "project_id", otherKey:'contract_vehicle_id' });
       // // this.hasMany(models.ProjectContractVehicleGroup)
     }
     toJSON() {

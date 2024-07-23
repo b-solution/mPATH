@@ -11,9 +11,12 @@ module.exports = (sequelize, DataTypes) => {
       // // define association here
       // // this.belongsTo(models.Noteable);
       this.belongsTo(models.User);
+      this.belongsTo(models.Lesson, { foreignKey: "noteable_id", constraints: false });
       this.belongsTo(models.Issue, { foreignKey: "noteable_id", constraints: false });
       this.belongsTo(models.Task, { foreignKey: "noteable_id", constraints: false });
       this.belongsTo(models.FacilityProject, { foreignKey: "noteable_id", constraints: false });
+      this.belongsTo(models.Risk, { foreignKey: "noteable_id", constraints: false });
+
       // // this.hasMany(models.NoteFile)
     }
     async toJSON() {

@@ -648,7 +648,7 @@ export default {
       "fetchContractVehicles"
     ]),
     _isallowed(salut) {
-        return this.checkPortfolioContractPrivileges("PortfolioContracts", salut, this.$route, {settingType: 'Contracts'})
+      //  return this.checkPortfolioContractPrivileges("PortfolioContracts", salut, this.$route, {settingType: 'Contracts'})
     }, 
     getSummaries(param) {
       const { columns, data } = param;

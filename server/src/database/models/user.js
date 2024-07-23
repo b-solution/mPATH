@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.IssueUser, { onDelete: "CASCADE", hooks: true });
       this.belongsToMany(models.Issue, { through: models.IssueUser, foreignKey: "user_id", otherKey: "issue_id" });
       this.belongsTo(models.Organization);
-      this.hasMany(models.ProjectUser, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
+      this.hasMany(models.ProjectUser, { onDelete: "CASCADE", hooks: true });
       this.belongsToMany(models.Project, { through: models.ProjectUser, foreignKey: "user_id", otherKey: "project_id" });
       // this.belongsToMany(models.FacilityProject,{ through: models.ProjectUser, foreignKey: 'user_id',otherKey: 'project_id' })
       // // this.belongsToMany(models.Project,{through: models.ProjectUser, foreignKey: 'user_id',otherKey: 'project_id' })
@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.RolePrivilege, { foreignKey: "user_id" });
       this.hasMany(models.UserPreference, { foreignKey: "user_id", onDelete: "CASCADE", hooks: true });
       this.hasMany(models.QueryFilter);
+      this.hasMany(models.Risk);
     }
     toJSON() {
       let h = { ...super.toJSON() };
@@ -722,7 +723,7 @@ module.exports = (sequelize, DataTypes) => {
           return f.role_id;
         })
       );
-      console.log("Authorized role Privillage Id: ", role_privilege_role_ids);
+      console.log("Authorized role Privillage Id: ", role_privilege_role_ids, this.id);
       let role_users2 = await db.RoleUser.findAll({ where: { user_id: this.id, role_id: role_privilege_role_ids } });
       console.log("Role Users 2: ", role_users2);
       let authorized_facility_project_ids = compactAndUniq(

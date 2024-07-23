@@ -285,6 +285,7 @@ module.exports = (sequelize, DataTypes) => {
       // }
       project_facility_group_id: DataTypes.INTEGER,
       issue_id: DataTypes.INTEGER,
+      lesson_id: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -9,16 +9,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
-      this.belongsTo(models.ContractSubCategory);
-      this.belongsTo(models.ContractAgency);
-      this.belongsTo(models.ContractVehicleType);
-      this.belongsTo(models.ContractNumber);
-      // this.belongsTo(models.User);
+      this.belongsTo(models.ContractSubCategory, { foreignKey: "contract_sub_category_id" });
+      this.belongsTo(models.ContractAgency, { foreignKey: "contract_agency_id" });
+      this.belongsTo(models.ContractVehicleType, { foreignKey: "contract_vehicle_type_id" });
+      this.belongsTo(models.ContractNumber, { foreignKey: "contract_number_id" });
+      this.belongsTo(models.User, { foreignKey: "user_id" });
       this.hasMany(models.ContractProjectDatum, { foreignKey: "contract_vehicle_id" });
-      // this.hasMany(models.ProjectContractVehicle);
-      // this.belongsToMany(models.Project,{through: models.ProjectContractVehicle, foreignKey: '', otherKey: '' });
+      this.hasMany(models.ContractProjectPocResource, {
+        foreignKey: "resource_id",
+        constraints: false,
+        scope: {
+          resource_type: "ContractVehicle",
+        },
+      });
+      this.hasMany(models.ProjectContractVehicle);
+      //this.belongsToMany(models.Project,{through: models.ProjectContractVehicle, foreignKey: 'contract_vehicle_id', otherKey: 'project_id' });
       // this.hasMany(models.ContractProjectPocResource);
       // this.belongsToMany(models.ContractProjectPoc,{through: models.ContractProjectPocResource, foreignKey: '', otherKey: '' })
+    }
+    to_JSON() {
+      let _resource = this.get({ plain: true });
+      return _resource;
     }
     async toJSON() {
       const { db } = require("./index.js");

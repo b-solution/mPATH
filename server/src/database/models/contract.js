@@ -16,11 +16,12 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.ContractVehicle, { foreignKey: "contract_vehicle_id" });
       this.belongsTo(models.ContractVehicleNumber, { foreignKey: "contract_vehicle_number_id" });
       this.belongsTo(models.ContractNumber, { foreignKey: "contract_number_id" });
-      // this.belongsTo(models.SubcontractNumber);
-      // this.belongsTo(models.ContractPrime);
-      // this.belongsTo(models.ContractCurrentPop);
-      // this.belongsTo(models.ContractClassification);
-      // this.belongsTo(models.ContractClientType);
+      this.belongsTo(models.ContractType, { foreignKey: "contract_type_id" });
+      this.belongsTo(models.SubcontractNumber, { foreignKey: "subcontract_number_id" });
+      this.belongsTo(models.ContractPrime, {foreignKey: 'contract_prime_id'});
+      this.belongsTo(models.ContractCurrentPop, {foreignKey: 'contract_current_pop_id'});
+      this.belongsTo(models.ContractClassification, {foreignKey: 'contract_classification_id'});
+      this.belongsTo(models.ContractClientType, { foreignKey: "contract_client_type_id" });
       // this.belongsTo(models.ContractCategory);
       this.belongsTo(models.FacilityGroup, { foreignKey: "facility_group_id" });
       this.belongsTo(models.Project, { foreignKey: "project_id" });

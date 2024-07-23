@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       // this.belongsTo(models.Relatable);
       // this.belongsTo(models.SubIssue)
       this.belongsTo(models.Issue, { foreignKey: "relatable_id", constraints: false });
+      this.belongsTo(models.Lesson, { foreignKey: "relatable_id", constraints: false });
+      this.belongsTo(models.Task, { foreignKey: "relatable_id", constraints: false });
+      this.belongsTo(models.Risk, { foreignKey: "relatable_id", constraints: false });
     }
   }
   RelatedIssue.init(

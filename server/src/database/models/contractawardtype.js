@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class ContractAwardType extends Model {
     /**
@@ -11,19 +9,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
-      // this.belongsTo(models.User)
+      this.belongsTo(models.User, { foreignKey: "user_id" });
+    }
+    toJSON() {
+      let _resource = this.get({ plain: true });
+      return _resource;
     }
   }
-  ContractAwardType.init({
-    name: DataTypes.STRING,
-    user_id: DataTypes.INTEGER
-  }, {
-    sequelize,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    tableName: 'contract_award_types',
-    modelName: 'ContractAwardType',
-    underscored: true
-  });
+  ContractAwardType.init(
+    {
+      name: DataTypes.STRING,
+      user_id: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+      tableName: "contract_award_types",
+      modelName: "ContractAwardType",
+      underscored: true,
+    }
+  );
   return ContractAwardType;
 };

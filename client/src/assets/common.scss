@@ -1989,13 +1989,17 @@ input[type='number'] {
     }
   }
 }
-.mpath {
-  width: 15%;
+// .mpath {
+//   width: 15%;
+// }
+.mpathLogoWidth {
+  width: 150px !important;
 }
-span.mpathLogo {
-  img {
-    width: 200px;
-  }
+.mpathLogo {
+  width: 200px;
+  // img {
+  //   width: 200px;
+  // }
 }
 span.mhLogo {
   img {

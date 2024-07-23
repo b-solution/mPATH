@@ -4,29 +4,57 @@ const qs = require("qs");
 
 // Function for retrieving user details
 const index = async (req, res) => {
+  console.log("hi---");
   try {
     const { getCurrentUser, printParams, compactAndUniq } = require("../utils/helpers.js");
-    let body = qs.parse(req.body);
-    let params = qs.parse(req.params);
-    let query = qs.parse(req.query);
     printParams(req);
     let user = await getCurrentUser(req.headers["x-token"]);
     let projectIds = await user.authorizedProgramIds();
+    console.log("finding----Ids", projectIds);
     let projects = await db.Project.findAll({ where: { id: projectIds, status: "1" } });
+    console.log("finding----", projects);
     let responseHash = [];
     for (var project of projects) {
       var p = await project.toJSON();
+      let users = await project.getUsers();
+      let facilities = await db.Facility.findAll({ where: { project_id: project.id } });
+      let issues = await project.getIssues();
+      const facilityProject = await db.FacilityProject.findAll({
+        attributes: ["id"],
+        where: { project_id: project.id },
+      });
+      const facilityProjectIds = facilityProject.map((fp) => fp.id);
+      const tasks = await db.Task.findAll({
+        where: { facility_project_id: facilityProjectIds },
+      });
+      const lessons = await db.Lesson.findAll({
+        where: {
+          facility_project_id: facilityProjectIds,
+        },
+      });
+      const risks = await db.Risk.findAll({
+        where: {
+          facility_project_id: facilityProjectIds,
+        },
+      });
+      p.facilities = facilities.map((facility) => facility.toJSON());
+      p.users = users.map((u) => u.toJSON());
+      p.issues = issues.map((i) => i.toJSON());
+      p.tasks = tasks.map((t) => t.toJSON());
+      p.lessons = lessons.map((l) => l.toJSON());
+      p.risks = risks.map((r) => r.toJSON());
       responseHash.push(p);
     }
     return { projects: responseHash };
   } catch (error) {
+    console.log(error);
     res.code(500);
-    return { error: "Error fetching lessons" };
+    return { error: "Error fetching projects" + error };
   }
 };
 
 const show = async (req, res) => {
-  // console.log("Testin 1234");
+  console.log("Testin 1234 ata idr he hai");
   try {
     const { getCurrentUser, printParams, compactAndUniq } = require("../utils/helpers.js");
     let body = qs.parse(req.body);

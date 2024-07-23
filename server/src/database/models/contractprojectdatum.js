@@ -9,7 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.ContractProjectPocResource, {
+        foreignKey: "resource_id",
+        constraints: false,
+        scope: {
+          resource_type: "ContractProjectData",
+        },
+      });
       this.hasMany(models.ProjectContract);
+      this.belongsToMany(models.Project, { through: models.ProjectContract });
       this.belongsTo(models.ContractCustomer, { foreignKey: "contract_customer_id" });
       this.belongsTo(models.ContractVehicle, { foreignKey: "contract_vehicle_id" });
       this.belongsTo(models.ContractAwardTo, { foreignKey: "contract_award_type_id" });

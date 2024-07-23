@@ -172,7 +172,6 @@ export default {
               ],
             });
           });
-          // debugger
       return [...data];    
      }
 
@@ -197,7 +196,6 @@ export default {
               ],
             });
           });
-          // debugger
       return [...data];    
      }
    

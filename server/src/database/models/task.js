@@ -15,9 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.TaskType);
       this.belongsTo(models.TaskStage);
       this.hasMany(models.TaskUser, { foreignKey: "task_id", onDelete: "CASCADE", hooks: true });
-      // this.belongsToMany(models.User,{through: models.TaskUser, foreignKey: '', otherKey: '' });
+      this.belongsToMany(models.User, { through: models.TaskUser, foreignKey: "task_id", otherKey: "user_id" });
       // // this.hasMany(models.TaskFile);
-      // this.hasMany(models.Note);
       this.hasMany(models.Note, {
         foreignKey: "noteable_id",
         constraints: false,
@@ -27,11 +26,33 @@ module.exports = (sequelize, DataTypes) => {
       });
       // this.hasMany(models.Effort)
 
-      this.belongsTo(models.FacilityProject, { foreignKey: "facility_project_id", onDelete: "CASCADE" });
+      this.belongsTo(models.FacilityProject, { foreignKey: "facility_project_id", onDelete: "CASCADE", as: "TaskFacilityProject" });
+      this.belongsToMany(models.Facility, { through: models.FacilityProject, foreignKey: "facility_id" });
       // this.belongsTo(models.Contract);
       this.belongsTo(models.ProjectContract, { foreignKey: "project_contract_id" });
       this.belongsTo(models.ProjectContractVehicle);
       this.hasMany(models.Checklist, { as: "listable", foreignKey: "listable_id", onDelete: "CASCADE", hooks: true });
+      this.hasMany(models.RelatedTask, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Task",
+        },
+      });
+      this.hasMany(models.RelatedRisk, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Task",
+        },
+      });
+      this.hasMany(models.RelatedIssue, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Task",
+        },
+      });
       // this.hasMany(models.RelatedTask);
       // this.hasMany(models.RelatedIssue);
       // this.hasMany(models.RelatedRisk);

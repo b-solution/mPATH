@@ -151,7 +151,6 @@ export default {
           ],
         });
       });
-      // debugger
       return [...data];
     }
 
@@ -176,7 +175,6 @@ export default {
               ],
             });
           });
-          // debugger
       return [...data];    
      }
 
@@ -201,7 +199,6 @@ export default {
               ],
             });
           });
-          // debugger
       return [...data];    
      }
    
@@ -460,7 +457,6 @@ export default {
        formData.append("facility_project_ids", ids);
       } 
 
-  // debugger
       // axios({
       //   method: method,
       //   url: url,
@@ -474,7 +470,6 @@ export default {
         .then((response) => {
           // let responseTask ;
           this.$emit(callback, humps.camelizeKeys(response.data.task) );
-          // debugger
                      
          if (this.$route.params.contractId){
             response.data.tasks.forEach((task) => {

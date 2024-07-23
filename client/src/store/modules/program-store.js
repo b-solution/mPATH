@@ -1,6 +1,5 @@
-
-import http from "./../../common/http";
-import { API_BASE_PATH } from "./../../mixins/utils";
+import http from './../../common/http'
+import { API_BASE_PATH } from './../../mixins/utils'
 
 const programStore = {
   state: () => ({
@@ -9,7 +8,7 @@ const programStore = {
     curr_risk_page: 1,
     curr_lesson_page: 1,
 
-    curr_program_tab: '#tab-tasks', 
+    curr_program_tab: '#tab-tasks',
 
     search_issues: '',
     search_risks: '',
@@ -21,7 +20,7 @@ const programStore = {
     issues_per_page_filter: null,
 
     project_groups_filter: null,
-    project_group_ids: [], 
+    project_group_ids: [],
 
     program_categories_filter: null,
 
@@ -29,119 +28,117 @@ const programStore = {
   }),
 
   actions: {
-
     fetchAllPrograms({ commit, dispatch }) {
       return new Promise((resolve, reject) => {
         http
           .get(`${API_BASE_PATH}/programs`)
           .then((res) => {
-            let programs = res.data.projects;
+            let programs = res.data.projects
+            console.log('hi----', res)
             // for (let facility of res.data.facilities) {
             //   facilities.push({...facility, ...facility.facility})
             // }
-            commit("setAllPrograms", programs);
-            resolve();
-            
+            commit('setAllPrograms', programs)
+            resolve()
           })
           .catch((err) => {
-            console.error(err);
-            reject();
-          });
-      });
+            console.error(err)
+            reject()
+          })
+      })
     }
-
   },
   mutations: {
-    setAllPrograms: (state, value) => state.all_programs = value,
-    
-    setCurrTaskPage: (state, value) => state.curr_task_page = value,
-    setCurrIssuePage: (state, value) => state.curr_issue_page = value,
-    setCurrRiskPage: (state, value) => state.curr_risk_page = value,
-    setCurrLessonPage: (state, value) => state.curr_lesson_page = value,
+    setAllPrograms: (state, value) => (state.all_programs = value),
 
-    setSearchIssues: (state, value) => state.search_issues = value,
-    setSearchRisks: (state, value) => state.search_risks = value,
-    setSearchLessons: (state, value) => state.search_lessons = value,
+    setCurrTaskPage: (state, value) => (state.curr_task_page = value),
+    setCurrIssuePage: (state, value) => (state.curr_issue_page = value),
+    setCurrRiskPage: (state, value) => (state.curr_risk_page = value),
+    setCurrLessonPage: (state, value) => (state.curr_lesson_page = value),
 
-    setProgramCategoriesFilter: (state, filter) => state.program_categories_filter = filter,
+    setSearchIssues: (state, value) => (state.search_issues = value),
+    setSearchRisks: (state, value) => (state.search_risks = value),
+    setSearchLessons: (state, value) => (state.search_lessons = value),
 
-    setProjectGroupIds:  (state, value) => state.project_group_ids = value,
+    setProgramCategoriesFilter: (state, filter) => (state.program_categories_filter = filter),
 
-    setCurrProgramTab: (state, tab) => state.curr_program_tab = tab, 
+    setProjectGroupIds: (state, value) => (state.project_group_ids = value),
 
-    setTasksPerPageFilter: (state, filter) => state.tasks_per_page_filter = filter,
-    setIssuesPerPageFilter: (state, filter) => state.issues_per_page_filter = filter,
-    setRisksPerPageFilter: (state, filter) => state.risks_per_page_filter = filter,
-    setLessonsPerPageFilter: (state, filter) => state.lessons_per_page_filter = filter,
+    setCurrProgramTab: (state, tab) => (state.curr_program_tab = tab),
 
-    setProjectGroupsFilter: (state, filter) => state.project_groups_filter = filter,
+    setTasksPerPageFilter: (state, filter) => (state.tasks_per_page_filter = filter),
+    setIssuesPerPageFilter: (state, filter) => (state.issues_per_page_filter = filter),
+    setRisksPerPageFilter: (state, filter) => (state.risks_per_page_filter = filter),
+    setLessonsPerPageFilter: (state, filter) => (state.lessons_per_page_filter = filter),
+
+    setProjectGroupsFilter: (state, filter) => (state.project_groups_filter = filter)
   },
 
   getters: {
-    getFacilityProjects: state => state.facility_projects,
-    getAllProjects: state => state.all_programs,
-    currTaskPage: state => state.curr_task_page, 
-    currIssuePage: state => state.curr_issue_page, 
-    currRiskPage: state => state.curr_risk_page, 
-    currLessonPage: state => state.curr_lesson_page, 
+    getFacilityProjects: (state) => state.facility_projects,
+    getAllProjects: (state) => state.all_programs,
+    currTaskPage: (state) => state.curr_task_page,
+    currIssuePage: (state) => state.curr_issue_page,
+    currRiskPage: (state) => state.curr_risk_page,
+    currLessonPage: (state) => state.curr_lesson_page,
 
-    searchIssues: state => state.search_issues,
-    searchRisks: state => state.search_risks, 
-    searchLessons: state => state.search_lessons,  
+    searchIssues: (state) => state.search_issues,
+    searchRisks: (state) => state.search_risks,
+    searchLessons: (state) => state.search_lessons,
 
-    programCategoriesFilter: state => state.program_categories_filter, 
+    programCategoriesFilter: (state) => state.program_categories_filter,
 
-    projectGroupsFilter: state => state.project_groups_filter,
-    projectGroupIds: state => state.project_group_ids,
+    projectGroupsFilter: (state) => state.project_groups_filter,
+    projectGroupIds: (state) => state.project_group_ids,
 
-    currProgramTab: state => state.curr_program_tab,
+    currProgramTab: (state) => state.curr_program_tab,
 
-    getTasksPerPage: state => state.tasks_per_page_filter,
+    getTasksPerPage: (state) => state.tasks_per_page_filter,
     getTasksPerPageOptions: (state, getters) => {
       var options = [
-        {id: 5, name: '5', value: 5},
-        {id: 15, name: '15', value: 15},
-        {id: 25, name: '25', value: 25},
-        {id: 50, name: '50', value: 50},
-        {id: 100, name: '100+', value: 100},
+        { id: 5, name: '5', value: 5 },
+        { id: 15, name: '15', value: 15 },
+        { id: 25, name: '25', value: 25 },
+        { id: 50, name: '50', value: 50 },
+        { id: 100, name: '100+', value: 100 }
       ]
-      return options;
+      return options
     },
-    getIssuesPerPage: state => state.issues_per_page_filter,
+    getIssuesPerPage: (state) => state.issues_per_page_filter,
     getIssuesPerPageOptions: (state, getters) => {
       var options = [
-        {id: 5, name: '5', value: 5},
-        {id: 15, name: '15', value: 15},
-        {id: 25, name: '25', value: 25},
-        {id: 50, name: '50', value: 50},
-        {id: 100, name: '100+', value: 100},
+        { id: 5, name: '5', value: 5 },
+        { id: 15, name: '15', value: 15 },
+        { id: 25, name: '25', value: 25 },
+        { id: 50, name: '50', value: 50 },
+        { id: 100, name: '100+', value: 100 }
       ]
-      return options;
+      return options
     },
 
-    getRisksPerPage: state => state.risks_per_page_filter,
+    getRisksPerPage: (state) => state.risks_per_page_filter,
     getRisksPerPageOptions: (state, getters) => {
       var options = [
-        {id: 5, name: '5', value: 5},
-        {id: 15, name: '15', value: 15},
-        {id: 25, name: '25', value: 25},
-        {id: 50, name: '50', value: 50},
-        {id: 100, name: '100+', value: 100},
+        { id: 5, name: '5', value: 5 },
+        { id: 15, name: '15', value: 15 },
+        { id: 25, name: '25', value: 25 },
+        { id: 50, name: '50', value: 50 },
+        { id: 100, name: '100+', value: 100 }
       ]
-      return options;
+      return options
     },
-    getLessonsPerPage: state => state.lessons_per_page_filter,
+    getLessonsPerPage: (state) => state.lessons_per_page_filter,
     getLessonsPerPageOptions: (state, getters) => {
       var options = [
-        {id: 5, name: '5', value: 5},
-        {id: 15, name: '15', value: 15},
-        {id: 25, name: '25', value: 25},
-        {id: 50, name: '50', value: 50},
-        {id: 100, name: '100+', value: 100},
+        { id: 5, name: '5', value: 5 },
+        { id: 15, name: '15', value: 15 },
+        { id: 25, name: '25', value: 25 },
+        { id: 50, name: '50', value: 50 },
+        { id: 100, name: '100+', value: 100 }
       ]
-      return options;
-    },
-  },
-};
+      return options
+    }
+  }
+}
 
-export default programStore;
+export default programStore

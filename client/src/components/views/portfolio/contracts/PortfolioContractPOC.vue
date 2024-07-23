@@ -572,7 +572,7 @@ export default {
    console.log(e)
   },
   _isallowed(salut) {    
-     return this.checkPortfolioContractPrivileges("PortfolioContracts", salut, this.$route, {settingType: 'Contracts'})
+   //  return this.checkPortfolioContractPrivileges("PortfolioContracts", salut, this.$route, {settingType: 'Contracts'})
   }, 
   handleClick(tab, event) {
     console.log(tab, event)

@@ -4,7 +4,8 @@
       <div class="container mb-2 text-center d-inline-block">
         <h4 class="text-center mt-1 mpath-logo">Welcome to</h4>
         <span>
-          <svg class="mpath" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 250">
+          <svg class="mpathLogo" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 600 250">
             <path style="fill: #24366f"
               d="M28.07,112.38,25.82,124q9.65-13.22,24.26-13a21.34,21.34,0,0,1,12.52,3.77,15.45,15.45,0,0,1,6.18,10.11,36.2,36.2,0,0,1,11.4-10.35,27.41,27.41,0,0,1,14.17-3.53q10.19.19,15.11,6.71t4.06,18l-.13,1.52-7.87,46.6H97.66l7.8-46.68a38.26,38.26,0,0,0,.06-7.4q-1.32-11.69-13.35-11.88a22.66,22.66,0,0,0-14.83,5.25,22.89,22.89,0,0,0-8.5,13.44l-8.19,47.27H52.78l7.93-47.27q1.92-18.23-13.41-18.69a22.49,22.49,0,0,0-14.14,4.75,23.6,23.6,0,0,0-8.79,12.15l-8.46,49.06H8l12.43-71.51Z" />
             <path style="fill: #24366f"
@@ -23,6 +24,84 @@
           </svg>
         </span>
       </div>
+      <div class="container mb-2 pr-0 text-right d-inline-block">
+        <router-link :to="`/portfolio`" class="mr-2 portfolioViewerBtn">PORTFOLIO DATA
+          VIEWER</router-link>
+        <router-link :to="`/portfolio/contracts`" class="portfolioContractsBtn bg-light">CONTRACTS</router-link>
+      </div>
+      <div class="grid-container program-name">
+        <router-link v-for="project in this.allProjects" :key="project.id" :to="`/programs/${project.id}/sheet`"
+          class="" @click="fetchProgramRelatedData(project.id)">
+          <li class="list-group-item pb-0 portfolio-page">
+            <div class="row program-row">
+              <div class="col-12">
+                <div class="welcome-page-program-name" data-cy="project_name"><span class="absolute-center"></span>
+                  <h4>{{ project.name }}</h4>
+                </div>
+              </div>
+            </div>
+            <hr class="hr-program-row">
+            <div class="row mt-0 justify-content-between" data-cy="project_count">
+              <div class="col-6 text-light"><span class="project-count bg-dark p-2">PROJECTS:
+                  {{ project.facilities.length }} </span></div>
+              <div class="col-6 text-right" data-cy="user_count"><span class="project-count text-dark p-2">USERS:
+                  {{ project.users.length }} </span></div>
+            </div><br>
+            <div class="row mb-0 justify-content-between">
+              <div class="col-4 text-dark font-sm" data-cy="actions">Actions</div>
+              <div class="col-2 text-dark font-sm pl-1">#</div>
+              <div class="col-6 text-dark font-sm text-center" data-cy="progress">Progress</div>
+            </div>
+            <div class="row font-md mt-0" data-cy="tasks">
+              <div class="col-4 py-0"><span class="text-dark mr-1">TASKS</span></div>
+              <div class="col-2 pl-0 py-0"><span
+                  class="badge lt-green text-dark badge-pill font-weight-light text-left">
+                  {{ project.tasks.length }}</span></div>
+              <div class="col-6 py-0"><span><span class="w-100 progress pg-content text-light progress-0">
+                    <div class="text-dark font-weight-light ml-1 d-flex align-items-center">0.00 %</div>
+                  </span></span></div>
+            </div>
+            <div class="row font-md" data-cy="issues">
+              <div class="col-4 py-0"><span class="text-dark mr-1">ISSUES</span></div>
+              <div class="col-2 pl-0 py-0"><span
+                  class="badge lt-yellow text-dark badge-secondary badge-pill font-weight-light text-left">{{
+          project.issues.length }}</span>
+              </div>
+              <div class="col-6 py-0"><span><span class="w-100 progress pg-content progress-0">
+                    <div class="text-dark font-weight-light ml-1 d-flex align-items-center">0.00 %</div>
+                  </span></span></div>
+            </div>
+            <div class="row font-md" data-cy="risks">
+              <div class="col-4 py-0"><span class="text-dark mr-1">RISKS</span></div>
+              <div class="col-2 pl-0 py-0"><span
+                  class="badge lt-red text-dark badge-secondary badge-pill font-weight-light text-left">{{
+          project.risks.length }}</span>
+              </div>
+              <div class="col-6 py-0"><span></span><span class="w-100 progress pg-content progress-0">
+                  <div class="text-dark font-weight-light ml-1 d-flex align-items-center">0.00 %</div>
+                </span></div>
+            </div>
+            <div class="row font-md mb-1">
+              <div class="col-4 py-0"><span class="text-dark mr-1">LESSONS</span></div>
+              <div class="col-2 pl-0 py-0"><span
+                  class="badge bg-primary text-light badge-secondary badge-pill font-weight-light text-left">{{
+          project.lessons.length }}</span>
+              </div>
+              <div class="col-6 py-0"><span></span></div>
+            </div>
+            <div class="row mb-0 py-0 text-center" data-cy="overall_progress">
+              <div class="col-12 text-dark font-sm mb-0 pb-0">Overall Program Progress</div>
+            </div>
+            <div class="row mt-0 pt-0">
+              <div class="col-12"><span class="w-100 progress pg-content progress-0">
+                  <div class="text-dark font-weight-light ml-1 d-flex align-items-center">0.00 %</div>
+                </span></div>
+            </div>
+            <br>
+          </li>
+        </router-link>
+      </div>
+      <!-- <router-view></router-view> -->
       <!-- <h1>All Programs</h1>
       <div v-for="project in this.allProjects" :key="project.id" >
         <p><router-link :to="`/programs/${project.id}/sheet`"><span @click="fetchProgramRelatedData(project.id)">{{project.name}}</span></router-link></p>
@@ -71,9 +150,12 @@ export default {
       'getProjectFacilityHash'
     ]),
     fetchProgramRelatedData(project_id) {
-      console.log("fetchProgramRelatedData", this)
       AuthorizationService.getRolePrivileges(project_id);
-    }
+    },
+    // goToPortfolio() {
+    //   console.log("Portfolio---")
+    //   this.$router.push({ name: 'PortfolioView' })
+    // }
   },
   beforeCreate() {
     console.log("ProgramListView beforeCreate", this.allProjects)
@@ -114,5 +196,3 @@ export default {
 
 };
 </script>
-
-<style></style>

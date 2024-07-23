@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class SubcontractNumber extends Model {
     /**
@@ -11,19 +9,25 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
-      // this.hasMany(models.Contract)
-
+      this.hasMany(models.Contract);
+    }
+    toJSON() {
+      let _resource = this.get({ plain: true });
+      return _resource;
     }
   }
-  SubcontractNumber.init({
-    name: DataTypes.STRING
-  }, {
-    sequelize,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    tableName: 'subcontract_numbers',
-    modelName: 'SubcontractNumber',
-    underscored: true
-  });
+  SubcontractNumber.init(
+    {
+      name: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+      tableName: "subcontract_numbers",
+      modelName: "SubcontractNumber",
+      underscored: true,
+    }
+  );
   return SubcontractNumber;
 };

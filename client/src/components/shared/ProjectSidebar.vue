@@ -1,38 +1,24 @@
 <template>
   <div id="facility_sidebar" class="pl-0" data-cy="facility_list">
     <div class="stick">
-      <div
-        @click="deselectProject"
-        data-cy="program_name"
-        id="program_name"
-        class="programNameDiv smallCaps pl-2 pr-3"
-      >
+      <div @click="deselectProject" data-cy="program_name" id="program_name" class="programNameDiv smallCaps pl-2 pr-3">
         {{ programName }}
       </div>
     </div>
     <h4 class="mt-4 text-info text-center" v-if="title">{{ title }}</h4>
     <div class="mb-3 pb-4 ml-2" style="margin-top:1.8rem">
       <div v-if="contentLoaded">
-        <div
-        
-          v-for="(group, index) in sortedGroups.filter(
-            (t) =>
-              t.contracts.length > 0 ||
-              t.facilities.length > 0 ||
-              t.contractVehicles.length > 0
-          )"
-          :key="index + 'a'"
-          class="my-2 px-2 container"
-        >
-          <div
-            class="d-flex row expandable"
-            @click="expandFacilityGroup(group)"
-            :class="{ active: group.id == currentFacilityGroup.id }"
-            data-cy="facility_groups"
-            :key="index"
-          >
+        <div v-for="(group, index) in sortedGroups.filter(
+        (t) =>
+          t.contracts.length > 0 ||
+          t.facilities.length > 0 ||
+          t.contractVehicles.length > 0
+      )" :key="index + 'a'" class="my-2 px-2 container">
+          <div class="d-flex row expandable" @click="expandFacilityGroup(group)"
+            :class="{ active: group.id == currentFacilityGroup.id }" data-cy="facility_groups" :key="index">
             <div class="col-8 py-0 pr-0">
-              <span class="d-flex" v-if="!group.isDefault" @mouseup.right="openGroupContextMenu($event, group.id)"  @contextmenu.prevent="">
+              <span class="d-flex" v-if="!group.isDefault" @mouseup.right="openGroupContextMenu($event, group.id)"
+                @contextmenu.prevent="">
                 <span v-show="getExpandedGroup != group.id">
                   <i class="fa fa-angle-right font-sm mr-2 clickable"></i>
                 </span>
@@ -53,16 +39,13 @@
             </div>
             <!-- v-if="_isallowedProjectCounts(group, 'read')" -->
             <div class="col py-0 text-right">
-              <span
-                class="badge badge-secondary badge-pill pill"
-                v-if="isContractsView || isVehiclesView"
-              >
+              <span class="badge badge-secondary badge-pill pill" v-if="isContractsView || isVehiclesView">
                 <!-- <span v-if="_isallowedProjectCounts(facilityGroupFacilities(group).projects.a, 'read')">  -->
                 {{
-                  facilityGroupFacilities(group).projects.a.length +
-                    facilityGroupFacilities(group).contracts.b.length +
-                    facilityGroupFacilities(group).vehicles.c.length
-                }}
+        facilityGroupFacilities(group).projects.a.length +
+        facilityGroupFacilities(group).contracts.b.length +
+        facilityGroupFacilities(group).vehicles.c.length
+      }}
               </span>
 
               <!-- </span>  -->
@@ -72,18 +55,11 @@
             </div>
           </div>
           <div v-show="getExpandedGroup == group.id" class="ml-2">
-            <div
-              v-for="facility in facilityGroupFacilities(group).projects.a"
-              :key="facility.id"
-            >
+            <div v-for="facility in facilityGroupFacilities(group).projects.a" :key="facility.id">
               <router-link :to="`/programs/${$route.params.programId}/${tab}/projects/${facility.id}${pathTab}`">
-                <div
-                  @mouseup.right="openProjectContextMenu($event, facility.id )" @contextmenu.prevent=""
-                  class="d-flex align-items-center expandable fac-name"
-                  v-if="_isallowedProjects(facility, 'read')"
-                  @click="showFacility(facility)"
-                  :class="{ active: facility.id == $route.params.projectId }"
-                >
+                <div @mouseup.right="openProjectContextMenu($event, facility.id)" @contextmenu.prevent=""
+                  class="d-flex align-items-center expandable fac-name" v-if="_isallowedProjects(facility, 'read')"
+                  @click="showFacility(facility)" :class="{ active: facility.id == $route.params.projectId }">
                   <p class="facility-header" data-cy="facilities">
                     <i class="fal fa-clipboard-list mr-1 mh-green-text"></i>
                     {{ facility.facilityName }}
@@ -91,26 +67,15 @@
                 </div>
               </router-link>
             </div>
-            <div
-             :class="{'d-none': notSheetView }"   
-              v-for="c in projectContracts.filter(
-                (t) => t.facilityGroup && t.facilityGroup.id == group.id
-              )" 
-              :key="c.projectContractId + 'a'"
-            >
-              <router-link
-                :to="
-                  `/programs/${$route.params.programId}/${tab}/contracts/${c.projectContractId}${pathTab}`
-                "
-              >
-                <div 
-                  @mouseup.right="openProjectContextMenu" @contextmenu.prevent=""
-                  class="d-flex align-items-center expandable fac-name"
-                  @click="showFacility(c)"
-                  :class="{
-                    active: c.projectContractId == $route.params.contractId,
-                  }"
-                >
+            <div :class="{ 'd-none': notSheetView }" v-for="c in projectContracts.filter(
+        (t) => t.facilityGroup && t.facilityGroup.id == group.id
+      )" :key="c.projectContractId + 'a'">
+              <router-link :to="`/programs/${$route.params.programId}/${tab}/contracts/${c.projectContractId}${pathTab}`
+        ">
+                <div @mouseup.right="openProjectContextMenu" @contextmenu.prevent=""
+                  class="d-flex align-items-center expandable fac-name" @click="showFacility(c)" :class="{
+        active: c.projectContractId == $route.params.contractId,
+      }">
                   <p class="facility-header" data-cy="contracts">
                     <i class="far fa-file-contract mr-1 mh-orange-text"></i>
                     {{ c.name }}
@@ -118,24 +83,14 @@
                 </div>
               </router-link>
             </div>
-            <div
-             :class="{'d-none': notSheetView }"   
-              v-for="v in projectVehicles.filter(
-                (t) => t.facilityGroup && t.facilityGroup.id == group.id
-              )"
-              :key="v.projectContractVehicleId + 'a'"
-            >
-              <router-link
-                :to="
-                  `/programs/${$route.params.programId}/${tab}/vehicles/${v.projectContractVehicleId}${pathTab}`
-                "
-              >
-                <div             
-                  class="d-flex align-items-center expandable fac-name"
-                  @click="showFacility(v)"
-                  :class="{ active: v.projectContractVehicleId == $route.params.vehicleId }"
-                >
-                  <p class="facility-header"data-cy="contracts">
+            <div :class="{ 'd-none': notSheetView }" v-for="v in projectVehicles.filter(
+        (t) => t.facilityGroup && t.facilityGroup.id == group.id
+      )" :key="v.projectContractVehicleId + 'a'">
+              <router-link :to="`/programs/${$route.params.programId}/${tab}/vehicles/${v.projectContractVehicleId}${pathTab}`
+        ">
+                <div class="d-flex align-items-center expandable fac-name" @click="showFacility(v)"
+                  :class="{ active: v.projectContractVehicleId == $route.params.vehicleId }">
+                  <p class="facility-header" data-cy="contracts">
                     <i class="far fa-car mr-1 text-info"></i> {{ v.name }}
                   </p>
                 </div>
@@ -151,25 +106,12 @@
       </div>
     </div>
     <!-- <router-link  >  -->
-      <MoveProjectContextMenu
-        :display="showProjectContextMenu"
-        :projectId="projectId"
-        ref="moveProjectContextMenu"
-        >  
-      </MoveProjectContextMenu>
-      <MoveGroupContextMenu      
-        :display="showGroupContextMenu"
-        :groupId="groupId"
-        ref="moveGroupContextMenu"
-        >  
-      </MoveGroupContextMenu>
-    <button
-      v-if="_isallowedProgramSettings('read')"
-      class="btn btn-sm btn-light program-settings-btn"
-      @click.prevent="toggleAdminView"
-      style="cursor: pointer"
-       data-cy="program_setting"
-    >
+    <MoveProjectContextMenu :display="showProjectContextMenu" :projectId="projectId" ref="moveProjectContextMenu">
+    </MoveProjectContextMenu>
+    <MoveGroupContextMenu :display="showGroupContextMenu" :groupId="groupId" ref="moveGroupContextMenu">
+    </MoveGroupContextMenu>
+    <button v-if="_isallowedProgramSettings('read')" class="btn btn-sm btn-light program-settings-btn"
+      @click.prevent="toggleAdminView" style="cursor: pointer" data-cy="program_setting">
       <h6><i class="far fa-cog"></i> Program Settings</h6>
     </button>
     <!-- </router-link> -->
@@ -181,6 +123,7 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import MoveProjectContextMenu from "./MoveProjectContextMenu.vue";
 import MoveGroupContextMenu from "./MoveGroupContextMenu.vue";
 import Loader from "./loader.vue";
+import AuthorizationService from "../../services/authorization_service";
 
 export default {
   name: "ProjectSidebar",
@@ -203,12 +146,12 @@ export default {
       value: "",
       totalGroupContract: 0,
       totalGroupVehicle: 0,
-      groupId: null, 
-      projectId: null, 
+      groupId: null,
+      projectId: null,
       filteredGroupSize: null,
       projectCount: 0,
-      showProjectContextMenu: false, 
-      showGroupContextMenu: false, 
+      showProjectContextMenu: false,
+      showGroupContextMenu: false,
     };
   },
   computed: {
@@ -255,7 +198,7 @@ export default {
         this.contentLoaded &&
         (this.currentProject !== null || this.currentProject !== undefined)
       ) {
-        console.log("programName()",this.currentProject)
+        console.log("programName()", this.currentProject)
         return this.currentProject.name;
       }
     },
@@ -285,12 +228,12 @@ export default {
       }
     },
     pathTab() {
-      let url = this.$route.path;  
-  
+      let url = this.$route.path;
+
       if (url.includes("tasks")) {
         return "/tasks";
       }
-         if (url.includes("issues")) {
+      if (url.includes("issues")) {
         return "/issues";
       }
       if (url.includes("analytics")) {
@@ -307,7 +250,7 @@ export default {
       }
       if (url.includes("effort")) {
         return "/effort";
-      }     
+      }
       if (url.includes("lessons")) {
         return "/lessons";
       }
@@ -338,12 +281,12 @@ export default {
       this.projectId = id
       e.preventDefault();
       this.$refs.moveProjectContextMenu.open(e);
-   },
+    },
     openGroupContextMenu(e, id) {
       this.groupId = id
       e.preventDefault();
       this.$refs.moveGroupContextMenu.open(e);
-   },
+    },
     expandFacilityGroup(group) {
       if (this.currentContract && this.currentFacility == {}) {
         group = this.currentContract.facilityGroup.id;
@@ -383,7 +326,7 @@ export default {
     //   }
     // },
     _isallowedProgramSettings(salut) {
-      return this.checkPrivileges("ProjectSidebar", salut, this.$route, {
+      return AuthorizationService.checkPrivileges("ProjectSidebar", salut, this.$route, {
         method: "isallowedProgramSettings",
       });
     },
@@ -399,7 +342,7 @@ export default {
         .then((_) => {
           done();
         })
-        .catch((_) => {});
+        .catch((_) => { });
     },
     showFacility(c) {
       this.$emit("on-expand-facility", c);
@@ -426,9 +369,9 @@ export default {
     }
   },
   watch: {
-    pathTab() {    
+    pathTab() {
       if (this.pathTab === "/" && this.$route.params.contractId) {
-       return "/tasks";
+        return "/tasks";
       }
     },
     contentLoaded: {
@@ -506,6 +449,7 @@ export default {
   max-height: calc(100vh - 94px);
   height: calc(100vh - 94px);
   overflow-y: auto;
+  overflow-x: hidden;
 
   .facility-header {
     padding: 0 8px;
@@ -593,6 +537,7 @@ export default {
 
     &.active,
     &:hover {
+
       h5,
       h6 {
         font-weight: 900 !important;

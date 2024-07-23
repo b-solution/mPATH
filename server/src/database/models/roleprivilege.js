@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
-      this.belongsTo(models.Role);
+      this.belongsTo(models.Role, { foreignKey: "role_id" });
+      this.belongsTo(models.User, { foreignKey: "user_id" });
     }
     static PROJECT_TASKS = "project_tasks";
     // This roles are used to access project related data e.g. tasks issues risks
@@ -65,6 +66,8 @@ module.exports = (sequelize, DataTypes) => {
   RolePrivilege.init(
     {
       role_id: DataTypes.INTEGER,
+      user_id: DataTypes.INTEGER,
+      role_user_id: DataTypes.INTEGER,
       name: DataTypes.STRING,
       privilege: DataTypes.STRING,
       role_type: DataTypes.STRING,

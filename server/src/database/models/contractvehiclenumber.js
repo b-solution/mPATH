@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       // // define association here
       this.hasMany(models.Contract);
     }
+    toJSON() {
+      let _resource = this.get({ plain: true });
+      return _resource;
+    }
   }
   ContractVehicleNumber.init(
     {

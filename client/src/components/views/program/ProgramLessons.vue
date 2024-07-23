@@ -1140,7 +1140,6 @@ export default {
       } 
       let lessons = programLessonsObj
       .filter(lesson => {
-        // debugger
       if (this.projectGroupsFilter && this.projectGroupsFilter.length > 0) { 
          this.facility_project_ids = [];
          let val = this.projectGroupsFilter

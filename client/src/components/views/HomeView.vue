@@ -4,9 +4,10 @@
       <login-view></login-view>
     </div>
     <div v-else>
-      <nav class="navbar navbar-expand-lg blue-gradient navbar-light border-bottom border-muted" id="nav-wrap">
+      <nav v-if="this.isShowTabsBar()"
+        class="navbar navbar-expand-lg blue-gradient navbar-light border-bottom border-muted" id="nav-wrap">
         <a class="navbar-brand pt-0" href="/">
-          <img class="" :src="mhLogo" /></a>
+          <img class="mpathLogoWidth" src="microhealthllc.png" /></a>
         <button aria-controls="navbartoggler" aria-expanded="false" aria-label="Toggle navigation"
           class="navbar-toggler ml-auto" data-target="#navbartoggler" data-toggle="collapse" type="button">
           <span class="navbar-toggler-icon"></span>
@@ -32,8 +33,7 @@
           </ul>
         </div>
       </nav>
-
-      <div v-if="!this.isProgramListView()">
+      <div v-if="!this.isProgramListView() && this.isShowTabsBar()">
         <tabsbar :class="{ 'd-none': isProgramView }"></tabsbar>
         <filter-sidebar v-if="contentLoaded" :class="{ 'd-none': isProgramView }"></filter-sidebar>
       </div>
@@ -57,7 +57,7 @@ export default {
   name: 'HomeView',
   data() {
     return {
-      mhLogo: 'mpath.png',
+      mhLogo: 'mpathlogo.png',
       adminPanelUrl: `${Admin_PANEL_URL}/admin`
     }
   },
@@ -68,7 +68,6 @@ export default {
     SettingsSidebar
   },
   mounted() {
-    console.log('HomeView')
     if (this.isLoggedIn) {
       this.verifyToken
       // console.log("LoginView Mounted", this.isLoggedIn)
@@ -106,6 +105,9 @@ export default {
     },
     isProgramListView() {
       return this.$route.name && this.$route.name.includes('ProgramListView')
+    },
+    isShowTabsBar() {
+      return (this.$route.name && !this.$route.name.includes('PortfolioView') && !this.$route.name.includes('PortfolioContracts'))
     }
   },
   computed: {

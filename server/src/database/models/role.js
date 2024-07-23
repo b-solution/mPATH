@@ -15,11 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       // this.belongsTo(models.Project);
       this.hasMany(models.RoleUser, { foreignKey: "role_id" });
       this.belongsToMany(models.User, { through: models.RoleUser, foreignKey: "", otherKey: "" });
-      this.hasMany(models.RolePrivilege);
+      this.hasMany(models.RolePrivilege, { foreignKey: "role_id" });
     }
     async toJSON(options) {
       const { db } = require("./index.js");
-
       var _response = this.get({ plain: true });
       _response.role_privileges = await this.getRolePrivileges();
       if (options) {

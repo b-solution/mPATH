@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.TaskType, { foreignKey: "task_type_id" });
       this.belongsTo(models.IssueSeverity, { foreignKey: "issue_severity_id" });
       this.hasMany(models.IssueUser, { onDelete: "CASCADE", hooks: true });
-      this.belongsToMany(models.User, { through: models.IssueUser, foreignKey: "issue_id" , otherKey: "user_id" });
+      this.belongsToMany(models.User, { through: models.IssueUser, foreignKey: "issue_id", otherKey: "user_id" });
       //this.hasMany(models.IssueFile);
       this.hasMany(models.Note, {
         foreignKey: "noteable_id",
@@ -25,8 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
       this.hasMany(models.FacilityProject, { onDelete: "CASCADE" });
-      this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "project_id" });
-
+      this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "issue_id", otherKey: "project_id" });
       this.belongsTo(models.Contract, { foreignKey: "contract_id" });
       this.belongsTo(models.ProjectContract, { foreignKey: "project_contract_id" });
       this.belongsTo(models.ProjectContractVehicle, { foreignKey: "project_contract_vehicle_id" });
@@ -35,21 +34,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "relatable_id",
         constraints: false,
         scope: {
-          relatable_type: "Task",
+          relatable_type: "Issue",
         },
       });
       this.hasMany(models.RelatedIssue, {
         foreignKey: "relatable_id",
         constraints: false,
         scope: {
-          relatable_type: "Task",
+          relatable_type: "Issue",
         },
       });
       this.hasMany(models.RelatedRisk, {
         foreignKey: "relatable_id",
         constraints: false,
         scope: {
-          relatable_type: "Task",
+          relatable_type: "Issue",
         },
       });
       // // this.belongsToMany(models.SubTask,{through: models.RelatedTask, foreignKey: '', otherKey: '' });

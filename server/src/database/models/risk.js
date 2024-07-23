@@ -11,29 +11,53 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // // define association here
-      // this.belongsTo(models.User);
+      this.belongsTo(models.User);
       this.hasMany(models.RiskUser, { onDelete: "CASCADE", hooks: true });
       // this.belongsTo(models.RiskStage);
       // this.belongsToMany(models.User,{through: models.RiskUser, foreignKey: '', otherKey: '' });
-      // this.belongsTo(models.TaskType);
+      this.belongsTo(models.TaskType, { foreignKey: "task_type_id" });
       // // this.hasMany(models.RiskFile);
-      // this.hasMany(models.Note)
-
-      this.belongsTo(models.FacilityProject, { foreignKey: "facility_project_id", onDelete: "CASCADE" });
+      this.hasMany(models.Note, {
+        foreignKey: "noteable_id",
+        constraints: false,
+        scope: {
+          noteable_type: "Risk",
+        },
+      });
+      this.belongsTo(models.FacilityProject, { foreignKey: "facility_project_id", onDelete: "CASCADE", as: "RiskFacilityProject" });
+      this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "project_id" });
       // this.belongsTo(models.Contract);
       // this.belongsTo(models.ProjectContract);
       // this.belongsTo(models.ProjectContractVehicle);
       this.hasMany(models.Checklist, {
+        as: "listable",
         foreignKey: "listable_id",
         constraints: false,
         scope: {
           listable_type: "Risk",
         },
       });
-      // this.hasMany(models.Checklist, { as: "listable", foreignKey: "listable_id" });
-      // this.hasMany(models.RelatedTask);
-      // this.hasMany(models.RelatedRisk);
-      // this.hasMany(models.RelatedRisk);
+      this.hasMany(models.RelatedTask, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Risk",
+        },
+      });
+      this.hasMany(models.RelatedRisk, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Risk",
+        },
+      });
+      this.hasMany(models.RelatedIssue, {
+        foreignKey: "relatable_id",
+        constraints: false,
+        scope: {
+          relatable_type: "Risk",
+        },
+      });
       // // this.belongsToMany(models.SubTask,{through: models.RelatedTask, foreignKey: '', otherKey: '' });
       // // this.belongsToMany(models.SubRisk,{through: models.RelatedRisk, foreignKey: '', otherKey: '' });
       // // this.belongsToMany(models.SubRisk,{through: models.RelatedRisk, foreignKey: '', otherKey: '' })

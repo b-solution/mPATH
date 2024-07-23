@@ -11,6 +11,7 @@ const program_setting_role = async (req, res) => {
     return { program_setting_role: await psr.toJSON() };
   } catch (error) {
     res.code(500);
+    console.log(error);
     return { error: "Error fetching data" };
   }
 };

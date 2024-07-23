@@ -1234,7 +1234,6 @@ export default {
       let roleUsers = this.contractUsers.data.filter(
         (t) => t.role_id == rowData
       );
-      // debugger
       let projectUserRoleData = {
         userData: {
           roleId: new_role.id,
