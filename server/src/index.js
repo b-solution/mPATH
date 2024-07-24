@@ -68,6 +68,7 @@ const contractProjectPocsRoutes = require("./routes/contractProjectPocsRoutes");
 const { db } = require("./database/models"); // import models
 const { matchPath } = require("react-router");
 const setAdminPanel = require("./utils/admin");
+
 const PORT = 3000;
 
 fastify.register(cors, {
@@ -78,7 +79,7 @@ fastify.register(require("@fastify/static"), {
   prefix: "/public/",
   // constraints: { host: 'example.com' } // optional: default {}
 });
-// fastify.register(require('@fastify/multipart'), {addToBody: true})
+fastify.register(require("@fastify/multipart"), { addToBody: true });
 // fastify.register(require('@fastify/formbody'))
 // fastify.register(formDataParser);
 fastify.register(authRoute);
@@ -133,7 +134,6 @@ async function assertDatabaseConnectionOk() {
     process.exit(1);
   }
 }
-
 async function init() {
   await assertDatabaseConnectionOk();
   await setAdminPanel(db, fastify);
@@ -142,5 +142,4 @@ async function init() {
     console.log(`Sequelize + Express server started on port ${PORT}`);
   });
 }
-
 init();

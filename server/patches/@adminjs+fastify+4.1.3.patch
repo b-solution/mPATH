@@ -1,0 +1,26 @@
+diff --git a/node_modules/@adminjs/fastify/lib/buildRouter.js b/node_modules/@adminjs/fastify/lib/buildRouter.js
+index 470a032..b3d5b36 100644
+--- a/node_modules/@adminjs/fastify/lib/buildRouter.js
++++ b/node_modules/@adminjs/fastify/lib/buildRouter.js
+@@ -20,7 +20,7 @@ export const buildRouter = async (admin, fastifyApp) => {
+     if (admin?.constructor?.name !== 'AdminJS') {
+         throw new WrongArgumentError(INVALID_ADMIN_JS_INSTANCE);
+     }
+-    await fastifyApp.register(fastifyMultipart, { attachFieldsToBody: true });
++//await fastifyApp.register(fastifyMultipart, { attachFieldsToBody: true });
+     admin.initialize().then(() => {
+         log.debug('AdminJS: bundle ready');
+     });
+diff --git a/node_modules/@adminjs/fastify/src/buildRouter.ts b/node_modules/@adminjs/fastify/src/buildRouter.ts
+index 872ec3e..ee1d26c 100644
+--- a/node_modules/@adminjs/fastify/src/buildRouter.ts
++++ b/node_modules/@adminjs/fastify/src/buildRouter.ts
+@@ -35,7 +35,7 @@ export const buildRouter = async (
+     throw new WrongArgumentError(INVALID_ADMIN_JS_INSTANCE);
+   }
+ 
+-  await fastifyApp.register(fastifyMultipart, { attachFieldsToBody: true });
++  //await fastifyApp.register(fastifyMultipart, { attachFieldsToBody: true });
+ 
+   admin.initialize().then(() => {
+     log.debug('AdminJS: bundle ready');

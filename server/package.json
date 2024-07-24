@@ -8,7 +8,8 @@
     "start": "node src/admin.js",
     "dev": "nodemon index --env-file=.env",
     "migrate": "node src/database/sync_database.js",
-    "console": "node --experimental-repl-await ./console.js"
+    "console": "node --experimental-repl-await ./console.js",
+    "postinstall": "patch-package"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +19,6 @@
   },
   "dependencies": {
     "@adminjs/design-system": "^4.1.1",
-    "@adminjs/express": "^6.1.0",
     "@adminjs/fastify": "^4.1.3",
     "@adminjs/passwords": "^4.0.0",
     "@adminjs/sequelize": "^4.1.1",
@@ -26,7 +26,7 @@
     "@fastify/formbody": "^7.4.0",
     "@fastify/jwt": "^8.0.1",
     "@fastify/middie": "^8.3.0",
-    "@fastify/multipart": "^8.1.0",
+    "@fastify/multipart": "^8.3.0",
     "@fastify/session": "^10.9.0",
     "@fastify/static": "^7.0.1",
     "adminjs": "^7.8.4",
@@ -37,7 +37,6 @@
     "express-winston": "^4.2.0",
     "fastify": "^4.28.0",
     "fluent-json-schema": "^4.2.1",
-    "formidable": "^3.5.1",
     "formzilla": "^3.2.3",
     "fs": "*",
     "js-yaml": "^4.1.0",
@@ -46,6 +45,8 @@
     "moment-timezone": "^0.5.45",
     "multer": "*",
     "mysql2": "^3.6.0",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "qs": "^6.11.2",
     "sequelize": "^6.32.1",
     "stream": "^0.0.2",
