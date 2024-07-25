@@ -788,7 +788,7 @@ export default {
 
     },
     backHomeBtn() {
-      window.location.pathname = "/";
+      this.$router.push('/')
     },
     openPocModal() {
       this.pocDialogVisible = true;

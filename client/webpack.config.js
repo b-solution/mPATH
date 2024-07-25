@@ -8,6 +8,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack')
 const path = require('path')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = {
   mode: 'development',
@@ -66,6 +67,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new Dotenv(),
     new VueLoaderPlugin(),
     new htmlWebpackPlugin({
       template: path.resolve(__dirname, 'public', 'index.html'),

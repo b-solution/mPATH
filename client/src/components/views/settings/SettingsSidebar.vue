@@ -11,32 +11,41 @@
         <ul class="program-name">
           <router-link :to="adminGroupsView" v-if="_isallowedGroups('read')">
             <li class="p-3 mt-3 entity">
-              <i class="fal fa-network-wired mr-2 mh-blue-text"></i>Groups
+              <i class="fas fa-network-wired mr-2 mh-blue-text"></i>Groups
             </li>
           </router-link>
           <router-link :to="adminProjectsView" v-if="_isallowedProjects('read')">
             <li class="p-3 entity">
-              <i class="fal fa-clipboard-list mr-3 mh-green-text"></i> Projects
+              <i class="fas fa-clipboard-list mr-3 mh-green-text"></i> Projects
             </li>
           </router-link>
           <router-link :to="adminContractsView" v-if="_isallowedContracts('read')">
             <li class="p-3 entity">
-              <i class="far fa-file-contract mr-3 mh-orange-text"></i> Contracts
+              <svg style="width: 16px;" class="svgAlignment" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                <path fill="#dd9036"
+                  d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zM64 72c0-4.4 3.6-8 8-8h80c4.4 0 8 3.6 8 8v16c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8V72zm0 64c0-4.4 3.6-8 8-8h80c4.4 0 8 3.6 8 8v16c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8v-16zm192.8 248H304c8.8 0 16 7.2 16 16s-7.2 16-16 16h-47.2c-16.5 0-31.3-9.1-38.6-23.9-3-5.9-8.1-6.5-10.2-6.5s-7.2 .6-10 6.2l-7.7 15.3a16 16 0 0 1 -14.3 8.8c-.4 0-.8 0-1.1-.1-6.5-.5-12-4.8-14-10.9L144 354.6l-10.6 31.9c-5.9 17.7-22.4 29.5-41 29.5H80c-8.8 0-16-7.2-16-16s7.2-16 16-16h12.4c4.8 0 9.1-3.1 10.6-7.7l18.2-54.6c3.3-9.8 12.4-16.4 22.8-16.4s19.5 6.6 22.8 16.4l13.9 41.6c19.8-16.2 54.1-9.7 66 14.2 2 4.1 6 6.5 10.2 6.5zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z" />
+              </svg> Contracts
             </li>
           </router-link>
           <router-link :to="adminVehiclesView" v-if="_isallowedContracts('read')">
             <li class="p-3 entity">
-              <i class="far fa-car mr-3 text-info"></i>Vehicles
+              <i class="fas fa-car mr-3 text-info"></i>Vehicles
             </li>
           </router-link>
           <router-link :to="adminRolesView" v-if="_isallowedUserRoles('read')">
             <li class="p-3 entity">
-              <i class="fal fa-user-lock mr-2 pr-1 bootstrap-purple-text"></i>Roles
+              <svg style="width: 23px;" class="svgAlignment" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                <path fill="#7952b3"
+                  d="M224 256A128 128 0 1 0 96 128a128 128 0 0 0 128 128zm96 64a63.1 63.1 0 0 1 8.1-30.5c-4.8-.5-9.5-1.5-14.5-1.5h-16.7a174.1 174.1 0 0 1 -145.8 0h-16.7A134.4 134.4 0 0 0 0 422.4V464a48 48 0 0 0 48 48h280.9a63.5 63.5 0 0 1 -8.9-32zm288-32h-32v-80a80 80 0 0 0 -160 0v80h-32a32 32 0 0 0 -32 32v160a32 32 0 0 0 32 32h224a32 32 0 0 0 32-32V320a32 32 0 0 0 -32-32zM496 432a32 32 0 1 1 32-32 32 32 0 0 1 -32 32zm32-144h-64v-80a32 32 0 0 1 64 0z" />
+              </svg>
+              Roles
             </li>
           </router-link>
           <router-link :to="adminUsersView" v-if="_isallowedUserRoles('read')">
             <li class="p-3 entity">
-              <i class="fal fa-users mr-2 pr-1 text-secondary"></i>Users
+              <i class="fas fa-users mr-2 pr-1 text-secondary"></i>Users
             </li>
           </router-link>
 
@@ -87,8 +96,11 @@ export default {
       return `/programs/${this.$route.params.programId}/settings`;
     },
     backToSheetView() {
-      window.location.pathname = `/programs/${this.$route.params.programId}/sheet`
+      this.$router.push(
+        `/programs/${this.$route.params.programId}/sheet`
+      );
     },
+
     adminProjectsView() {
       return `/programs/${this.$route.params.programId}/settings/projects`
     },

@@ -298,7 +298,7 @@ export default {
       this.updateContractProject({...contractProjectData, id})    
   },
   backHomeBtn() {
-      window.location.pathname = "/";
+    this.$router.push('/')
     },
  editMode(index, rows) {
     this.rowIndex = index,

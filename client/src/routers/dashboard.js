@@ -158,17 +158,17 @@ const router = new VueRouter({
       meta: { requiresAuth: false }
     },
     {
-      name: 'HomeView',
+      name: 'ProgramListView',
       path: '/',
-      component: HomeView,
+      component: ProgramListView,
       meta: { requiresAuth: false }
     },
-    {
-      name: 'ProgramListView',
-      path: '/programs',
-      component: ProgramListView,
-      meta: { requiresAuth: true }
-    },
+    // {
+    //   name: 'ProgramListView',
+    //   path: '/programs',
+    //   component: ProgramListView,
+    //   meta: { requiresAuth: true }
+    // },
     {
       name: 'LoginView',
       path: '/login',
@@ -254,11 +254,11 @@ const router = new VueRouter({
         }
       ]
     },
-    // {
-    //   name: "GanttChartView",
-    //   path: "/programs/:programId/gantt_chart",
-    //   component: GanttChartView,
-    // },
+    {
+      name: 'GanttChartView',
+      path: '/programs/:programId/gantt_chart',
+      component: GanttChartView
+    },
     {
       name: 'TeamMembersView',
       path: '/programs/:programId/members',
@@ -2559,7 +2559,7 @@ const router = new VueRouter({
     { path: '*', component: PageNotFound }
   ],
   hashbang: false,
-  mode: 'history',
+  mode: 'hash',
   base: '/',
   scrollBehavior() {
     return { x: 0, y: 0 }

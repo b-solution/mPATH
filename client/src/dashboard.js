@@ -67,7 +67,7 @@ Vue.use(VeeValidate, { fieldsBagName: 'veeFields' })
 if (!window.google) {
   Vue.use(VueGoogleMaps, {
     load: {
-      key: window.google_api_key,
+      key: process.env.VUE_APP_GOOGLE_API_KEY,
       libraries: 'places'
     },
     installComponents: true

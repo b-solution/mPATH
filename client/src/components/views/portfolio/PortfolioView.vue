@@ -5202,7 +5202,7 @@ export default {
       // console.log(id);
     },
     backHomeBtn() {
-      window.location.pathname = "/";
+      this.$router.push('/')
     },
     handleClick(tab, event) {
       // let size = this.loadMoreItems;

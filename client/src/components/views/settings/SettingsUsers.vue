@@ -7,47 +7,31 @@
       <div class="right-panel">
         <el-breadcrumb separator-class="el-icon-arrow-right" class="mt-3 mb-4">
           <el-breadcrumb-item :to="backToSettings">
-            <span style="cursor:pointer"
-              ><i class="far fa-cog mr-1"></i> PROGRAM SETTINGS
+            <span style="cursor:pointer"><i class="fas fa-cog mr-1"></i> PROGRAM SETTINGS
             </span>
           </el-breadcrumb-item>
           <h4 class="mt-4 ml-3">
-            <i class="fal fa-users mr-1 text-secondary"></i> USERS
-            <span
-              v-if="programUsers && programUsers.length"
-              class="ml-2 pb-1 badge badge-secondary badge-pill pill"
-              >{{ programUsers.length }}
+            <i class="fas fa-users mr-1 text-secondary"></i> USERS
+            <span v-if="programUsers && programUsers.length" class="ml-2 pb-1 badge badge-secondary badge-pill pill">{{
+            programUsers.length }}
             </span>
-            <span v-else class="ml-2 pb-1 badge badge-secondary badge-pill pill"
-              >{{ 0 }}
+            <span v-else class="ml-2 pb-1 badge badge-secondary badge-pill pill">{{ 0 }}
             </span>
           </h4>
         </el-breadcrumb>
         <div class="my-1 pb-2 buttonWrapper container-fluid">
           <div class="row px-0">
             <div class="col-6" v-if="_isallowed('write')">
-              <el-button
-                @click.prevent="openCreateUser"
-                class="bg-primary text-light mb-2"
-              >
+              <el-button @click.prevent="openCreateUser" class="bg-primary text-light mb-2">
                 <i class="fas fa-user-plus mr-1"></i> Create User
               </el-button>
-              <el-button
-                @click.prevent="addUser"
-                class="bg-success text-light mb-2"
-              >
+              <el-button @click.prevent="addUser" class="bg-success text-light mb-2">
                 <i class="fas fa-users-medical mr-1"></i> Add User(s) to Program
               </el-button>
             </div>
             <div class="col-6">
-              <el-input
-                type="search"
-                placeholder="Search Users"
-                aria-label="Search"
-                aria-describedby="search-addon"
-                v-model="search"
-                data-cy=""
-              >
+              <el-input type="search" placeholder="Search Users" aria-label="Search" aria-describedby="search-addon"
+                v-model="search" data-cy="">
                 <el-button slot="prepend" icon="el-icon-search"></el-button>
               </el-input>
             </div>
@@ -55,46 +39,34 @@
         </div>
 
         <div class="container-fluid mt-2 mx-0">
-          <div
-            v-loading="!programUsersLoaded"
-            v-if="_isallowed('read')"
-            element-loading-text="Fetching your data. Please wait..."
-            element-loading-spinner="el-icon-loading"
-            class=""
-          >
-            <el-table
-              v-if="programUsers && programUsers.length > 0"
-              :data="
-                programUsers
-                  .filter(
-                    (data) =>
-                      !search ||
-                      data.full_name
-                        .toLowerCase()
-                        .includes(search.toLowerCase())
-                  )
-                  .reverse()
-              "
-              highlight-current-row
-              :row-key="(row) => row.id"
-              :expand-row-keys="expandRowKeys"
-              @expand-change="handleExpandChange"
-              style="width: 100%"
-              height="450"
-              :default-sort="{ prop: 'last_name', order: 'ascending' }"
-            >
+          <div v-loading="!programUsersLoaded" v-if="_isallowed('read')"
+            element-loading-text="Fetching your data. Please wait..." element-loading-spinner="el-icon-loading"
+            class="">
+            <el-table v-if="programUsers && programUsers.length > 0" :data="programUsers
+            .filter(
+              (data) =>
+                !search ||
+                data.full_name
+                  .toLowerCase()
+                  .includes(search.toLowerCase())
+            )
+            .reverse()
+            " highlight-current-row :row-key="(row) => row.id" :expand-row-keys="expandRowKeys"
+              @expand-change="handleExpandChange" style="width: 100%" height="450"
+              :default-sort="{ prop: 'last_name', order: 'ascending' }">
               <el-table-column prop="first_name" sortable label="First Name">
               </el-table-column>
               <el-table-column prop="last_name" sortable label="Last Name">
               </el-table-column>
               <el-table-column label="Roles">
-             
+
                 <template slot-scope="scope">
-                <span v-if="projectUsers" >        
-                {{ [...new Set(projectUsers.data.filter(t => t.user_id === scope.row.id).map(t => t.role_name))].join(', ')}}          
-                </span>
+                  <span v-if="projectUsers">
+                    {{ [...new Set(projectUsers.data.filter(t => t.user_id === scope.row.id).map(t =>
+            t.role_name))].join(', ') }}
+                  </span>
                 </template>
-          
+
               </el-table-column>
 
               <!--BEGIN Expandable Column Containing Priveleges Info -->
@@ -102,34 +74,18 @@
 
               <el-table-column label="Actions" align="right">
                 <template slot-scope="scope">
-                  <el-button
-                    size="small"
-                    type="default"
-                    v-tooltip="`Manage User Roles`"
-                    @click.prevent="openUserRoleDialog(scope.$index, scope.row)"
-                    v-if="scope.$index !== rowIndex"
-                    class="bg-primary text-light btn-sm"
-                  >
+                  <el-button size="small" type="default" v-tooltip="`Manage User Roles`"
+                    @click.prevent="openUserRoleDialog(scope.$index, scope.row)" v-if="scope.$index !== rowIndex"
+                    class="bg-primary text-light btn-sm">
                     <i class="fal fa-user-lock mr-1 text-light"></i>
                   </el-button>
-                  <el-button
-                    type="default"
-                    size="small"
-                    v-tooltip="`Remove User from Program`"
+                  <el-button type="default" size="small" v-tooltip="`Remove User from Program`"
                     @click.prevent="removeUser(scope.$index, scope.row)"
-                    v-if="scope.$index !== rowIndex && _isallowed('delete')"
-                    class="bg-light btn-sm"
-                  >
+                    v-if="scope.$index !== rowIndex && _isallowed('delete')" class="bg-light btn-sm">
                     <i class="fal fa-user-slash text-danger"></i>
                   </el-button>
-                  <el-button
-                    type="default"
-                    size="small"
-                    v-tooltip="`Edit User info`"
-                    v-if="_isallowed('write')"
-                    @click.prevent="openEditUser(scope.$index, scope.row)"
-                    class="bg-light btn-sm"
-                  >
+                  <el-button type="default" size="small" v-tooltip="`Edit User info`" v-if="_isallowed('write')"
+                    @click.prevent="openEditUser(scope.$index, scope.row)" class="bg-light btn-sm">
                     <i class="fal fa-edit text-primary"></i>
                   </el-button>
                   <!-- USe this attribute when functionaloty gets built in -->
@@ -149,19 +105,12 @@
           </div>
           <div v-else class="text-danger mx-2 mt-5">
             <h5>
-              <i
-                >Sorry, you don't have read-permissions for this page! Please
-                contact your Program Administrator for access.</i
-              >
+              <i>Sorry, you don't have read-permissions for this page! Please
+                contact your Program Administrator for access.</i>
             </h5>
           </div>
         </div>
-        <el-dialog
-          :visible.sync="newUserDialogVisible"
-          append-to-body
-          center
-          class="p-0 users"
-        >
+        <el-dialog :visible.sync="newUserDialogVisible" append-to-body center class="p-0 users">
           <span slot="title" class="text-left">
             <h5 class="text-dark">
               <i class="fas fa-user-plus mr-2"></i>Create User
@@ -171,74 +120,36 @@
             <div class="container">
               <div class="row">
                 <div class="col-12 pb-0">
-                  <label class="mb-0 pb-0 text-dark"
-                    >First Name<span style="color: #dc3545">*</span>
+                  <label class="mb-0 pb-0 text-dark">First Name<span style="color: #dc3545">*</span>
                   </label>
-                  <el-input
-                    class="mb-2 pl-1"
-                    v-model="firstName"
-                    placeholder="Enter First Name"
-                    rows="1"
-                  />
+                  <el-input class="mb-2 pl-1" v-model="firstName" placeholder="Enter First Name" rows="1" />
                 </div>
               </div>
               <div class="row">
                 <div class="col-12 pb-0">
-                  <label class="mb-0 pb-0 text-dark"
-                    >Last Name <span style="color: #dc3545">*</span></label
-                  >
-                  <el-input
-                    v-model="lastName"
-                    class="mb-2 pl-1"
-                    placeholder="Enter Last Name"
-                    rows="1"
-                  />
+                  <label class="mb-0 pb-0 text-dark">Last Name <span style="color: #dc3545">*</span></label>
+                  <el-input v-model="lastName" class="mb-2 pl-1" placeholder="Enter Last Name" rows="1" />
                 </div>
               </div>
               <div class="row">
                 <div class="col-12 pb-0">
-                  <label class="mb-0 pb-0 text-dark"
-                    >Email<span style="color: #dc3545">*</span></label
-                  >
-                  <el-input
-                    name="email"
-                    v-model="email"
-                    placeholder="Enter Email"
-                    v-validate="'email'"
-                    :class="{ error: errors.has('email') }"
-                    rows="1"
-                    class="mb-2 pl-1"
-                  />
+                  <label class="mb-0 pb-0 text-dark">Email<span style="color: #dc3545">*</span></label>
+                  <el-input name="email" v-model="email" placeholder="Enter Email" v-validate="'email'"
+                    :class="{ error: errors.has('email') }" rows="1" class="mb-2 pl-1" />
                 </div>
               </div>
               <div class="row">
                 <div class="col-12 py-1 text-right" style="line-height:6">
-                  <button
-                    @click.prevent="createUser"
-                    v-show="
-                      email && lastName && firstName && !createAnotherUserBtn
-                    "
-                    class="btn btn-md bg-primary text-light modalBtns"
-                    v-tooltip="`Save`"
-                  >
-                    <i class="fal fa-save"></i>
+                  <button @click.prevent="createUser" v-show="email && lastName && firstName && !createAnotherUserBtn
+            " class="btn btn-md bg-primary text-light modalBtns" v-tooltip="`Save`">
+                    <i class="fa-solid fa-flopy-disk"></i>
                   </button>
-                  <button
-                    type="default"
-                    v-tooltip="`Create another user`"
-                    @click.prevent="createAnotherUser"
-                    v-if="
-                      email && lastName && firstName && createAnotherUserBtn
-                    "
-                    class="btn btn-md btn-primary text-light modalBtns"
-                  >
-                    <i class="far fa-plus-circle"></i>
+                  <button type="default" v-tooltip="`Create another user`" @click.prevent="createAnotherUser" v-if="email && lastName && firstName && createAnotherUserBtn
+            " class="btn btn-md btn-primary text-light modalBtns">
+                    <i class="fas fa-plus-circle"></i>
                   </button>
-                  <button
-                    @click.prevent="cancelAddNewUser"
-                    class="btn btn-md bg-secondary text-light ml-0 modalBtns"
-                    v-tooltip="`Cancel`"
-                  >
+                  <button @click.prevent="cancelAddNewUser" class="btn btn-md bg-secondary text-light ml-0 modalBtns"
+                    v-tooltip="`Cancel`">
                     <i class="fas fa-ban"></i>
                   </button>
                 </div>
@@ -246,12 +157,7 @@
             </div>
           </form>
         </el-dialog>
-        <el-dialog
-          :visible.sync="dialogVisible"
-          append-to-body
-          center
-          class="p-0 users"
-        >
+        <el-dialog :visible.sync="dialogVisible" append-to-body center class="p-0 users">
           <span slot="title" class="text-left">
             <h5 class="text-dark">
               <i class="fas fa-users-medical mr-2"></i>Add User(s) To Program
@@ -260,55 +166,30 @@
           <div class="container">
             <div class="row">
               <div class="col-12" v-if="portfolioUsersOnly">
-                <label class="font-md mb-0"
-                  >Select from
+                <label class="font-md mb-0">Select from
                   <span class="badge badge-secondary badge-pill pill">
                     {{ portfolioUsersOnly.length }}
                   </span>
                   Portfolio Users
                 </label>
-                <el-select
-                  v-model="portfolioUsers"
-                  class="w-100"
-                  track-by="id"
-                  value-key="id"
-                  :multiple="true"
-                  clearable
-                  placeholder="Enter name"
-                  filterable
-                >
-                  <el-option
-                    v-for="item in portfolioUsersOnly"
-                    :value="item"
-                    :key="item.id"
-                    :label="item.name || item.full_name"
-                  >
+                <el-select v-model="portfolioUsers" class="w-100" track-by="id" value-key="id" :multiple="true"
+                  clearable placeholder="Enter name" filterable>
+                  <el-option v-for="item in portfolioUsersOnly" :value="item" :key="item.id"
+                    :label="item.name || item.full_name">
                   </el-option>
                 </el-select>
                 <div class="text-right">
-                  <button
-                    type="default"
-                    v-tooltip="`Save Users`"
-                    @click.prevent="addPortfolioUsersToProgram"
+                  <button type="default" v-tooltip="`Save Users`" @click.prevent="addPortfolioUsersToProgram"
                     v-if="portfolioUsers.length > 0 && !addMoreUsersBtn"
-                    class="btn btn-md btn-primary text-light mt-3 modalBtns"
-                  >
+                    class="btn btn-md btn-primary text-light mt-3 modalBtns">
                     <i class="fal fa-save"></i>
                   </button>
-                  <button
-                    type="default"
-                    v-tooltip="`Add more users`"
-                    @click.prevent="addMoreUsers"
-                    v-if="portfolioUsers && addMoreUsersBtn"
-                    class="btn btn-md btn-primary text-light mt-3 modalBtns"
-                  >
-                    <i class="far fa-plus-circle"></i>
+                  <button type="default" v-tooltip="`Add more users`" @click.prevent="addMoreUsers"
+                    v-if="portfolioUsers && addMoreUsersBtn" class="btn btn-md btn-primary text-light mt-3 modalBtns">
+                    <i class="fas fa-plus-circle"></i>
                   </button>
-                  <button
-                    @click.prevent="cancelAddUser"
-                    class="btn btn-md bg-secondary text-light mt-3 ml-0 modalBtns"
-                    v-tooltip="`Cancel`"
-                  >
+                  <button @click.prevent="cancelAddUser" class="btn btn-md bg-secondary text-light mt-3 ml-0 modalBtns"
+                    v-tooltip="`Cancel`">
                     <i class="fas fa-ban"></i>
                   </button>
                 </div>
@@ -318,11 +199,8 @@
                 No Portfolio Users Found
 
                 <div class="text-right">
-                  <button
-                    @click.prevent="cancelAddUser"
-                    class="btn btn-md bg-secondary text-light mt-3 ml-0 modalBtns"
-                    v-tooltip="`Cancel`"
-                  >
+                  <button @click.prevent="cancelAddUser" class="btn btn-md bg-secondary text-light mt-3 ml-0 modalBtns"
+                    v-tooltip="`Cancel`">
                     <i class="fas fa-ban"></i>
                   </button>
                 </div>
@@ -331,12 +209,7 @@
           </div>
         </el-dialog>
 
-        <el-dialog
-          :visible.sync="editUserDialogVisible"
-          append-to-body
-          center
-          class="p-0 users"
-        >
+        <el-dialog :visible.sync="editUserDialogVisible" append-to-body center class="p-0 users">
           <span slot="title" class="text-left">
             <h5 class="text-dark"><i class="fas fa-edit mr-1"></i>Edit User</h5>
           </span>
@@ -344,73 +217,35 @@
             <div class="row">
               <div class="col-12 pt-0">
                 <form accept-charset="UTF-8">
-                  <FormTabs
-                    class="mb-3"
-                    :current-tab="currentTab"
-                    :tabs="tabs"
-                    @on-change-tab="onChangeTab"
-                  />
+                  <FormTabs class="mb-3" :current-tab="currentTab" :tabs="tabs" @on-change-tab="onChangeTab" />
                   <div v-show="currentTab == 'tab1'" class="tab_1">
                     <label class="mb-0 pb-0 text-dark">First Name </label>
-                    <el-input
-                      class="mb-2 pl-1"
-                      v-model="rowUser.first_name"
-                      rows="1"
-                    />
+                    <el-input class="mb-2 pl-1" v-model="rowUser.first_name" rows="1" />
                     <label class="mb-0 pb-0 text-dark">Last Name</label>
-                    <el-input
-                      v-model="rowUser.last_name"
-                      class="mb-2 pl-1"
-                      rows="1"
-                    />
+                    <el-input v-model="rowUser.last_name" class="mb-2 pl-1" rows="1" />
                     <label class="mb-0 pb-0 text-dark">Position</label>
-                    <el-input
-                      v-model="rowUser.title"
-                      class="mb-2 pl-1"
-                      rows="1"
-                    />
+                    <el-input v-model="rowUser.title" class="mb-2 pl-1" rows="1" />
                     <label class="mb-0 pb-0 text-dark">Organization</label>
-                    <el-input
-                      v-model="rowUser.organization"
-                      disabled
-                      class="mb-2 pl-1"
-                      rows="1"
-                    />
+                    <el-input v-model="rowUser.organization" disabled class="mb-2 pl-1" rows="1" />
                   </div>
                   <div v-show="currentTab == 'tab2'" class="tab_2">
                     <label class="mb-0 pb-0 text-dark">Email</label>
-                    <el-input
-                      name="email"
-                      v-model="rowUser.email"
-                      v-validate="'email'"
-                      placeholder="Enter updated email here"
-                      rows="1"
-                      class="mb-2 pl-1"
-                      :class="{ error: errors.has('email') }"
-                    />
+                    <el-input name="email" v-model="rowUser.email" v-validate="'email'"
+                      placeholder="Enter updated email here" rows="1" class="mb-2 pl-1"
+                      :class="{ error: errors.has('email') }" />
 
                     <label class="mb-0 pb-0 text-dark">Phone Number</label>
-                    <el-input
-                      v-model="rowUser.phone_number"
-                      disabled
-                      placeholder="Enter updated phone number here"
-                      rows="1"
-                      class="mb-2 pl-1"
-                    />
+                    <el-input v-model="rowUser.phone_number" disabled placeholder="Enter updated phone number here"
+                      rows="1" class="mb-2 pl-1" />
                     <label class="mb-0 pb-0 text-dark">Address</label>
-                    <el-input
-                      v-model="rowUser.address"
-                      disabled
-                      placeholder="Enter updated address here"
-                      rows="1"
-                      class="mb-2 pl-1"
-                    />
+                    <el-input v-model="rowUser.address" disabled placeholder="Enter updated address here" rows="1"
+                      class="mb-2 pl-1" />
                   </div>
                   <div v-show="currentTab == 'tab3'" class="tab_3 w-70">
                     <h6 style="color:#383838">mPATH User since:</h6>
                     {{
-                      moment(rowUser.created_at).format("DD MMM YYYY, h:mm a")
-                    }}
+            moment(rowUser.created_at).format("DD MMM YYYY, h:mm a")
+          }}
 
                     <br />
                     <h6 class="mt-3" style="color:#383838">mPATH User Id#:</h6>
@@ -418,18 +253,12 @@
                   </div>
 
                   <div class="my-3 float-right">
-                    <button
-                      @click.prevent="saveUserEdits"
-                      class="btn btn-md bg-primary text-light mr-2 modalBtns"
-                      v-tooltip="`Save`"
-                    >
-                      <i class="fal fa-save"></i>
+                    <button @click.prevent="saveUserEdits" class="btn btn-md bg-primary text-light mr-2 modalBtns"
+                      v-tooltip="`Save`">
+                      <i class="fas fa-save"></i>
                     </button>
-                    <button
-                      @click.prevent="cancelEdits"
-                      class="btn btn-md bg-secondary text-light modalBtns"
-                      v-tooltip="`Cancel`"
-                    >
+                    <button @click.prevent="cancelEdits" class="btn btn-md bg-secondary text-light modalBtns"
+                      v-tooltip="`Cancel`">
                       <i class="fas fa-ban"></i>
                     </button>
                   </div>
@@ -439,20 +268,15 @@
           </div>
         </el-dialog>
 
-        <el-dialog
-          :visible.sync="openUserRoles"
-          append-to-body
-          center
-          class="p-0 userRoles"
-        >
+        <el-dialog :visible.sync="openUserRoles" append-to-body center class="p-0 userRoles">
           <span slot="title" class="text-left add-groups-header ">
             <h5 style="color:#383838">
               <i class="fal fa-user-lock mr-1 mb-3 bootstrap-purple-text"></i>
               <b>Assigned Roles</b>
               <span class="badge badge-secondary badge-pill">
                 <span v-if="projectUsers || assignedAdminRoles">{{
-                  projectUsers.roleIds.length + assignedAdminRoles.length
-                }}</span>
+            projectUsers.roleIds.length + assignedAdminRoles.length
+          }}</span>
               </span>
             </h5>
           </span>
@@ -465,27 +289,15 @@
           <div class="row mb-3" v-if="_isallowed('write')">
             <div class="col-7">
               <el-button-group>
-                <el-button
-                  type="default"
-                  class="bg-light btn-sm"
-                  @click.prevent="assignProjectRole"
-                >
+                <el-button type="default" class="bg-light btn-sm" @click.prevent="assignProjectRole">
                   <i class="fal fa-clipboard-list mr-1 mh-green-text"></i>
                   Assign Project Role
                 </el-button>
-                <el-button
-                  type="default"
-                  class="bg-light btn-sm"
-                  @click.prevent="assignContractRole"
-                >
-                  <i class="far fa-file-contract mr-1 mh-orange-text"></i>
+                <el-button type="default" class="bg-light btn-sm" @click.prevent="assignContractRole">
+                  <i class="fas fa-file-contract mr-1 mh-orange-text"></i>
                   Assign Contract Role
                 </el-button>
-                <el-button
-                  type="default"
-                  class="bg-light btn-sm"
-                  @click.prevent="assignVehicleRole"
-                >
+                <el-button type="default" class="bg-light btn-sm" @click.prevent="assignVehicleRole">
                   <i class="fal fa-car mr-1 text-info"></i>
                   Assign Vehicle Role
                 </el-button>
@@ -500,44 +312,20 @@
               </el-button-group>
             </div>
             <div class="col-5 text-right">
-              <el-input
-                type="search"
-                placeholder="Search Roles"
-                aria-label="Search"
-                class="w-100"
-                aria-describedby="search-addon"
-                v-model="searchRoleUsers"
-                data-cy=""
-              >
+              <el-input type="search" placeholder="Search Roles" aria-label="Search" class="w-100"
+                aria-describedby="search-addon" v-model="searchRoleUsers" data-cy="">
                 <el-button slot="prepend" icon="el-icon-search"></el-button>
               </el-input>
             </div>
           </div>
-          <div
-            v-loading="!getRolesLoaded"
-            style="width: 100%"
-            element-loading-spinner="el-icon-loading"
-            element-loading-text="Fetching or Updating data. Please wait..."
-          >
-            <el-table
-              v-if="
-                projectUsers &&
-                  projectUsers.data &&
-                  projectUsers.roleIds.length > 0
-              "
-              :data="projectUsers.roleIds"
-              height="375"
-              class="usersTable"
-              width="100%"
-              border
-              :header-cell-style="{ background: '#EDEDED' }"
-            >
-              <el-table-column
-                prop="role_name"
-                sortable
-                label="Roles"
-                width="200"
-              >
+          <div v-loading="!getRolesLoaded" style="width: 100%" element-loading-spinner="el-icon-loading"
+            element-loading-text="Fetching or Updating data. Please wait...">
+            <el-table v-if="projectUsers &&
+            projectUsers.data &&
+            projectUsers.roleIds.length > 0
+            " :data="projectUsers.roleIds" height="375" class="usersTable" width="100%" border
+              :header-cell-style="{ background: '#EDEDED' }">
+              <el-table-column prop="role_name" sortable label="Roles" width="200">
                 <template slot-scope="scope">
                   <!-- ADMIN ROLE ICON 
              <i class="fa-solid fa-user-shield mr-1 bootstrap-purple-text"></i>  
@@ -546,171 +334,120 @@
                         CONTRACT ROLE ICON 
              <i class="far fa-file-contract mr-1 mh-orange-text"></i>   
                                                                               -->
-                  <span
-                    v-if="projectUsers.data.map((t) => t.role_id == scope.row)"
-                  > 
+                  <span v-if="projectUsers.data.map((t) => t.role_id == scope.row)">
                     {{
-                      projectUsers.data
-                        .filter((t) => t.role_id == scope.row)
-                        .map((t) => t.role_name)[0]
-                    }}
+            projectUsers.data
+              .filter((t) => t.role_id == scope.row)
+              .map((t) => t.role_name)[0]
+          }}
                   </span>
                 </template>
               </el-table-column>
-              <el-table-column
-                v-if="_isallowed('delete')"
-                width="675"
-                prop="projects"
-                sortable
-                filterable
-                label="Associations"
-              >
+              <el-table-column v-if="_isallowed('delete')" width="675" prop="projects" sortable filterable
+                label="Associations">
                 <template slot-scope="scope">
                   <span v-if="scope.$index !== rowIndex_1">
                     <span v-for="(item, i) in projectUsers.data" :key="i">
                       <!-- {{item}}   -->
-                      <span
-                        v-if="
-                          projectNames &&
-                            item.facility_project_id &&
-                            projectNames.map(
-                              (t) =>
-                                t.facilityProjectId == item.facility_project_id
-                            ) &&
-                            item.role_id == scope.row &&
-                            projectNames
-                              .filter(
-                                (t) =>
-                                  item.facility_project_id ==
-                                  t.facilityProjectId
-                              )
-                              .map((t) => t.facilityName).length > 0
-                        "
-                        class="projectNames"
-                      >
+                      <span v-if="projectNames &&
+            item.facility_project_id &&
+            projectNames.map(
+              (t) =>
+                t.facilityProjectId == item.facility_project_id
+            ) &&
+            item.role_id == scope.row &&
+            projectNames
+              .filter(
+                (t) =>
+                  item.facility_project_id ==
+                  t.facilityProjectId
+              )
+              .map((t) => t.facilityName).length > 0
+            " class="projectNames">
                         {{
-                          projectNames
-                            .filter(
-                              (t) =>
-                                item.facility_project_id == t.facilityProjectId
-                            )
-                            .map((t) => t.facilityName)
-                            .join()
-                        }}
+            projectNames
+              .filter(
+                (t) =>
+                  item.facility_project_id == t.facilityProjectId
+              )
+              .map((t) => t.facilityName)
+              .join()
+          }}
                       </span>
-                      <span
-                        v-if="
-                          contractNames &&
-                            item.project_contract_id &&
-                            contractNames.map(
-                              (t) =>
-                                t.project_contract_id ==
-                                item.project_contract_id
-                            ) &&
-                            item.role_id == scope.row &&
-                            contractNames
-                              .filter(
-                                (t) =>
-                                  t.project_contract_id ==
-                                  item.project_contract_id
-                              )
-                              .map((t) => t.name).length > 0
-                        "
-                        class="projectNames"
-                      >
+                      <span v-if="contractNames &&
+            item.project_contract_id &&
+            contractNames.map(
+              (t) =>
+                t.project_contract_id ==
+                item.project_contract_id
+            ) &&
+            item.role_id == scope.row &&
+            contractNames
+              .filter(
+                (t) =>
+                  t.project_contract_id ==
+                  item.project_contract_id
+              )
+              .map((t) => t.name).length > 0
+            " class="projectNames">
                         {{
-                          contractNames
-                            .filter(
-                              (t) =>
-                                t.project_contract_id ==
-                                item.project_contract_id
-                            )
-                            .map((t) => t.name)
-                            .join()
-                        }}
+            contractNames
+              .filter(
+                (t) =>
+                  t.project_contract_id ==
+                  item.project_contract_id
+              )
+              .map((t) => t.name)
+              .join()
+          }}
                       </span>
-                      <span
-                        v-if="
-                          vehicleNames &&
-                            item.project_contract_vehicle_id &&
-                            vehicleNames.map(
-                              (t) =>
-                                t.id ==
-                                item.project_contract_vehicle_id
-                            ) &&
-                            item.role_id == scope.row &&
-                            vehicleNames
-                              .filter(
-                                (t) =>
-                                  t.id ==
-                                  item.project_contract_vehicle_id
-                              )
-                              .map((t) => t.contract_vehicle.name).length > 0
-                        "
-                        class="projectNames"
-                      >
+                      <span v-if="vehicleNames &&
+            item.project_contract_vehicle_id &&
+            vehicleNames.map(
+              (t) =>
+                t.id ==
+                item.project_contract_vehicle_id
+            ) &&
+            item.role_id == scope.row &&
+            vehicleNames
+              .filter(
+                (t) =>
+                  t.id ==
+                  item.project_contract_vehicle_id
+              )
+              .map((t) => t.contract_vehicle.name).length > 0
+            " class="projectNames">
                         {{
-                          vehicleNames
-                            .filter(
-                              (t) =>
-                                t.id ==
-                                item.project_contract_vehicle_id
-                            )
-                            .map((t) => t.contract_vehicle.name)
-                            .join()
-                        }}
+            vehicleNames
+              .filter(
+                (t) =>
+                  t.id ==
+                  item.project_contract_vehicle_id
+              )
+              .map((t) => t.contract_vehicle.name)
+              .join()
+          }}
                       </span>
                     </span>
                   </span>
                   <span v-if="isEditingRoles && scope.$index == rowIndex_1">
-                    <el-select
-                      v-model="projectRoleUsers"
-                      v-if="!isEditingContractRoles"
-                      :popper-append-to-body="false"
-                      filterable
-                      multiple
-                      class="w-100 el-popper"
-                      track-by="id"
-                      placeholder="No projects assigned to this role"
-                      value-key="id"
-                      popper-class="select-popper"
-                    >
-                      <el-option
-                        v-for="item in projectNames"
-                        :value="item"
-                        :key="item.facilityProjectId"
-                        :label="item.facilityName"
-                      >
+                    <el-select v-model="projectRoleUsers" v-if="!isEditingContractRoles" :popper-append-to-body="false"
+                      filterable multiple class="w-100 el-popper" track-by="id"
+                      placeholder="No projects assigned to this role" value-key="id" popper-class="select-popper">
+                      <el-option v-for="item in projectNames" :value="item" :key="item.facilityProjectId"
+                        :label="item.facilityName">
                       </el-option>
                     </el-select>
                   </span>
-                  <span
-                    v-if="isEditingContractRoles && scope.$index == rowIndex_1"
-                  >
-                    <el-select
-                      v-model="contractRoleUsers"
-                      v-if="!isEditingRoles"
-                      filterable
-                      multiple
-                      class="w-100 el-popper"
-                      track-by="id"
-                      value-key="id"
-                      :popper-append-to-body="false"
-                      popper-class="select-popper"
-                    >
-                      <el-option
-                        v-for="item in contractNames"
-                        :value="item"
-                        :key="'C'+item.project_contract_id"
-                        :label="item.name"
-                      >
+                  <span v-if="isEditingContractRoles && scope.$index == rowIndex_1">
+                    <el-select v-model="contractRoleUsers" v-if="!isEditingRoles" filterable multiple
+                      class="w-100 el-popper" track-by="id" value-key="id" :popper-append-to-body="false"
+                      popper-class="select-popper">
+                      <el-option v-for="item in contractNames" :value="item" :key="'C' + item.project_contract_id"
+                        :label="item.name">
                       </el-option>
-                      <el-option
-                        v-for="item in vehicleNames"
-                        :value="item"
-                        :key="'V'+item.id"
-                        :label="item.contract_vehicle.name"
-                      >
+                      <el-option v-for="item in vehicleNames" :value="item" :key="'V' + item.id"
+                        :label="item.contract_vehicle.name">
                       </el-option>
                     </el-select>
                   </span>
@@ -739,139 +476,89 @@
                   </span> -->
                 </template>
               </el-table-column>
-              <el-table-column
-                v-else
-                width="800"
-                prop="projects"
-                sortable
-                filterable
-                label="Associations"
-              >
+              <el-table-column v-else width="800" prop="projects" sortable filterable label="Associations">
                 <template slot-scope="scope">
                   <span v-if="scope.$index !== rowIndex_1">
                     <span v-for="(item, i) in projectUsers.data" :key="i">
                       <!-- {{item}}   -->
-                      <span
-                        v-if="
-                          projectNames &&
-                            item.facility_project_id &&
-                            projectNames.map(
-                              (t) =>
-                                t.facilityProjectId == item.facility_project_id
-                            ) &&
-                            item.role_id == scope.row &&
-                            projectNames
-                              .filter(
-                                (t) =>
-                                  item.facility_project_id ==
-                                  t.facilityProjectId
-                              )
-                              .map((t) => t.facilityName).length > 0
-                        "
-                        class="projectNames"
-                      >
+                      <span v-if="projectNames &&
+            item.facility_project_id &&
+            projectNames.map(
+              (t) =>
+                t.facilityProjectId == item.facility_project_id
+            ) &&
+            item.role_id == scope.row &&
+            projectNames
+              .filter(
+                (t) =>
+                  item.facility_project_id ==
+                  t.facilityProjectId
+              )
+              .map((t) => t.facilityName).length > 0
+            " class="projectNames">
                         {{
-                          projectNames
-                            .filter(
-                              (t) =>
-                                item.facility_project_id == t.facilityProjectId
-                            )
-                            .map((t) => t.facilityName)
-                            .join()
-                        }}
+            projectNames
+              .filter(
+                (t) =>
+                  item.facility_project_id == t.facilityProjectId
+              )
+              .map((t) => t.facilityName)
+              .join()
+          }}
                       </span>
-                      <span
-                        v-if="
-                          contractNames &&
-                            item.project_contract_id &&
-                            contractNames.map(
-                              (t) =>
-                                t.project_contract_id ==
-                                item.project_contract_id
-                            ) &&
-                            item.role_id == scope.row &&
-                            contractNames
-                              .filter(
-                                (t) =>
-                                  t.project_contract_id ==
-                                  item.project_contract_id
-                              )
-                              .map((t) => t.name).length > 0
-                        "
-                        class="projectNames"
-                      >
+                      <span v-if="contractNames &&
+            item.project_contract_id &&
+            contractNames.map(
+              (t) =>
+                t.project_contract_id ==
+                item.project_contract_id
+            ) &&
+            item.role_id == scope.row &&
+            contractNames
+              .filter(
+                (t) =>
+                  t.project_contract_id ==
+                  item.project_contract_id
+              )
+              .map((t) => t.name).length > 0
+            " class="projectNames">
                         {{
-                          contractNames
-                            .filter(
-                              (t) =>
-                                t.project_contract_id ==
-                                item.project_contract_id
-                            )
-                            .map((t) => t.name)
-                            .join()
-                        }}
+            contractNames
+              .filter(
+                (t) =>
+                  t.project_contract_id ==
+                  item.project_contract_id
+              )
+              .map((t) => t.name)
+              .join()
+          }}
                       </span>
                     </span>
                   </span>
                   <span v-if="isEditingRoles && scope.$index == rowIndex_1">
-                    <el-select
-                      v-model="projectRoleUsers"
-                      v-if="!isEditingContractRoles"
-                      :popper-append-to-body="false"
-                      filterable
-                      multiple
-                      class="w-100 el-popper"
-                      track-by="id"
-                      placeholder="No projects assigned to this role"
-                      value-key="id"
-                      popper-class="select-popper"
-                    >
-                      <el-option
-                        v-for="item in projectNames"
-                        :value="item"
-                        :key="item.facilityProjectId"
-                        :label="item.facilityName"
-                      >
+                    <el-select v-model="projectRoleUsers" v-if="!isEditingContractRoles" :popper-append-to-body="false"
+                      filterable multiple class="w-100 el-popper" track-by="id"
+                      placeholder="No projects assigned to this role" value-key="id" popper-class="select-popper">
+                      <el-option v-for="item in projectNames" :value="item" :key="item.facilityProjectId"
+                        :label="item.facilityName">
                       </el-option>
                     </el-select>
                   </span>
-                  <span
-                    v-if="isEditingContractRoles && scope.$index == rowIndex_1"
-                  >
-                    <el-select
-                      v-model="contractRoleUsers"
-                      v-if="!isEditingRoles"
-                      filterable
-                      multiple
-                      class="w-100 el-popper"
-                      track-by="id"
-                      value-key="id"
-                      :popper-append-to-body="false"
-                      popper-class="select-popper"
-                    >
-                      <el-option
-                        v-for="item in contractNames"
-                        :value="item"
-                        :key="'C'+item.project_contract_id"
-                        :label="item.name"
-                      >
+                  <span v-if="isEditingContractRoles && scope.$index == rowIndex_1">
+                    <el-select v-model="contractRoleUsers" v-if="!isEditingRoles" filterable multiple
+                      class="w-100 el-popper" track-by="id" value-key="id" :popper-append-to-body="false"
+                      popper-class="select-popper">
+                      <el-option v-for="item in contractNames" :value="item" :key="'C' + item.project_contract_id"
+                        :label="item.name">
                       </el-option>
-                      <el-option
-                        v-for="item in vehicleNames"
-                        :value="item"
-                        :key="'V'+item.id"
-                        :label="item.contract_vehicle.name"
-                      >
+                      <el-option v-for="item in vehicleNames" :value="item" :key="'V' + item.id"
+                        :label="item.contract_vehicle.name">
                       </el-option>
                     </el-select>
                   </span>
                 </template>
               </el-table-column>
-              <el-table-column
-                width="125"
-                align="center"
-                v-if="_isallowed('delete')"
-              >
+              <el-table-column width="125" align="center" v-if="_isallowed('delete')">
                 <!-- <template slot="header" slot-scope="scope">
             <el-input
               v-model="searchRoleUsers"
@@ -879,52 +566,28 @@
               placeholder="Enter User or Role Name"/>
           </template> -->
                 <template slot-scope="scope">
-                  <el-button
-                    size="mini"
-                    type="default"
-                    v-if="
-                      (isEditingRoles || isEditingContractRoles) &&
-                        scope.$index == rowIndex_1 &&
-                        _isallowed('delete')
-                    "
-                    @click.prevent="removeAssociations(scope.$index, scope.row)"
-                    v-tooltip="`Save`"
-                    class="bg-primary btn-sm text-light"
-                  >
-                    <i class="far fa-save"></i>
+                  <el-button size="mini" type="default" v-if="(isEditingRoles || isEditingContractRoles) &&
+            scope.$index == rowIndex_1 &&
+            _isallowed('delete')
+            " @click.prevent="removeAssociations(scope.$index, scope.row)" v-tooltip="`Save`"
+                    class="bg-primary btn-sm text-light">
+                    <i class="fas fa-save"></i>
                   </el-button>
-                  <el-button
-                    size="mini"
-                    type="default"
-                    v-if="scope.$index !== rowIndex_1 && _isallowed('delete')"
-                    @click.prevent="removeRole(scope.$index, scope.row)"
-                    v-tooltip="`Remove Role`"
-                    class="bg-light btn-sm"
-                  >
-                    <i class="far fa-trash-alt text-danger "></i>
+                  <el-button size="mini" type="default" v-if="scope.$index !== rowIndex_1 && _isallowed('delete')"
+                    @click.prevent="removeRole(scope.$index, scope.row)" v-tooltip="`Remove Role`"
+                    class="bg-light btn-sm">
+                    <i class="fas fa-trash-alt text-danger "></i>
                   </el-button>
-                  <el-button
-                    size="mini"
-                    type="default"
-                    v-tooltip="`Remove Association(s)`"
+                  <el-button size="mini" type="default" v-tooltip="`Remove Association(s)`"
                     @click.prevent="editRoles(scope.$index, scope.row)"
-                    v-if="scope.$index !== rowIndex_1 && _isallowed('delete')"
-                    class="bg-danger text-light px-2"
-                  >
+                    v-if="scope.$index !== rowIndex_1 && _isallowed('delete')" class="bg-danger text-light px-2">
                     <i class="fal fa-user-lock mr-1 text-light"></i>
                     <!-- <i class="fal fa-user-gear mr-1 text-light"></i>  -->
                   </el-button>
-                  <el-button
-                   size="mini"
-                    type="default"
-                    v-if="
-                      (isEditingRoles || isEditingContractRoles) &&
-                        scope.$index == rowIndex_1
-                    "
-                    v-tooltip="`Cancel`"
-                    @click.prevent="cancelEditRoles(scope.$index, scope.row)"
-                    class="btn btn-sm bg-secondary text-light"
-                  >
+                  <el-button size="mini" type="default" v-if="(isEditingRoles || isEditingContractRoles) &&
+            scope.$index == rowIndex_1
+            " v-tooltip="`Cancel`" @click.prevent="cancelEditRoles(scope.$index, scope.row)"
+                    class="btn btn-sm bg-secondary text-light">
                     <i class="fas fa-ban"></i>
                   </el-button>
                 </template>
@@ -936,37 +599,20 @@
           </div>
 
           <!-- PROJECT ROLES DIALOG -->
-          <el-dialog
-            :visible.sync="assignProle"
-            append-to-body
-            center
-            class="p-0 users"
-          >
+          <el-dialog :visible.sync="assignProle" append-to-body center class="p-0 users">
             <!-- <div class="roleUser" v-if="userData">
          <span class="p-3"> <i class="fas fa-user mr-1"></i> {{ userData.full_name }}  </span>
      </div> -->
             <div class="mt-0 row">
               <div class="col-12 pt-0">
                 <label class="font-md mb-0 d-flex">Assign Project Role </label>
-                <el-select
-                  v-model="projectRoleNames"
-                  filterable
-                  class="w-100"
-                  clearable
-                  track-by="id"
-                  value-key="id"
-                  placeholder="Search and select Role"
-                >
-                  <el-option
-                    v-for="item in getRoles.filter(
-                      (t) =>
-                        t.type_of == 'project' &&
-                        t.name !== 'crud-row-project-20220407'
-                    )"
-                    :value="item"
-                    :key="item.id"
-                    :label="item.name"
-                  >
+                <el-select v-model="projectRoleNames" filterable class="w-100" clearable track-by="id" value-key="id"
+                  placeholder="Search and select Role">
+                  <el-option v-for="item in getRoles.filter(
+            (t) =>
+              t.type_of == 'project' &&
+              t.name !== 'crud-row-project-20220407'
+          )" :value="item" :key="item.id" :label="item.name">
                   </el-option>
                 </el-select>
               </div>
@@ -974,25 +620,12 @@
             <div class="mt-2 row">
               <div class="col-12 pt-0">
                 <span v-if="filteredProjects && filteredProjects.length > 0">
-                  <label class="font-md mb-0 d-flex"
-                    >Associate Projects to Role
+                  <label class="font-md mb-0 d-flex">Associate Projects to Role
                   </label>
-                  <el-select
-                    v-model="associatedProjects"
-                    multiple
-                    filterable
-                    class="w-100"
-                    clearable
-                    track-by="id"
-                    value-key="id"
-                    placeholder="Search and select Projects to Associate"
-                  >
-                    <el-option
-                      v-for="item in filteredProjects"
-                      :value="item"
-                      :key="item.facilityProjectId"
-                      :label="item.facilityName"
-                    >
+                  <el-select v-model="associatedProjects" multiple filterable class="w-100" clearable track-by="id"
+                    value-key="id" placeholder="Search and select Projects to Associate">
+                    <el-option v-for="item in filteredProjects" :value="item" :key="item.facilityProjectId"
+                      :label="item.facilityName">
                     </el-option>
                   </el-select>
                 </span>
@@ -1004,66 +637,36 @@
             </div>
             <div class="mt-2 row">
               <div class="col pt-1">
-                <el-button
-                 size="mini"
-                  type="default"
-                  @click="saveProjectUserRole()"
-                  v-if="
-                    projectRoleNames &&
-                      associatedProjects &&
-                      associatedProjects.length > 0
-                  "
-                  v-tooltip="`Save`"
-                  class="btn btn-sm bg-primary text-light"
-                >
+                <el-button size="mini" type="default" @click="saveProjectUserRole()" v-if="projectRoleNames &&
+            associatedProjects &&
+            associatedProjects.length > 0
+            " v-tooltip="`Save`" class="btn btn-sm bg-primary text-light">
                   <i class="fal fa-save"></i>
                 </el-button>
               </div>
               <div class="col text-right pt-1">
-                <el-button
-                  size="mini"
-                  type="default"
-                  @click.prevent="closeProjectRoles"
-                  class="btn btn-sm bg-secondary text-light modalBtns"
-                  v-tooltip="`Cancel`"
-                >
+                <el-button size="mini" type="default" @click.prevent="closeProjectRoles"
+                  class="btn btn-sm bg-secondary text-light modalBtns" v-tooltip="`Cancel`">
                   <i class="fas fa-ban"></i>
                 </el-button>
               </div>
             </div>
           </el-dialog>
           <!-- CONTRACT ROLES DIALOG -->
-          <el-dialog
-            :visible.sync="assignCrole"
-            append-to-body
-            center
-            class="p-0 users"
-          >
+          <el-dialog :visible.sync="assignCrole" append-to-body center class="p-0 users">
             <!-- <div class="roleUser" v-if="userData">
          <span class="p-3"> <i class="fas fa-user mr-1"></i> {{ userData.full_name }}  </span>
      </div> -->
             <div class="mt-0 row">
               <div class="col-12 pt-0">
                 <label class="font-md mb-0 d-flex">Assign Contract Role </label>
-                <el-select
-                  v-model="contractRoleNames"
-                  filterable
-                  class="w-100"
-                  clearable
-                  track-by="id"
-                  value-key="id"
-                  placeholder="Search and select role"
-                >
-                  <el-option
-                    v-for="item in getRoles.filter(
-                      (t) =>
-                        t.type_of == 'contract' &&
-                        t.name !== 'crud-row-contract-20220407'
-                    )"
-                    :value="item"
-                    :key="item.id"
-                    :label="item.name"
-                  >
+                <el-select v-model="contractRoleNames" filterable class="w-100" clearable track-by="id" value-key="id"
+                  placeholder="Search and select role">
+                  <el-option v-for="item in getRoles.filter(
+            (t) =>
+              t.type_of == 'contract' &&
+              t.name !== 'crud-row-contract-20220407'
+          )" :value="item" :key="item.id" :label="item.name">
                   </el-option>
                 </el-select>
               </div>
@@ -1071,25 +674,12 @@
             <div class="mt-3 row">
               <div class="col-12 pt-0">
                 <span v-if="filteredContracts && filteredContracts.length > 0">
-                  <label class="font-md mb-0 d-flex"
-                    >Associate Contracts to Role
+                  <label class="font-md mb-0 d-flex">Associate Contracts to Role
                   </label>
-                  <el-select
-                    v-model="associatedContracts"
-                    filterable
-                    class="w-100"
-                    multiple
-                    clearable
-                    track-by="id"
-                    value-key="id"
-                    placeholder="Search and select Contracts to Associate"
-                  >
-                    <el-option
-                      v-for="item in filteredContracts"
-                      :value="item"
-                      :key="item.project_contract_id"
-                      :label="item.name"
-                    >
+                  <el-select v-model="associatedContracts" filterable class="w-100" multiple clearable track-by="id"
+                    value-key="id" placeholder="Search and select Contracts to Associate">
+                    <el-option v-for="item in filteredContracts" :value="item" :key="item.project_contract_id"
+                      :label="item.name">
                     </el-option>
                   </el-select>
                 </span>
@@ -1101,29 +691,16 @@
             </div>
             <div class="mt-2 row">
               <div class="col pt-1">
-                <el-button
-                 size="mini"
-                  type="default"
-                  @click="saveContractUserRole()"
-                  v-if="
-                    contractRoleNames &&
-                      associatedContracts &&
-                      associatedContracts.length > 0
-                  "
-                  v-tooltip="`Save`"
-                  class="btn btn-sm bg-primary"
-                >
+                <el-button size="mini" type="default" @click="saveContractUserRole()" v-if="contractRoleNames &&
+            associatedContracts &&
+            associatedContracts.length > 0
+            " v-tooltip="`Save`" class="btn btn-sm bg-primary">
                   <i class="fal fa-save text-light"></i>
                 </el-button>
               </div>
               <div class="col text-right pt-1">
-                <el-button
-                 size="mini"
-                  type="default"
-                  @click.prevent="closeContractRoles"
-                  class="btn btn-sm bg-secondary text-light modalBtns"
-                  v-tooltip="`Cancel`"
-                >
+                <el-button size="mini" type="default" @click.prevent="closeContractRoles"
+                  class="btn btn-sm bg-secondary text-light modalBtns" v-tooltip="`Cancel`">
                   <i class="fas fa-ban"></i>
                 </el-button>
               </div>
@@ -1131,37 +708,20 @@
           </el-dialog>
 
           <!-- VEHICLE ROLES DIALOG -->
-          <el-dialog
-            :visible.sync="assignVrole"
-            append-to-body
-            center
-            class="p-0 users"
-          >
+          <el-dialog :visible.sync="assignVrole" append-to-body center class="p-0 users">
             <!-- <div class="roleUser" v-if="userData">
          <span class="p-3"> <i class="fas fa-user mr-1"></i> {{ userData.full_name }}  </span>
      </div> -->
             <div class="mt-0 row">
               <div class="col-12 pt-0">
                 <label class="font-md mb-0 d-flex">Assign Vehicle Role</label>
-                <el-select
-                  v-model="vehicleRoleNames"
-                  filterable
-                  class="w-100"
-                  clearable
-                  track-by="id"
-                  value-key="id"
-                  placeholder="Search and select role"
-                >
-                  <el-option
-                    v-for="item in getRoles.filter(
-                      (t) =>
-                        t.type_of == 'contract' &&
-                        t.name !== 'crud-row-contract-20220407'
-                    )"
-                    :value="item"
-                    :key="item.id"
-                    :label="item.name"
-                  >
+                <el-select v-model="vehicleRoleNames" filterable class="w-100" clearable track-by="id" value-key="id"
+                  placeholder="Search and select role">
+                  <el-option v-for="item in getRoles.filter(
+            (t) =>
+              t.type_of == 'contract' &&
+              t.name !== 'crud-row-contract-20220407'
+          )" :value="item" :key="item.id" :label="item.name">
                   </el-option>
                 </el-select>
               </div>
@@ -1169,25 +729,12 @@
             <div class="mt-3 row">
               <div class="col-12 pt-0">
                 <span v-if="filteredVehicles && filteredVehicles.length > 0">
-                  <label class="font-md mb-0 d-flex"
-                    >Associate Vehicle to Role
+                  <label class="font-md mb-0 d-flex">Associate Vehicle to Role
                   </label>
-                  <el-select
-                    v-model="associatedVehicles"
-                    filterable
-                    class="w-100"
-                    multiple
-                    clearable
-                    track-by="id"
-                    value-key="id"
-                    placeholder="Search and select Vehicles to Associate"
-                  >
-                    <el-option
-                      v-for="item in filteredVehicles"
-                      :value="item"
-                      :key="item.id"
-                      :label="item.contract_vehicle.name"
-                    >
+                  <el-select v-model="associatedVehicles" filterable class="w-100" multiple clearable track-by="id"
+                    value-key="id" placeholder="Search and select Vehicles to Associate">
+                    <el-option v-for="item in filteredVehicles" :value="item" :key="item.id"
+                      :label="item.contract_vehicle.name">
                     </el-option>
                   </el-select>
                 </span>
@@ -1199,29 +746,16 @@
             </div>
             <div class="mt-2 row">
               <div class="col pt-1">
-                <el-button
-                  size="mini"
-                  type="default"
-                  @click="saveVehicleUserRole()"
-                  v-if="
-                    vehicleRoleNames &&
-                      associatedVehicles &&
-                      associatedVehicles.length > 0
-                  "
-                  v-tooltip="`Save`"
-                  class="btn btn-sm bg-primary"
-                >
+                <el-button size="mini" type="default" @click="saveVehicleUserRole()" v-if="vehicleRoleNames &&
+            associatedVehicles &&
+            associatedVehicles.length > 0
+            " v-tooltip="`Save`" class="btn btn-sm bg-primary">
                   <i class="fal fa-save text-light"></i>
                 </el-button>
               </div>
               <div class="col text-right pt-1">
-                <el-button
-                 size="mini"
-                  type="default"
-                  @click.prevent="closeVehicleRoles"
-                  class="btn btn-sm bg-secondary text-light modalBtns"
-                  v-tooltip="`Cancel`"
-                >
+                <el-button size="mini" type="default" @click.prevent="closeVehicleRoles"
+                  class="btn btn-sm bg-secondary text-light modalBtns" v-tooltip="`Cancel`">
                   <i class="fas fa-ban"></i>
                 </el-button>
               </div>
@@ -1229,35 +763,18 @@
           </el-dialog>
           <!-- ADMIN ROLES DIALOG -->
 
-          <el-dialog
-            :visible.sync="assignArole"
-            append-to-body
-            center
-            class="p-0 users"
-          >
+          <el-dialog :visible.sync="assignArole" append-to-body center class="p-0 users">
             <!-- <div class="roleUser" v-if="userData">
          <span class="p-3"> <i class="fas fa-user mr-1"></i> {{ userData.full_name }}  </span>
      </div> -->
             <div class="mt-0 row">
               <div class="col-12 pt-0">
                 <label class="font-md mb-0 d-flex">Manage Admin Role </label>
-                <el-select
-                  v-model="adminRoleUsers"
-                  filterable
-                  class="w-100"
-                  clearable
-                  track-by="id"
-                  value-key="id"
-                  placeholder="Search and select role"
-                >
-                  <el-option
-                    v-for="item in getRoles.filter(
-                      (t) => t.type_of == 'admin' && t.name !== 'crud-row-admin'
-                    )"
-                    :value="item"
-                    :key="item.id"
-                    :label="item.name"
-                  >
+                <el-select v-model="adminRoleUsers" filterable class="w-100" clearable track-by="id" value-key="id"
+                  placeholder="Search and select role">
+                  <el-option v-for="item in getRoles.filter(
+            (t) => t.type_of == 'admin' && t.name !== 'crud-row-admin'
+          )" :value="item" :key="item.id" :label="item.name">
                   </el-option>
                 </el-select>
               </div>
@@ -1265,39 +782,20 @@
 
             <div class="mt-2 row">
               <div class="col pt-1">
-                <el-button
-                  size="mini"
-                  type="default"
-                  @click="saveAdminUserRole()"
-                  v-if="adminRoleUsers"
-                  v-tooltip="`Save`"
-                  class="btn btn-sm bg-primary text-light"
-                >
+                <el-button size="mini" type="default" @click="saveAdminUserRole()" v-if="adminRoleUsers"
+                  v-tooltip="`Save`" class="btn btn-sm bg-primary text-light">
                   <i class="fal fa-save"></i>
                 </el-button>
-                <el-button
-                  size="mini"
-                  type="default"
-                  @click="removeAssociations()"
-                  v-if="
-                    !adminRoleUsers &&
-                      assignedAdminRoles &&
-                      assignedAdminRoles[0]
-                  "
-                  v-tooltip="`Remove Admin Role from User`"
-                  class="btn btn-sm bg-danger text-light"
-                >
+                <el-button size="mini" type="default" @click="removeAssociations()" v-if="!adminRoleUsers &&
+            assignedAdminRoles &&
+            assignedAdminRoles[0]
+            " v-tooltip="`Remove Admin Role from User`" class="btn btn-sm bg-danger text-light">
                   <i class="fal fa-user-lock mr-1 text-light"></i>
                 </el-button>
               </div>
               <div class="col text-right pt-1">
-                <el-button
-                  size="mini"
-                  type="default"
-                  @click.prevent="closeAdminRoles"
-                  class="btn btn-sm bg-secondary text-light modalBtns"
-                  v-tooltip="`Cancel`"
-                >
+                <el-button size="mini" type="default" @click.prevent="closeAdminRoles"
+                  class="btn btn-sm bg-secondary text-light modalBtns" v-tooltip="`Cancel`">
                   <i class="fas fa-ban"></i>
                 </el-button>
               </div>
@@ -1306,19 +804,13 @@
           <div class="row mt-3">
             <div class="col-9 text-left">
               <span v-if="assignedAdminRoles && assignedAdminRoles[0]">
-                <i
-                  class="fa-solid fa-user-shield bootstrap-purple-text"
-                  v-tooltip="`Admin Role`"
-                ></i>
+                <i class="fa-solid fa-user-shield bootstrap-purple-text" v-tooltip="`Admin Role`"></i>
                 {{ assignedAdminRoles[0].name }}
               </span>
             </div>
             <div class="col text-right">
-              <button
-                @click.prevent="closeUserRoles"
-                class="btn btn-sm bg-secondary text-light modalBtns"
-                v-tooltip="`Cancel`"
-              >
+              <button @click.prevent="closeUserRoles" class="btn btn-sm bg-secondary text-light modalBtns"
+                v-tooltip="`Cancel`">
                 <i class="fas fa-ban"></i>
               </button>
             </div>
@@ -1465,7 +957,7 @@ export default {
       });
     },
     log(e) {
-        console.log(`${e}`)
+      console.log(`${e}`)
     },
     removeAssociations(index, rowData) {
       if (this.isEditingRoles) {
@@ -1489,11 +981,11 @@ export default {
       }
       if (this.isEditingContractRoles) {
         let cIds = this.contractRoleUsers.filter((f) => "billings_to_date" in f).map((t) => t.project_contract_id);
-        let vIds = this.contractRoleUsers.filter((f) => !("billings_to_date" in f)).map((t) => t.id);       
+        let vIds = this.contractRoleUsers.filter((f) => !("billings_to_date" in f)).map((t) => t.id);
         let assignedContracts = this.assignedUserContracts.map((t) => t.project_contract_id).filter((f) => f !== undefined);
         let assignedVehicles = this.assignedUserContracts.filter((f) => !("billings_to_date" in f)).map((t) => t.id);
         let aCids = assignedContracts.filter((t) => !cIds.includes(t));
-        if (aCids && aCids.length > 0 ) {
+        if (aCids && aCids.length > 0) {
           let cProjectUserRoleData = {
             userData: {
               roleId: rowData,
@@ -1503,8 +995,8 @@ export default {
             }
           }
           this.removeUserRole({
-          ...cProjectUserRoleData,
-        });
+            ...cProjectUserRoleData,
+          });
         }
         let aVids = assignedVehicles.filter((t) => !vIds.includes(t));
         if (aVids && aVids.length > 0) {
@@ -1517,8 +1009,8 @@ export default {
             }
           }
           this.removeUserRole({
-          ...vProjectUserRoleData,
-        });
+            ...vProjectUserRoleData,
+          });
         }
       }
     },
@@ -1553,8 +1045,8 @@ export default {
       this.SET_USERS_PROJECT_ROLES(this.assignedUserProjects);
       this.SET_USERS_CONTRACT_ROLES(this.assignedUserContracts);
       this.SET_USERS_VEHICLE_ROLES(this.assignedUserVehicles);
-      if ((this.assignedUserContracts && this.assignedUserContracts.length > 0) 
-      || (this.assignedUserVehicles && this.assignedUserVehicles.length > 0)) {
+      if ((this.assignedUserContracts && this.assignedUserContracts.length > 0)
+        || (this.assignedUserVehicles && this.assignedUserVehicles.length > 0)) {
         this.isEditingContractRoles = true;
       }
       if (this.assignedUserProjects && this.assignedUserProjects.length > 0) {
@@ -1618,10 +1110,10 @@ export default {
           userRoles: true,
         },
       };
-    //  console.log(vehicleIds)
-    //   console.log(this.associatedVehicles)
-    //    console.log(this.contractRoleNames)
-    //      console.log(this.vehicleRoleNames)
+      //  console.log(vehicleIds)
+      //   console.log(this.associatedVehicles)
+      //    console.log(this.contractRoleNames)
+      //      console.log(this.vehicleRoleNames)
       this.addUserToRole({
         ...projectUserRoleData,
       });
@@ -1703,16 +1195,16 @@ export default {
     },
     openUserRoleDialog(index, rows) {
       this.projId = rows.id;
-    
-    // console.log(this.projectUsers)
-        //console.log(rows)
+
+      // console.log(this.projectUsers)
+      //console.log(rows)
       this.openUserRoles = true;
       this.userData = rows;
       this.fetchContracts(this.$route.params.programId);
       this.fetchVehicles(this.$route.params.programId);
     },
     closeUserRoles() {
-      this.openUserRoles = false;      
+      this.openUserRoles = false;
     },
     closeProjectRoles() {
       this.assignProle = false;
@@ -1816,11 +1308,11 @@ export default {
   },
   mounted() {
     if (this.programUsers.length <= 0) {
-      this.fetchProgramUsers(this.$route.params.programId);     
+      this.fetchProgramUsers(this.$route.params.programId);
     }
     if (this.getRoles && this.getRoles.length <= 0) {
-        this.fetchRoles(this.$route.params.programId);
-      }
+      this.fetchRoles(this.$route.params.programId);
+    }
     this.fetchPortfolioUsers(this.$route.params.programId);
   },
   computed: {
@@ -1869,14 +1361,14 @@ export default {
         return this.getPortfolioUsers.filter(
           (u) => !programUserIds.includes(u.id)
         );
-      }else if(
+      } else if (
         this.getPortfolioUsers &&
         this.programUsers &&
         this.programUsers.length < 1
       ) {
         return this.getPortfolioUsers
       }
-      
+
     },
     projectRoleNames: {
       get() {
@@ -1923,7 +1415,7 @@ export default {
         //  console.log(value)
       },
     },
-     vehicleRoleNames: {
+    vehicleRoleNames: {
       get() {
         return this.getVehicleRoleNames;
       },
@@ -1931,7 +1423,7 @@ export default {
         this.SET_VEHICLE_ROLE_NAMES(value);
         //  console.log(value)
       },
-    }, 
+    },
     adminRoleNames: {
       get() {
         return this.getAdminRoleNames;
@@ -2007,16 +1499,16 @@ export default {
         this.vehicleNames &&
         this.vehicleNames.length > 0
       ) {
-         //console.log(this.projectUsers)
-         //console.log(this.projectUsers.data)
-         //console.log(this.vehicleNames)
+        //console.log(this.projectUsers)
+        //console.log(this.projectUsers.data)
+        //console.log(this.vehicleNames)
         let roleProjectIds = this.projectUsers.data.map(
-         (t) => t.project_contract_vehicle_id
+          (t) => t.project_contract_vehicle_id
         );
         //console.log(roleProjectIds)
         return this.vehicleNames.filter(
           (t) => !roleProjectIds.includes(t.id)
-        ); 
+        );
       }
     },
     admin_role_names() {
@@ -2054,7 +1546,7 @@ export default {
         let data = [].concat
           .apply([], roleUsers)
           .filter((t) => {
-            if (this.projId) {         
+            if (this.projId) {
               return this.projId == t.user_id;
             } else return true;
           })
@@ -2073,7 +1565,7 @@ export default {
             data
               .filter(
                 (t) =>
-               
+
                   t.project_id == this.$route.params.programId &&
                   (t.facility_project_id || t.project_contract_id || t.project_contract_vehicle_id)
               )
@@ -2127,7 +1619,7 @@ export default {
         } else {
           return filteredContracts;
         }
-        
+
       }
     },
     assignedUserVehicles() {
@@ -2207,8 +1699,8 @@ export default {
       return `/programs/${this.$route.params.programId}/settings`;
     },
   },
-  watch: { 
-    openUserRoles:{
+  watch: {
+    openUserRoles: {
       handler() {
         if (this.openUserRoles == false) {
           this.projId = null;
@@ -2222,8 +1714,8 @@ export default {
           MessageDialogService.showDialog({
             message: ` ${this.firstName +
               this.lastName} successfully added to your program.`,
-            
-            
+
+
           });
 
           if (this.getNewUserId && this.getNewUserId.msg) {
@@ -2248,8 +1740,8 @@ export default {
         if (this.editUserDataStatus == 200) {
           MessageDialogService.showDialog({
             message: `Successfully updated user`,
-            
-            
+
+
           });
           this.SET_EDIT_USER_DATA_STATUS(0);
           this.fetchProgramUsers(this.programId);
@@ -2263,8 +1755,8 @@ export default {
           if (this.portfolioUsers.length > 0) {
             MessageDialogService.showDialog({
               message: `${this.portfolioUsers.length} user(s) successfully added to your program.`,
-              
-              
+
+
             });
           }
           this.addMoreUsersBtn = true;
@@ -2278,8 +1770,8 @@ export default {
         if (this.programUsersStatus == 200) {
           MessageDialogService.showDialog({
             message: `Successfully removed user from program.`,
-            
-            
+
+
           });
           this.fetchProgramUsers(this.programId);
           this.SET_PROGRAM_USERS_STATUS(0);
@@ -2294,8 +1786,8 @@ export default {
         ) {
           MessageDialogService.showDialog({
             message: `Succesfully assigned user to role(s).`,
-            
-            
+
+
           });
           this.assignProle = false;
           this.assignCrole = false;
@@ -2319,8 +1811,8 @@ export default {
         if (this.removeRoleStatus == 204 || this.removeRoleStatus == 200) {
           MessageDialogService.showDialog({
             message: `Succesfully removed association(s) from role.`,
-            
-            
+
+
           });
           this.assignArole = false;
           this.fetchRoles(this.$route.params.programId);
@@ -2345,6 +1837,7 @@ export default {
   padding: 1px 3px;
   border: solid lightgray 0.75px;
 }
+
 ::v-deep.el-popper {
   .select-popper {
     display: none;
@@ -2354,15 +1847,18 @@ export default {
 ::v-deep.el-table__body-wrapper {
   overflow-y: visible;
 }
+
 .right-panel {
   height: calc(100vh - 100px);
   overflow-y: auto;
 }
+
 .roleUser {
   position: absolute;
   right: 0;
   top: 0;
 }
+
 .buttonWrapper {
   border-bottom: lightgray solid 1px;
 }
@@ -2372,6 +1868,7 @@ export default {
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
   &:hover {
     display: -webkit-box;
     -webkit-line-clamp: unset;
@@ -2381,42 +1878,52 @@ export default {
 ::v-deep.el-dialog {
   width: 30%;
 }
+
 .users {
   ::v-deep.el-dialog__body {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
 }
+
 ::v-deep.el-dialog__close.el-icon.el-icon-close {
   display: none;
 }
+
 ::v-deep.el-dialog__header.users {
   padding: 0;
 }
-::v-deep.el-table th.el-table__cell > .cell,
+
+::v-deep.el-table th.el-table__cell>.cell,
 .priviLabel {
   color: #212529;
   font-size: 1.1rem;
 }
+
 .userRoles {
   ::v-deep.el-dialog__body {
     padding-top: 0 !important;
   }
+
   ::v-deep.el-dialog {
     width: 55%;
   }
+
   ::v-deep.el-dialog__header {
     padding-bottom: 0 !important;
   }
 }
+
 .modalBtns {
   box-shadow: 0 2.5px 5px rgba(56, 56, 56, 0.19),
     0 3px 3px rgba(56, 56, 56, 0.23);
 }
+
 .auto-complete-wrapper {
   justify-content: center;
   align-items: center;
   position: relative;
+
   input {
     width: 100%;
     border: none;
@@ -2427,17 +1934,21 @@ export default {
     border-radius: 4px;
     background: transparent;
     transition: all 0.2s ease;
+
     &:focus {
       outline: none;
       box-shadow: inset 0 0 0 2px #dd9036;
     }
   }
+
   h5 {
     word-break: break-word;
   }
+
   .rowPrivileges {
     overflow-x: auto;
   }
+
   .spanInput {
     background-color: #f5f7fa;
     // border-color: #E4E7ED;
@@ -2445,6 +1956,7 @@ export default {
     border-radius: 4px;
     border: solid 1px #e4e7ed;
   }
+
   .results {
     position: absolute;
     max-height: 300px;
@@ -2452,8 +1964,10 @@ export default {
     width: 100%;
     background: #fff;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+
     .result {
       padding: 12px 0.75rem;
+
       &:hover {
         background: #efefef;
       }

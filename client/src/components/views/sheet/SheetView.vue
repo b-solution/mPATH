@@ -1,104 +1,69 @@
 <template>
-  <div
-    v-loading="!contentLoaded"
-    element-loading-text="Fetching your data. Please wait..."
-    element-loading-spinner="el-icon-loading"
-    class="row"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
-  >
+  <div v-loading="!contentLoaded" element-loading-text="Fetching your data. Please wait..."
+    element-loading-spinner="el-icon-loading" class="row" element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="col-md-2">
-      <ProjectSidebar
-        :current-facility-group="currentFacilityGroup"
-        :current-contract-group="currentContractGroup"
-        :current-vehicle-group="currentVehicleGroup"
-        :expanded="C_expanded"
-        :current-facility="currentFacility"
-        :current-contract="currentContract"
-        :current-vehicle="currentVehicle"
-        @on-expand-facility-group="expandFacilityGroup"
-        @on-expand-facility="showFacility"
-        @on-expand-contract="showContract"
-        @on-expand-vehicle="showVehicle"
-      />
+      <ProjectSidebar :current-facility-group="currentFacilityGroup" :current-contract-group="currentContractGroup"
+        :current-vehicle-group="currentVehicleGroup" :expanded="C_expanded" :current-facility="currentFacility"
+        :current-contract="currentContract" :current-vehicle="currentVehicle"
+        @on-expand-facility-group="expandFacilityGroup" @on-expand-facility="showFacility"
+        @on-expand-contract="showContract" @on-expand-vehicle="showVehicle" />
     </div>
     <div class="col-md-10">
       <div class="right-panel">
-        <div
-          v-if="
-            $route.name !== 'SheetRollup' &&
-              $route.name !== 'SheetTaskForm' &&
-              $route.name !== 'SheetIssueForm' &&
-              $route.name !== 'SheetRiskForm' &&
-              $route.name !== 'SheetNoteForm' &&
-              $route.name !== 'SheetLessonForm' &&
-              $route.name !== 'ContractTaskForm' &&
-              $route.name !== 'ContractIssueForm' &&
-              $route.name !== 'ContractRiskForm' &&
-              $route.name !== 'ContractNoteForm' &&
-              $route.name !== 'ContractLessonForm' &&
-              $route.name !== 'VehicleTaskForm' &&
-              $route.name !== 'VehicleIssueForm' &&
-              $route.name !== 'VehicleRiskForm' &&
-              $route.name !== 'VehicleNoteForm' &&
-              $route.name !== 'VehicleLessonForm'
-          "
-          class="d-flex align-items-center my-1 ml-1"
-        >
+        <div v-if="$route.name !== 'SheetRollup' &&
+    $route.name !== 'SheetTaskForm' &&
+    $route.name !== 'SheetIssueForm' &&
+    $route.name !== 'SheetRiskForm' &&
+    $route.name !== 'SheetNoteForm' &&
+    $route.name !== 'SheetLessonForm' &&
+    $route.name !== 'ContractTaskForm' &&
+    $route.name !== 'ContractIssueForm' &&
+    $route.name !== 'ContractRiskForm' &&
+    $route.name !== 'ContractNoteForm' &&
+    $route.name !== 'ContractLessonForm' &&
+    $route.name !== 'VehicleTaskForm' &&
+    $route.name !== 'VehicleIssueForm' &&
+    $route.name !== 'VehicleRiskForm' &&
+    $route.name !== 'VehicleNoteForm' &&
+    $route.name !== 'VehicleLessonForm'
+    " class="d-flex align-items-center my-1 ml-1">
           <!-- <span class="fbody-icon"><i class="fas fa-suitcase"></i></span> -->
-          <h5
-            class="f-head mb-0"
-            v-if="currentContract && $route.params.contractId"
-          >
+          <h5 class="f-head mb-0" v-if="currentContract && $route.params.contractId">
             <i class="far fa-file-contract mh-orange-text"></i>
             {{ currentContract.name || "Loading..." }}
           </h5>
-          <h5
-            class="f-head mb-0"
-            v-if="currentVehicle && $route.params.vehicleId"
-          >
+          <h5 class="f-head mb-0" v-if="currentVehicle && $route.params.vehicleId">
             <i class="far fa-car text-info"></i>
             {{ currentVehicle.name || "Loading..." }}
           </h5>
-          <h5
-            class="f-head mb-0"
-            v-if="currentFacility && $route.params.projectId"
-          >
+          <h5 class="f-head mb-0" v-if="currentFacility && $route.params.projectId">
             <i class="fal fa-clipboard-list mh-green-text"></i>
             {{ currentFacility.facilityName || "Loading..." }}
           </h5>
         </div>
         <div class="pr-3 ml-1">
-          <ProjectTabs
-            v-if="
-              $route.name !== 'SheetRollup' &&
-                $route.name !== 'SheetTaskForm' &&
-                $route.name !== 'SheetIssueForm' &&
-                $route.name !== 'SheetRiskForm' &&
-                $route.name !== 'SheetNoteForm' &&
-                $route.name !== 'SheetLessonForm' &&
-                $route.name !== 'ContractTaskForm' &&
-                $route.name !== 'ContractIssueForm' &&
-                $route.name !== 'ContractRiskForm' &&
-                $route.name !== 'ContractNoteForm' &&
-                $route.name !== 'ContractLessonForm'&&
-                $route.name !== 'VehicleTaskForm' &&
-                $route.name !== 'VehicleIssueForm' &&
-                $route.name !== 'VehicleRiskForm' &&
-                $route.name !== 'VehicleNoteForm' &&
-                $route.name !== 'VehicleLessonForm'
-            "
-          />
+          <ProjectTabs v-if="$route.name !== 'SheetRollup' &&
+    $route.name !== 'SheetTaskForm' &&
+    $route.name !== 'SheetIssueForm' &&
+    $route.name !== 'SheetRiskForm' &&
+    $route.name !== 'SheetNoteForm' &&
+    $route.name !== 'SheetLessonForm' &&
+    $route.name !== 'ContractTaskForm' &&
+    $route.name !== 'ContractIssueForm' &&
+    $route.name !== 'ContractRiskForm' &&
+    $route.name !== 'ContractNoteForm' &&
+    $route.name !== 'ContractLessonForm' &&
+    $route.name !== 'VehicleTaskForm' &&
+    $route.name !== 'VehicleIssueForm' &&
+    $route.name !== 'VehicleRiskForm' &&
+    $route.name !== 'VehicleNoteForm' &&
+    $route.name !== 'VehicleLessonForm'
+    " />
         </div>
         <div class="pr-3">
-          <router-view
-            :key="$route.path"
-            :facility="currentFacility"
-            :contract="currentContract"
-            :vehicle="currentVehicle"
-            :facilityGroup="currentFacilityGroup"
-            :contractGroup="currentContractGroup"
-            :vehicleGroup="currentVehicleGroup"
-          ></router-view>
+          <router-view :key="$route.path" :facility="currentFacility" :contract="currentContract"
+            :vehicle="currentVehicle" :facilityGroup="currentFacilityGroup" :contractGroup="currentContractGroup"
+            :vehicleGroup="currentVehicleGroup"></router-view>
         </div>
       </div>
     </div>
@@ -131,7 +96,7 @@ export default {
   },
   methods: {
     ...mapActions(['fetchCurrentProject']),
-    ...mapMutations(["SET_EXPANDED_GROUP",'setContentLoaded']),
+    ...mapMutations(["SET_EXPANDED_GROUP", 'setContentLoaded']),
     expandFacilityGroup(group) {
       if (group && this.getExpandedGroup !== group.id) {
         this.SET_EXPANDED_GROUP(group.id);
@@ -210,8 +175,6 @@ export default {
     },
   },
   mounted() {
-    console.log("SheetView",this.$route.params)
-
     if (
       this.getPreviousRoute.includes("Map") &&
       this.facilities.length !== this.getUnfilteredFacilities.length
@@ -225,12 +188,13 @@ export default {
       });
     }
   },
-
   beforeMount() {
-    console.log("SheetView beforeMount", this.$route.params.programId)
-    this.fetchCurrentProject(this.$route.params.programId)
-    // this.setContentLoaded(true);
-    // this.fetchContracts()
+    console.log("SheetView beforeMount", this.$route.params.programId);
+    this.fetchCurrentProject(this.$route.params.programId);
+    console.log("Content Loaded:", this.contentLoaded);
+    console.log("Facilities:", this.facilities);
+    console.log("Project Contracts:", this.projectContracts);
+    console.log("Project Vehicles:", this.projectVehicles);
     if (this.contentLoaded && this.$route.params.projectId) {
       this.currentFacility = this.facilities.find(
         (facility) => facility.facilityId == this.$route.params.projectId
@@ -244,10 +208,32 @@ export default {
     if (this.contentLoaded && this.$route.params.vehicleId) {
       this.currentVehicle = this.projectVehicles.find(
         (c) => c.projectContractVehicleId == this.$route.params.vehicleId
-
       );
     }
   },
+
+  // beforeMount() {
+  //   console.log("SheetView beforeMount", this.$route.params.programId)
+  //   this.fetchCurrentProject(this.$route.params.programId)
+  //   // this.setContentLoaded(true);
+  //   // this.fetchContracts()
+  //   if (this.contentLoaded && this.$route.params.projectId) {
+  //     this.currentFacility = this.facilities.find(
+  //       (facility) => facility.facilityId == this.$route.params.projectId
+  //     );
+  //   }
+  //   if (this.contentLoaded && this.$route.params.contractId) {
+  //     this.currentContract = this.projectContracts.find(
+  //       (c) => c.projectContractId == this.$route.params.contractId
+  //     );
+  //   }
+  //   if (this.contentLoaded && this.$route.params.vehicleId) {
+  //     this.currentVehicle = this.projectVehicles.find(
+  //       (c) => c.projectContractVehicleId == this.$route.params.vehicleId
+
+  //     );
+  //   }
+  // },
   watch: {
     contentLoaded: {
       handler() {
@@ -335,6 +321,7 @@ export default {
   font-size: large !important;
   color: #383838 !important;
 }
+
 .right-panel {
   height: calc(100vh - 100px);
   overflow-y: auto;

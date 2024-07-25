@@ -774,7 +774,7 @@ export default {
         : this.newOpStart
     },
     backHomeBtn() {
-      window.location.pathname = "/";
+      this.$router.push('/')
     },
     handleDelete(index, row) {
       console.log(index, row);

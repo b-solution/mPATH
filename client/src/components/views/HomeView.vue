@@ -6,7 +6,7 @@
     <div v-else>
       <nav v-if="this.isShowTabsBar()"
         class="navbar navbar-expand-lg blue-gradient navbar-light border-bottom border-muted" id="nav-wrap">
-        <a class="navbar-brand pt-0" href="/">
+        <a class="navbar-brand pt-0" role='button' @click="backHomeButton">
           <img class="mpathLogoWidth" src="microhealthllc.png" /></a>
         <button aria-controls="navbartoggler" aria-expanded="false" aria-label="Toggle navigation"
           class="navbar-toggler ml-auto" data-target="#navbartoggler" data-toggle="collapse" type="button">
@@ -71,7 +71,7 @@ export default {
     if (this.isLoggedIn) {
       this.verifyToken
       // console.log("LoginView Mounted", this.isLoggedIn)
-      this.$router.push({ name: 'ProgramListView' })
+      //this.$router.push({ name: 'ProgramListView' })
       this.fetchCurrentUser
     }
   },
@@ -81,6 +81,9 @@ export default {
       this.nullifyLocalStorage()
       this.$router.push(`/login`)
       await setAdminPanel()
+    },
+    backHomeButton() {
+      this.$router.push('/')
     },
     async setAdminPanel() {
       console.log("Admin------", this.$store)

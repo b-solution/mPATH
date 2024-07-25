@@ -606,7 +606,7 @@ export default {
       this.updateContractVehicle({...vehicleProjectData, id})    
   },
   backHomeBtn() {
-    window.location.pathname = "/";
+    this.$router.push({name: '/'})
   },    
   editMode(index, rows) {    
     this.rowIndex = index,
