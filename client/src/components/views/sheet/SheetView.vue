@@ -189,12 +189,7 @@ export default {
     }
   },
   beforeMount() {
-    console.log("SheetView beforeMount", this.$route.params.programId);
     this.fetchCurrentProject(this.$route.params.programId);
-    console.log("Content Loaded:", this.contentLoaded);
-    console.log("Facilities:", this.facilities);
-    console.log("Project Contracts:", this.projectContracts);
-    console.log("Project Vehicles:", this.projectVehicles);
     if (this.contentLoaded && this.$route.params.projectId) {
       this.currentFacility = this.facilities.find(
         (facility) => facility.facilityId == this.$route.params.projectId
@@ -211,29 +206,6 @@ export default {
       );
     }
   },
-
-  // beforeMount() {
-  //   console.log("SheetView beforeMount", this.$route.params.programId)
-  //   this.fetchCurrentProject(this.$route.params.programId)
-  //   // this.setContentLoaded(true);
-  //   // this.fetchContracts()
-  //   if (this.contentLoaded && this.$route.params.projectId) {
-  //     this.currentFacility = this.facilities.find(
-  //       (facility) => facility.facilityId == this.$route.params.projectId
-  //     );
-  //   }
-  //   if (this.contentLoaded && this.$route.params.contractId) {
-  //     this.currentContract = this.projectContracts.find(
-  //       (c) => c.projectContractId == this.$route.params.contractId
-  //     );
-  //   }
-  //   if (this.contentLoaded && this.$route.params.vehicleId) {
-  //     this.currentVehicle = this.projectVehicles.find(
-  //       (c) => c.projectContractVehicleId == this.$route.params.vehicleId
-
-  //     );
-  //   }
-  // },
   watch: {
     contentLoaded: {
       handler() {

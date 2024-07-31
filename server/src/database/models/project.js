@@ -69,7 +69,6 @@ module.exports = (sequelize, DataTypes) => {
     toJSON() {
       let h = { ...super.toJSON() };
       h["status"] = this.getStatus(h["status"]);
-      console.log("------hi-----:", h);
       return h;
     }
     getStatus(v) {
@@ -201,12 +200,30 @@ module.exports = (sequelize, DataTypes) => {
       let authorized_project_contract_vehicle_ids = [];
       options["response_for"] = options["response_for"] ? options["response_for"] : "client_panel";
       if (options["response_for"] == "program_settings") {
-        var authorized_facility_projects = await db.FacilityProject.findAll({ where: { project_id: this.id }, raw: true });
+        var authorized_facility_projects = await db.FacilityProject.findAll({
+          where: { project_id: this.id },
+          raw: true,
+          attributes: [
+            "id",
+            "facility_id",
+            "project_id",
+            "due_date",
+            "status_id",
+            "progress",
+            "color",
+            "facility_group_id",
+            "project_facility_group_id",
+            "issue_id",
+            "created_at",
+            "updated_at",
+            "Status_id",
+            "IssueId",
+          ],
+        });
         authorized_facility_project_ids = [];
         for (var fp of authorized_facility_projects) {
           authorized_facility_project_ids.push(fp.id);
         }
-
         var authorized_project_contracts = await db.ProjectContract.findAll({ where: { project_id: this.id } });
         authorized_project_contract_ids = compactAndUniq(
           _.map(authorized_project_contracts, function (pc) {
@@ -401,7 +418,6 @@ module.exports = (sequelize, DataTypes) => {
           "issue_id",
           "created_at",
           "updated_at",
-          "StatusId",
           "IssueId",
         ],
         where: { project_id: this.id, id: authorized_facility_project_ids },
@@ -439,9 +455,11 @@ module.exports = (sequelize, DataTypes) => {
         let facility_hash = facility_project.toJSON();
         facility_hash["facility_project_id"] = facility_project.id;
         facility_hash["class"] = "FacilityProject";
-        let facility_status = await facility_project.getStatus({ attributes: ["name"] });
-        facility_hash["project_status"] = facility_status.name;
-        facility_hash["facility_name"] = facility.facility_name;
+        let facility_status = await db.Status.findAll({ where: { id: facility_project.status_id } });
+        if (facility_status) {
+          facility_hash["project_status"] = facility_status.name;
+        }
+        facility_hash["facility_name"] = facility.dataValues.facility_name;
         facility_hash["facility"] = facility.toJSON();
         let fg_hash = facility_group.toJSON();
         facility_hash["facility"]["facility_group_id"] = fg_hash["id"];
@@ -524,7 +542,6 @@ module.exports = (sequelize, DataTypes) => {
             facility_hash.notes.push(await note.toJSON());
           }
         }
-
         response.facilities.push(facility_hash);
         facility_projects_hash2[facility_project.id] = facility_hash;
       }
@@ -592,7 +609,6 @@ module.exports = (sequelize, DataTypes) => {
         ],
         where: { project_id: this.id, id: authorized_project_contract_ids },
       });
-      console.log("proj----", project_contracts);
       let project_contract_ids = authorized_project_contract_ids;
       let contract_project_datum_ids = _.uniq(
         _.map(project_contracts, function (pc) {

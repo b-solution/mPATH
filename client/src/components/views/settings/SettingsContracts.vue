@@ -11,8 +11,11 @@
             </span>
           </el-breadcrumb-item>
           <h4 class="mt-4 ml-3">
-            <i class="fas fa-file-contract ml-2 mr-1 mh-orange-text"></i>
-            CONTRACTS
+            <svg style="width: 21px;" class="svgAlignment" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path fill="#dd9036"
+                d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zM64 72c0-4.4 3.6-8 8-8h80c4.4 0 8 3.6 8 8v16c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8V72zm0 64c0-4.4 3.6-8 8-8h80c4.4 0 8 3.6 8 8v16c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8v-16zm192.8 248H304c8.8 0 16 7.2 16 16s-7.2 16-16 16h-47.2c-16.5 0-31.3-9.1-38.6-23.9-3-5.9-8.1-6.5-10.2-6.5s-7.2 .6-10 6.2l-7.7 15.3a16 16 0 0 1 -14.3 8.8c-.4 0-.8 0-1.1-.1-6.5-.5-12-4.8-14-10.9L144 354.6l-10.6 31.9c-5.9 17.7-22.4 29.5-41 29.5H80c-8.8 0-16-7.2-16-16s7.2-16 16-16h12.4c4.8 0 9.1-3.1 10.6-7.7l18.2-54.6c3.3-9.8 12.4-16.4 22.8-16.4s19.5 6.6 22.8 16.4l13.9 41.6c19.8-16.2 54.1-9.7 66 14.2 2 4.1 6 6.5 10.2 6.5zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z" />
+            </svg> CONTRACTS
             <span v-if="tableData && tableData.length" class="ml-2 pb-1 badge badge-secondary badge-pill pill">{{
             tableData.length }}
             </span>
@@ -100,12 +103,16 @@
                 <el-button type="default" size="small" v-tooltip="`Change Group`"
                   @click.prevent="editMode(scope.$index, scope.row)"
                   v-if="scope.$index !== rowIndex && _isallowed('write')" class="bg-light px-2">
-                  <i class="fa-solid fa-network-wired"></i>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#dd9036"
+                    viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                    <path
+                      d="M256 64l128 0 0 64-128 0 0-64zM240 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l48 0 0 32L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0 0 32-48 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l160 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0-32 256 0 0 32-48 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l160 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0-32 96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-256 0 0-32 48 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48L240 0zM96 448l0-64 128 0 0 64L96 448zm320-64l128 0 0 64-128 0 0-64z" />
+                  </svg>
                 </el-button>
                 <el-button type="default" size="small" v-tooltip="`Manage User(s)`"
                   @click.prevent="addUserRole(scope.$index, scope.row)" v-if="scope.$index !== rowIndex"
                   class="bg-primary text-light px-2">
-                  <i class="fas fa-users-medical mr-1"></i>
+                  <i class="fas fa-users"></i>
                 </el-button>
                 <el-button type="default" v-if="scope.$index == rowIndex
             " @click.prevent="saveEdits(scope.$index, scope.row)" v-tooltip="`Save`" size="small"
@@ -119,7 +126,7 @@
                 <el-button :load="log(scope.row)" type="default" size="small" class="bg-light btn-sm px-2"
                   v-tooltip="'Remove Contract'" @click.prevent="removeContractBtn(scope.$index, scope.row)"
                   v-if="scope.$index !== rowIndex && _isallowed('write')">
-                  <i class="fa-solid fa-circle-minus text-danger"></i>
+                  <i class="fa fa-minus-circle text-danger"></i>
                 </el-button>
                 <el-button type="default" size="small" v-tooltip="`Go To Contract`"
                   v-if="_isallowedContracts(scope.row.project_contract_id, 'read')"
@@ -135,8 +142,7 @@
               access.</i></h5>
         </div>
         <el-dialog :visible.sync="contractDialogVisible" append-to-body center class="contractForm addContract p-0">
-
-          <div class="row mb-3">
+          <div class="row mb-3 mt-1">
             <div class="col-7">
               <span slot="title" class="text-left add-groups-header ">
                 <h5 class="text-dark"> <i class="far fa-plus-circle mr-1 mb-3"></i>Add Exisiting Contract </h5>
@@ -624,6 +630,7 @@ export default {
         },
       };
       this.associateContractToProgram({ ...contractData })
+      this.contractDialogVisible = false
     },
     goToContract(index, rows) {
       console.log(rows)
@@ -734,11 +741,6 @@ export default {
       this.hideSaveBtn = false;
     },
     addContract() {
-      //  if (this.allContracts  && this.allContracts.length > 0){
-      //       console.log(this.allContracts)
-      //           console.log('tableData', this.tableData)
-      //  }
-      console.log(this.tableData)
       this.contractDialogVisible = true;
       this.fetchContractProjects(this.$route.params.programId);
     },
@@ -1114,6 +1116,7 @@ a {
 .right-panel {
   height: calc(100vh - 100px);
   overflow-y: auto;
+  overflow-x: hidden
 }
 
 ::v-deep.el-input__inner {

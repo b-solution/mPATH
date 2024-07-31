@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // // define association here
       this.belongsTo(models.Facility, { foreignKey: "facility_id", onDelete: "CASCADE" });
       this.belongsTo(models.Project, { foreignKey: "project_id", onDelete: "CASCADE" });
-      this.belongsTo(models.Status);
+      this.belongsTo(models.Status, { foreignKey: "status_id" });
       this.hasMany(models.Task, { foreignKey: "facility_project_id" });
       // // this.belongsToMany(models.TaskType,{through: models.Task, foreignKey: '', otherKey: '' });
       this.belongsTo(models.Issue, { foreignKey: "issue_id" });

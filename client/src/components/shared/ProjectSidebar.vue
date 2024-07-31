@@ -270,6 +270,8 @@ export default {
       "setProjectGroupFilter",
       "setShowAdminBtn",
       "SET_EXPANDED_GROUP",
+      "fetchCurrentProject",
+
     ]),
     ...mapActions([
       "createContract",
@@ -331,11 +333,9 @@ export default {
       });
     },
     toggleAdminView() {
-      // window.location.pathname = `/programs/${this.$route.params.programId}/settings`
-      // this.setShowAdminBtn(!this.getShowAdminBtn);
-      this.$router.push({
-        name: "SettingsView",
-      });
+      this.$router.push(
+        `/programs/${this.$route.params.programId}/settings`
+      )
     },
     handleClose(done) {
       this.$confirm("Are you sure to close this dialog?")

@@ -514,20 +514,19 @@ const settingsStore = {
 
     //POST NEW ROLE
     createRole({ commit, getters }, { role }) {
-      let formData = new FormData()
-      // console.log(role)
-      formData.append('role[name]', role.name) //Required
-      formData.append('role[project_id]', role.pId)
-      formData.append('role[type_of]', role.type)
-      formData.append('role[user_id]', role.uId)
+      let formData = {
+        'role[name]': role.name,
+        'role[project_id]': role.pId,
+        'role[type_of]': role.type,
+        'role[user_id]': role.uId
+      }
       var arrayCounter = 0
       role.rp.forEach((p) => {
-        formData.append('role[role_privileges][' + arrayCounter + '][privilege]', p.privilege)
-        formData.append('role[role_privileges][' + arrayCounter + '][role_type]', p.role_type)
-        formData.append('role[role_privileges][' + arrayCounter + '][name]', p.name)
+        formData['role[role_privileges][' + arrayCounter + '][privilege]'] = p.privilege
+        formData['role[role_privileges][' + arrayCounter + '][role_type]'] = p.role_type
+        formData['role[role_privileges][' + arrayCounter + '][name]'] = p.name
         arrayCounter++
       })
-
       commit('TOGGLE_NEW_ROLE_LOADED', false)
       axios({
         method: 'POST',
@@ -541,7 +540,6 @@ const settingsStore = {
       })
         .then((res) => {
           commit('SET_ROLE', res.data)
-          //  console.log(res.data)
           commit('SET_NEW_ROLE_STATUS', res.status)
         })
         .catch((err) => {
@@ -553,19 +551,19 @@ const settingsStore = {
     },
     // UPDATE ROLE
     updateRole({ commit, getters }, { role }) {
-      let formData = new FormData()
-      // console.log(role)
-      formData.append('role[name]', role.name) //Required
-      formData.append('role[id]', role.id) //Required
-      formData.append('role[project_id]', role.pId)
-      formData.append('role[type_of]', role.type)
-      formData.append('role[user_id]', role.uId)
+      let formData = {
+        'role[name]': role.name,
+        'role[id]': role.id,
+        'role[project_id]': role.pId,
+        'role[type_of]': role.type,
+        'role[user_id]': role.uId
+      }
       var arrayCounter = 0
       role.rp.forEach((p) => {
-        formData.append('role[role_privileges][' + arrayCounter + '][privilege]', p.privilege)
-        formData.append('role[role_privileges][' + arrayCounter + '][role_type]', p.role_type)
-        formData.append('role[role_privileges][' + arrayCounter + '][name]', p.name)
-        formData.append('role[role_privileges][' + arrayCounter + '][id]', p.id)
+        formData['role[role_privileges][' + arrayCounter + '][privilege]'] = p.privilege
+        formData['role[role_privileges][' + arrayCounter + '][role_type]'] = p.role_type
+        formData['role[role_privileges][' + arrayCounter + '][name]'] = p.name
+        formData['role[role_privileges][' + arrayCounter + '][id]'] = p.id
         arrayCounter++
       })
       commit('TOGGLE_NEW_ROLE_LOADED', false)
@@ -580,9 +578,7 @@ const settingsStore = {
         }
       })
         .then((res) => {
-          //  commit("SET_ROLE", res.data);
           commit('SET_ROLE', res.data)
-          // console.log(res.data.role.type_of)
           if (res.data && res.data.role.type_of == 'admin') {
             commit('SET_UPDATED_ROLE_STATUS', res.status)
           }
@@ -603,8 +599,6 @@ const settingsStore = {
     },
     //ADD USER TO ROLE
     addUserToRole({ commit, getters }, { userData }) {
-      // let formData =  userRoleData(userData);
-      //console.log(userData);
       let formData = new FormData()
       var arrayCounter = 0
       if (userData.projectIds) {

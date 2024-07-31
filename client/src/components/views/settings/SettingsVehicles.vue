@@ -7,113 +7,69 @@
       <div class="right-panel">
         <el-breadcrumb separator-class="el-icon-arrow-right" class="mt-3 mb-4">
           <el-breadcrumb-item :to="backToSettings">
-            <span style="cursor:pointer"
-              ><i class="far fa-cog mr-1"></i> PROGRAM SETTINGS
+            <span style="cursor:pointer"><i class="far fa-cog mr-1"></i> PROGRAM SETTINGS
             </span>
           </el-breadcrumb-item>
           <h4 class="mt-4 ml-3">
-            <i class="fal fa-car mr-1 text-info"></i> VEHICLES
-            <span
-              v-if="tableData || subTableData"
-              class="ml-2 pb-1 badge badge-secondary badge-pill pill"
-              >{{ tableData.length + subTableData.length }}
+            <i class="fas fa-car mr-1 text-info"></i> VEHICLES
+            <span v-if="tableData || subTableData" class="ml-2 pb-1 badge badge-secondary badge-pill pill">{{
+            tableData.length + subTableData.length }}
             </span>
-            <span v-else class="ml-2 pb-1 badge badge-secondary badge-pill pill"
-              >{{ 0 }}
+            <span v-else class="ml-2 pb-1 badge badge-secondary badge-pill pill">{{ 0 }}
             </span>
           </h4>
         </el-breadcrumb>
         <div class="my-1 pb-2 buttonWrapper container-fluid">
           <div class="row px-0">
             <div class="col">
-              <el-button
-                v-if="_isallowed('write')"
-                @click.prevent="addVehicle"
-                class="bg-success text-light mb-2"
-              >
-                <i class="far fa-plus-circle mr-1"></i> Add Existing Vehicle(s)
+              <el-button v-if="_isallowed('write')" @click.prevent="addVehicle" class="bg-success text-light mb-2">
+                <i class="fas fa-plus-circle mr-1"></i> Add Existing Vehicle(s)
               </el-button>
             </div>
             <div class="col-5">
-              <el-input
-                type="search"
-                placeholder="Search by Vehicle Name, SINS/Subcategories, Contract Agency, or Type"
-                aria-label="Search"
-                class="pr-0"
-                aria-describedby="search-addon"
-                v-model="search"
-                data-cy=""
-              >
+              <el-input type="search" placeholder="Search by Vehicle Name, SINS/Subcategories, Contract Agency, or Type"
+                aria-label="Search" class="pr-0" aria-describedby="search-addon" v-model="search" data-cy="">
                 <el-button slot="prepend" icon="el-icon-search"></el-button>
               </el-input>
             </div>
             <div class="col pl-0">
-              <el-select
-                class="w-100 mx-2"
-                v-model="C_projectGroupFilter"
-                track-by="id"
-                value-key="id"
-                multiple
-                filterable
-                clearable
-                name="Project Group"
-                placeholder="Filter Vehicles By Group"
-              >
-                <el-option
-                  v-for="item in groupList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item"
-                >
+              <el-select class="w-100 mx-2" v-model="C_projectGroupFilter" track-by="id" value-key="id" multiple
+                filterable clearable name="Project Group" placeholder="Filter Vehicles By Group">
+                <el-option v-for="item in groupList" :key="item.id" :label="item.name" :value="item">
                 </el-option>
               </el-select>
             </div>
           </div>
         </div>
-        <div
-          v-loading="!vehiclesLoaded"
-          element-loading-text="Fetching your data. Please wait..."
-          element-loading-spinner="el-icon-loading"
-          element-loading-background="rgba(0, 0, 0, 0.8)"
-          class=""
-          v-if="_isallowed('read')"
-        >
+        <div v-loading="!vehiclesLoaded" element-loading-text="Fetching your data. Please wait..."
+          element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)" class=""
+          v-if="_isallowed('read')">
           <el-tabs type="border-card" @tab-click="handleClick">
             <el-tab-pane class="p-3" style="postion:relative" label="PRIME">
-              <el-table
-                v-if="tableData"           
-                :data="
-                  tableData
-                    .filter(
-                      (data) =>
-                        !search ||
-                        data.contract_vehicle.name
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        data.contract_vehicle.full_name
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        data.contract_vehicle.contract_agency.name
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        data.contract_vehicle.contract_sub_category.name
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        data.contract_vehicle.contract_vehicle_type.name
-                          .toLowerCase()
-                          .includes(search.toLowerCase())
-                    )
-                    .reverse()
-                "
-                style="width: 100%"
-                highlight-current-row
-                height="450"
-                ref="table"
-                :row-key="(row) => row.id"
-                :expand-row-keys="expandRowKeys"
-                @expand-change="handleExpandChange"
-                :default-sort="{ prop: 'name', order: 'ascending' }"
-              >
+              <el-table v-if="tableData" :data="tableData
+            .filter(
+              (data) =>
+                !search ||
+                data.contract_vehicle.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                data.contract_vehicle.full_name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                data.contract_vehicle.contract_agency.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                data.contract_vehicle.contract_sub_category.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                data.contract_vehicle.contract_vehicle_type.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase())
+            )
+            .reverse()
+            " style="width: 100%" highlight-current-row height="450" ref="table" :row-key="(row) => row.id"
+                :expand-row-keys="expandRowKeys" @expand-change="handleExpandChange"
+                :default-sort="{ prop: 'name', order: 'ascending' }">
                 <el-table-column prop="prime_name" label="Prime">
                   <template slot-scope="scope">
                     <span v-if="scope.row.contract_vehicle.prime_name">
@@ -155,66 +111,40 @@
             </el-table-column> -->
                 <el-table-column label="Contracting Agency">
                   <template slot-scope="scope">
-                    <span
-                      v-if="
-                        scope.row.contract_vehicle.contract_agency &&
-                          scope.row.contract_vehicle.contract_agency.name !==
-                            null
-                      "
-                    >
+                    <span v-if="scope.row.contract_vehicle.contract_agency &&
+            scope.row.contract_vehicle.contract_agency.name !==
+            null
+            ">
                       {{ scope.row.contract_vehicle.contract_agency.name }}
                     </span>
                   </template>
                 </el-table-column>
                 <el-table-column label="Vehicle Type">
                   <template slot-scope="scope">
-                    <span
-                      v-if="
-                        scope.row.contract_vehicle.contract_vehicle_type &&
-                          scope.row.contract_vehicle.contract_vehicle_type
-                            .name !== null
-                      "
-                    >
+                    <span v-if="scope.row.contract_vehicle.contract_vehicle_type &&
+            scope.row.contract_vehicle.contract_vehicle_type
+              .name !== null
+            ">
                       {{
-                        scope.row.contract_vehicle.contract_vehicle_type.name
-                      }}
+            scope.row.contract_vehicle.contract_vehicle_type.name
+          }}
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="facility_group"
-                  sortable
-                  filterable
-                  label="Group"
-                >
+                <el-table-column prop="facility_group" sortable filterable label="Group">
                   <template slot-scope="scope">
-                    <el-select
-                      v-model="scope.row.facility_group_id"
-                      class="w-100"
-                      v-if="rowId == scope.row.contract_vehicle.id"
-                      filterable
-                      track-by="id"
-                      clearable
-                      value-key="id"
-                      placeholder="Search and select Group"
-                    >
-                      <el-option
-                        v-for="item in facilityGroups"
-                        :value="item.id"
-                        :key="item.id"
-                        :label="item.name"
-                      >
+                    <el-select v-model="scope.row.facility_group_id" class="w-100"
+                      v-if="rowId == scope.row.contract_vehicle.id" filterable track-by="id" clearable value-key="id"
+                      placeholder="Search and select Group">
+                      <el-option v-for="item in facilityGroups" :value="item.id" :key="item.id" :label="item.name">
                       </el-option>
                     </el-select>
 
                     <span v-else>
-                      <span
-                        v-if="
-                          scope.row.facility_group &&
-                            scope.row.facility_group.name &&
-                            rowId !== scope.row.contract_vehicle.id
-                        "
-                      >
+                      <span v-if="scope.row.facility_group &&
+            scope.row.facility_group.name &&
+            rowId !== scope.row.contract_vehicle.id
+            ">
                         {{ scope.row.facility_group.name }}
                       </span>
                     </span>
@@ -227,72 +157,42 @@
                 </el-table-column>
                 <el-table-column label="Actions" align="right">
                   <template slot-scope="scope">
-                    <span class="px-0">                     
-                      <el-button
-                        size="small"
-                        type="default"
-                        v-tooltip="`Change Group`"
+                    <span class="px-0">
+                      <el-button size="small" type="default" v-tooltip="`Change Group`"
                         @click.prevent="editMode(scope.$index, scope.row)"
-                        v-if="scope.$index !== rowIndex && _isallowed('write')"
-                        class="bg-light btn-sm px-2"
-                      >
-                        <i class="fal fa-network-wired mh-blue-text"></i>
+                        v-if="scope.$index !== rowIndex && _isallowed('write')" class="bg-light btn-sm px-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#dd9036"
+                          viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                          <path
+                            d="M256 64l128 0 0 64-128 0 0-64zM240 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l48 0 0 32L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0 0 32-48 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l160 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0-32 256 0 0 32-48 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l160 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0-32 96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-256 0 0-32 48 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48L240 0zM96 448l0-64 128 0 0 64L96 448zm320-64l128 0 0 64-128 0 0-64z" />
+                        </svg>
                       </el-button>
-                      <el-button
-                        size="small"
-                        type="default"
-                        v-tooltip="`Manage User(s)`"
-                        @click.prevent="addUserRole(scope.$index, scope.row)"
-                        v-if="scope.$index !== rowIndex"
-                        class="bg-primary text-light btn-sm px-2"
-                      >
-                        <i class="fas fa-users-medical"></i>
+                      <el-button size="small" type="default" v-tooltip="`Manage User(s)`"
+                        @click.prevent="addUserRole(scope.$index, scope.row)" v-if="scope.$index !== rowIndex"
+                        class="bg-primary text-light btn-sm px-2">
+                        <i class="fas fa-users"></i>
                       </el-button>
-                      <el-button
-                        size="small"
-                        type="default"
-                        v-if="scope.$index == rowIndex"
-                        @click.prevent="saveEdits(scope.$index, scope.row)"
-                        v-tooltip="`Save`"
-                        class="bg-primary btn-sm text-light px-2"
-                      >
+                      <el-button size="small" type="default" v-if="scope.$index == rowIndex"
+                        @click.prevent="saveEdits(scope.$index, scope.row)" v-tooltip="`Save`"
+                        class="bg-primary btn-sm text-light px-2">
                         <i class="far fa-save"></i>
                       </el-button>
-                      <el-button
-                        size="small"
-                        type="default"
-                        v-tooltip="`Cancel Edit`"
-                        v-if="scope.$index == rowIndex"
+                      <el-button size="small" type="default" v-tooltip="`Cancel Edit`" v-if="scope.$index == rowIndex"
                         @click.prevent="cancelEdits(scope.$index, scope.row)"
-                        class="bg-secondary btn-sm text-light px-2"
-                      >
+                        class="bg-secondary btn-sm text-light px-2">
                         <i class="fas fa-ban"></i>
                       </el-button>
-                      <el-button
-                        type="default"
-                        size="small"
-                        class="bg-light btn-sm px-2"
-                        v-tooltip="'Remove Vehicle'"
+                      <el-button type="default" size="small" class="bg-light btn-sm px-2" v-tooltip="'Remove Vehicle'"
                         @click.prevent="
-                          removeVehicleBtn(scope.$index, scope.row)
-                        "
-                        v-if="scope.$index !== rowIndex && _isallowed('write')"
-                      >
-                        <i class="fa-light fa-circle-minus text-danger"></i>
+            removeVehicleBtn(scope.$index, scope.row)
+            " v-if="scope.$index !== rowIndex && _isallowed('write')">
+                        <i class="fa fa-minus-circle text-danger"></i>
                       </el-button>
-                      <el-button
-                       size="small"
-                        type="default"
-                        v-tooltip="`Go To Vehicle`"
-                        v-if="
-                          _isallowedContracts(
-                            scope.row.id, // should be scope.row.project_contract_vehicle_id but returns undefined
-                            'read'
-                          )
-                        "
-                        @click.prevent="goToVehicle(scope.$index, scope.row)"
-                        class="bg-success text-light btn-sm"
-                      >
+                      <el-button size="small" type="default" v-tooltip="`Go To Vehicle`" v-if="_isallowedContracts(
+            scope.row.id, // should be scope.row.project_contract_vehicle_id but returns undefined
+            'read'
+          )
+            " @click.prevent="goToVehicle(scope.$index, scope.row)" class="bg-success text-light btn-sm">
                         <i class="fas fa-arrow-alt-circle-right"></i>
                       </el-button>
                     </span>
@@ -301,45 +201,31 @@
                 </el-table-column>
               </el-table>
             </el-tab-pane>
-            <el-tab-pane
-              class="p-3"
-              style="postion:relative"
-              label="SUBCONTRACT"
-            >
-              <el-table
-                v-if="subTableData"
-                :data="
-                  subTableData
-                    .filter(
-                      (data) =>
-                        !search ||
-                        data.contract_vehicle.name
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        data.contract_vehicle.full_name
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        data.contract_vehicle.contract_agency.name
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        data.contract_vehicle.subprime_name
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        data.contract_vehicle.contract_vehicle_type.name
-                          .toLowerCase()
-                          .includes(search.toLowerCase())
-                    )
-                    .reverse()
-                "
-                style="width: 100%"
-                highlight-current-row
-                height="450"
-                ref="table"
-                :row-key="(row) => row.id"
-                :expand-row-keys="expandRowKeys"
-                @expand-change="handleExpandChange"
-                :default-sort="{ prop: 'name', order: 'ascending' }"
-              >
+            <el-tab-pane class="p-3" style="postion:relative" label="SUBCONTRACT">
+              <el-table v-if="subTableData" :data="subTableData
+            .filter(
+              (data) =>
+                !search ||
+                data.contract_vehicle.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                data.contract_vehicle.full_name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                data.contract_vehicle.contract_agency.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                data.contract_vehicle.subprime_name
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                data.contract_vehicle.contract_vehicle_type.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase())
+            )
+            .reverse()
+            " style="width: 100%" highlight-current-row height="450" ref="table" :row-key="(row) => row.id"
+                :expand-row-keys="expandRowKeys" @expand-change="handleExpandChange"
+                :default-sort="{ prop: 'name', order: 'ascending' }">
                 <el-table-column prop="subprime_name" label="Subcontract Prime">
                   <template slot-scope="scope">
                     <span v-if="scope.row.contract_vehicle.subprime_name">
@@ -370,66 +256,40 @@
                 </el-table-column>
                 <el-table-column label="Contracting Agency" width="150">
                   <template slot-scope="scope">
-                    <span
-                      v-if="
-                        scope.row.contract_vehicle.contract_agency &&
-                          scope.row.contract_vehicle.contract_agency.name !==
-                            null
-                      "
-                    >
+                    <span v-if="scope.row.contract_vehicle.contract_agency &&
+            scope.row.contract_vehicle.contract_agency.name !==
+            null
+            ">
                       {{ scope.row.contract_vehicle.contract_agency.name }}
                     </span>
                   </template>
                 </el-table-column>
                 <el-table-column label="Vehicle Type" width="150">
                   <template slot-scope="scope">
-                    <span
-                      v-if="
-                        scope.row.contract_vehicle.contract_vehicle_type &&
-                          scope.row.contract_vehicle.contract_vehicle_type
-                            .name !== null
-                      "
-                    >
+                    <span v-if="scope.row.contract_vehicle.contract_vehicle_type &&
+            scope.row.contract_vehicle.contract_vehicle_type
+              .name !== null
+            ">
                       {{
-                        scope.row.contract_vehicle.contract_vehicle_type.name
-                      }}
+            scope.row.contract_vehicle.contract_vehicle_type.name
+          }}
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="facility_group"
-                  sortable
-                  filterable
-                  label="Group"
-                >
+                <el-table-column prop="facility_group" sortable filterable label="Group">
                   <template slot-scope="scope">
-                    <el-select
-                      v-model="scope.row.facility_group_id"
-                      class="w-100"
-                      v-if="rowId == scope.row.contract_vehicle.id"
-                      filterable
-                      track-by="id"
-                      clearable
-                      value-key="id"
-                      placeholder="Search and select Group"
-                    >
-                      <el-option
-                        v-for="item in facilityGroups"
-                        :value="item.id"
-                        :key="item.id"
-                        :label="item.name"
-                      >
+                    <el-select v-model="scope.row.facility_group_id" class="w-100"
+                      v-if="rowId == scope.row.contract_vehicle.id" filterable track-by="id" clearable value-key="id"
+                      placeholder="Search and select Group">
+                      <el-option v-for="item in facilityGroups" :value="item.id" :key="item.id" :label="item.name">
                       </el-option>
                     </el-select>
 
                     <span v-else>
-                      <span
-                        v-if="
-                          scope.row.facility_group &&
-                            scope.row.facility_group.name &&
-                            rowId !== scope.row.contract_vehicle.id
-                        "
-                      >
+                      <span v-if="scope.row.facility_group &&
+            scope.row.facility_group.name &&
+            rowId !== scope.row.contract_vehicle.id
+            ">
                         {{ scope.row.facility_group.name }}
                       </span>
                     </span>
@@ -441,65 +301,34 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="Actions" align="right">
-                  <template slot-scope="scope">                   
-                    <el-button
-                     size="small"
-                      type="default"
-                      v-tooltip="`Change Group`"
+                  <template slot-scope="scope">
+                    <el-button size="small" type="default" v-tooltip="`Change Group`"
                       @click.prevent="editMode(scope.$index, scope.row)"
-                      v-if="scope.$index !== rowIndex && _isallowed('write')"
-                      class="bg-light btn-sm px-2"
-                    >
+                      v-if="scope.$index !== rowIndex && _isallowed('write')" class="bg-light btn-sm px-2">
                       <i class="fal fa-network-wired mh-blue-text"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      v-tooltip="`Manage User(s)`"
-                      @click.prevent="addUserRole(scope.$index, scope.row)"
-                      v-if="scope.$index !== rowIndex"
-                      class="bg-primary text-light btn-sm px-2"
-                    >
-                      <i class="fas fa-users-medical mr-1"></i>
+                    <el-button size="small" type="default" v-tooltip="`Manage User(s)`"
+                      @click.prevent="addUserRole(scope.$index, scope.row)" v-if="scope.$index !== rowIndex"
+                      class="bg-primary text-light btn-sm px-2">
+                      <i class="fas fa-users"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      v-if="scope.$index == rowIndex"
-                      @click.prevent="saveEdits(scope.$index, scope.row)"
-                      v-tooltip="`Save`"
-                      class="bg-primary btn-sm text-light px-2"
-                    >
+                    <el-button size="small" type="default" v-if="scope.$index == rowIndex"
+                      @click.prevent="saveEdits(scope.$index, scope.row)" v-tooltip="`Save`"
+                      class="bg-primary btn-sm text-light px-2">
                       <i class="far fa-save"></i>
                     </el-button>
-                     <el-button
-                      size="small"
-                      type="default"
-                      v-tooltip="`Cancel Edit`"
-                      v-if="scope.$index == rowIndex"
-                      @click.prevent="cancelEdits(scope.$index, scope.row)"
-                      class="bg-secondary btn-sm text-light px-2"
-                    >
+                    <el-button size="small" type="default" v-tooltip="`Cancel Edit`" v-if="scope.$index == rowIndex"
+                      @click.prevent="cancelEdits(scope.$index, scope.row)" class="bg-secondary btn-sm text-light px-2">
                       <i class="fas fa-ban"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      class="bg-light btn-sm px-2"
-                      v-tooltip="'Remove Vehicle'"
+                    <el-button size="small" type="default" class="bg-light btn-sm px-2" v-tooltip="'Remove Vehicle'"
                       @click.prevent="removeVehicleBtn(scope.$index, scope.row)"
-                      v-if="scope.$index !== rowIndex && _isallowed('write')"
-                    >
-                      <i class="fa-light fa-circle-minus text-danger"></i>
+                      v-if="scope.$index !== rowIndex && _isallowed('write')">
+                      <i class="fa fa-minus-circle text-danger"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      v-tooltip="`Go To Vehicle`"
+                    <el-button size="small" type="default" v-tooltip="`Go To Vehicle`"
                       v-if="_isallowedContracts(scope.row.id, 'read')"
-                      @click.prevent="goToVehicle(scope.$index, scope.row)"
-                      class="bg-success text-light btn-sm px-2"
-                    >
+                      @click.prevent="goToVehicle(scope.$index, scope.row)" class="bg-success text-light btn-sm px-2">
                       <i class="fas fa-arrow-alt-circle-right"></i>
                     </el-button>
                   </template>
@@ -510,20 +339,13 @@
         </div>
         <div v-else class="text-danger mx-2 mt-5">
           <h5>
-            <i
-              >Sorry, you don't have read-permissions for this page! Please
-              contact your Program Administrator for access.</i
-            >
+            <i>Sorry, you don't have read-permissions for this page! Please
+              contact your Program Administrator for access.</i>
           </h5>
         </div>
       </div>
 
-      <el-dialog
-        :visible.sync="openUserPrivilegesDialog"
-        append-to-body
-        center
-        class="addUserRole p-0"
-      >
+      <el-dialog :visible.sync="openUserPrivilegesDialog" append-to-body center class="addUserRole p-0">
         <span slot="title" class="text-left add-groups-header ">
           <h5 style="color:#383838" v-if="vehicleData">
             <i class="far fa-car mr-1 mb-2 text-info"></i>
@@ -531,314 +353,161 @@
           </h5>
         </span>
         <div class="container-fluid p-0">
-          <div
-            class="pl-3 mt-0 row"
-            v-if="
-              viableVehicleUsers &&
-                viableVehicleUsers.length > 0 &&
-                _isallowed('write')
-            "
-          >
+          <div class="pl-3 mt-0 row" v-if="viableVehicleUsers &&
+            viableVehicleUsers.length > 0 &&
+            _isallowed('write')
+            ">
             <div class="col-5 pt-0 pl-0">
               <label class="font-md mb-0 d-flex">Add User(s) To Vehicle</label>
-              <el-select
-                v-model="contractRoleUsers"
-                filterable
-                class="w-100"
-                clearable
-                multiple
-                track-by="id"
-                value-key="id"
-                placeholder="Search and select Project Users"
-              >
-                <el-option
-                  v-for="item in viableVehicleUsers"
-                  :value="item"
-                  :key="item.id"
-                  :label="item.fullName"
-                >
+              <el-select v-model="contractRoleUsers" filterable class="w-100" clearable multiple track-by="id"
+                value-key="id" placeholder="Search and select Project Users">
+                <el-option v-for="item in viableVehicleUsers" :value="item" :key="item.id" :label="item.fullName">
                 </el-option>
               </el-select>
             </div>
             <div class="col-5 pt-0">
-              <label class="font-md mb-0 d-flex"
-                >Select Role for User(s)
+              <label class="font-md mb-0 d-flex">Select Role for User(s)
               </label>
-              <el-select
-                v-model="contractRoleNames"
-                filterable
-                class="w-100"
-                clearable
-                track-by="id"
-                value-key="id"
-                placeholder="Search and select Project Users"
-              >
-                <el-option
-                  v-for="item in getRoles.filter(
-                    (t) =>
-                      t.type_of == 'contract' &&
-                      t.name !== 'crud-row-contract-20220407'
-                  )"
-                  :value="item"
-                  :key="item.id"
-                  :label="item.name"
-                >
+              <el-select v-model="contractRoleNames" filterable class="w-100" clearable track-by="id" value-key="id"
+                placeholder="Search and select Project Users">
+                <el-option v-for="item in getRoles.filter(
+            (t) =>
+              t.type_of == 'contract' &&
+              t.name !== 'crud-row-contract-20220407'
+          )" :value="item" :key="item.id" :label="item.name">
                 </el-option>
               </el-select>
             </div>
             <div class="col-2 pt-0 text-right">
-              <label class="font-md mb-0 d-flex" style="visibility:hidden"
-                >|</label
-              >
+              <label class="font-md mb-0 d-flex" style="visibility:hidden">|</label>
 
-              <el-button
-               size="small"
-                type="default"
-                @click="saveVehicleUserRole()"
-                v-if="contractRoleNames && contractRoleUsers"
-                v-tooltip="`Confirm`"
-                class="bg-primary btn-sm text-light"
-              >
+              <el-button size="small" type="default" @click="saveVehicleUserRole()"
+                v-if="contractRoleNames && contractRoleUsers" v-tooltip="`Confirm`"
+                class="bg-primary btn-sm text-light">
                 <i class="far fa-save"></i>
               </el-button>
             </div>
           </div>
-          <div
-            class="pl-3 mt-0 row"
-            v-if="
-              getRolesLoaded &&
-                contentLoaded &&
-                viableVehicleUsers &&
-                viableVehicleUsers.length <= 0
-            "
-          >
+          <div class="pl-3 mt-0 row" v-if="getRolesLoaded &&
+            contentLoaded &&
+            viableVehicleUsers &&
+            viableVehicleUsers.length <= 0
+            ">
             There are currently no program users to assign to this vehicle. You
             can either add new program users from portfolio or remove desired
             user from current role in this vehicle.
           </div>
           <div class="mt-4 row">
             <div class="col-12 pt-0">
-              <el-table
-                v-loading="!getRolesLoaded"
-                element-loading-spinner="el-icon-loading"
-                v-if="
-                  contractUsers &&
-                    contractUsers.roleIds &&
-                    contractUsers.roleIds.length > 0
-                "
-                :header-cell-style="{ background: '#EDEDED' }"
-                :data="contractUsers.roleIds"
-                height="375"
-                width="100%"
-              >
-                <el-table-column
-                  prop="user_full_name"
-                  width="200"
-                  sortable
-                  filterable
-                  label="Role"
-                >
+              <el-table v-loading="!getRolesLoaded" element-loading-spinner="el-icon-loading" v-if="contractUsers &&
+            contractUsers.roleIds &&
+            contractUsers.roleIds.length > 0
+            " :header-cell-style="{ background: '#EDEDED' }" :data="contractUsers.roleIds" height="375" width="100%">
+                <el-table-column prop="user_full_name" width="200" sortable filterable label="Role">
                   <template slot-scope="scope">
-                    <span
-                      v-if="
-                        (contractUsers.data.map(
-                          (t) => t.role_id == scope.row
-                        ) &&
-                          scope.$index !== rowIndex_1) ||
-                          (scope.$index == rowIndex_1 && isEditingRoles)
-                      "
-                    >
+                    <span v-if="(contractUsers.data.map(
+            (t) => t.role_id == scope.row
+          ) &&
+            scope.$index !== rowIndex_1) ||
+            (scope.$index == rowIndex_1 && isEditingRoles)
+            ">
                       {{
-                        contractUsers.data
-                          .filter((t) => t.role_id == scope.row)
-                          .map((t) => t.role_name)[0]
-                      }}
+            contractUsers.data
+              .filter((t) => t.role_id == scope.row)
+              .map((t) => t.role_name)[0]
+          }}
                     </span>
                     <span v-if="changeRoleMode && scope.$index == rowIndex_1">
-                      <el-select
-                        v-if="bulkChangeContractRoleNames.id"
-                        v-model="bulkChangeContractRoleNames"
-                        filterable
-                        class="w-100"
-                        track-by="id"
-                        value-key="id"
-                      >
-                        <el-option
-                          v-for="item in getRoles.filter(
-                            (t) => t.type_of == 'contract'
-                          )"
-                          :value="item"
-                          :key="item.id"
-                          :label="item.name"
-                        >
+                      <el-select v-if="bulkChangeContractRoleNames.id" v-model="bulkChangeContractRoleNames" filterable
+                        class="w-100" track-by="id" value-key="id">
+                        <el-option v-for="item in getRoles.filter(
+            (t) => t.type_of == 'contract'
+          )" :value="item" :key="item.id" :label="item.name">
                         </el-option>
                       </el-select>
-                      <el-select
-                        v-if="
-                          currentRoleName && !bulkChangeContractRoleNames.id
-                        "
-                        v-model="currentRoleName"
-                        filterable
-                        class="w-100"
-                        track-by="id"
-                        value-key="id"
-                      >
-                        <el-option
-                          v-for="item in getRoles.filter(
-                            (t) => t.type_of == 'contract'
-                          )"
-                          :value="item"
-                          :key="item.id"
-                          :label="item.name"
-                        >
+                      <el-select v-if="currentRoleName && !bulkChangeContractRoleNames.id
+            " v-model="currentRoleName" filterable class="w-100" track-by="id" value-key="id">
+                        <el-option v-for="item in getRoles.filter(
+            (t) => t.type_of == 'contract'
+          )" :value="item" :key="item.id" :label="item.name">
                         </el-option>
                       </el-select>
                       <!-- {{ scope.row}}   -->
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="role_name"
-                  width="675"
-                  sortable
-                  filterable
-                  label="Users"
-                >
+                <el-table-column prop="role_name" width="675" sortable filterable label="Users">
                   <template slot-scope="scope">
                     <span v-if="scope.$index !== rowIndex_1 || changeRoleMode">
                       <span v-for="(item, i) in contractUsers.data" :key="i">
-                        <span
-                          v-if="
-                            item.user_id &&
-                              programUsers.map((t) => t.id == item.user_id) &&
-                              item.role_id == scope.row &&
-                              programUsers
-                                .filter((t) => item.user_id == t.id)
-                                .map((t) => t.fullName).length > 0
-                          "
-                          class="userNames"
-                        >
+                        <span v-if="item.user_id &&
+            programUsers.map((t) => t.id == item.user_id) &&
+            item.role_id == scope.row &&
+            programUsers
+              .filter((t) => item.user_id == t.id)
+              .map((t) => t.fullName).length > 0
+            " class="userNames">
                           {{
-                            programUsers
-                              .filter((t) => item.user_id == t.id)
-                              .map((t) => t.fullName)
-                              .join()
-                          }}
+            programUsers
+              .filter((t) => item.user_id == t.id)
+              .map((t) => t.fullName)
+              .join()
+          }}
                         </span>
                       </span>
                     </span>
                     <span v-if="isEditingRoles && scope.$index == rowIndex_1">
-                      <el-select
-                        v-model="assignedContractUsers"
-                        :disabled="
-                          assignedContractUsers &&
-                            assignedContractUsers.length <= 0
-                        "
-                        filterable
-                        class="w-100 el-popper"
-                        :popper-append-to-body="false"
-                        popper-class="select-popper"
-                        clearable
-                        multiple
-                        track-by="id"
-                        value-key="id"
-                        placeholder="No Users Assigned to this Project"
-                      >
-                        <el-option
-                          v-for="item in programUsers"
-                          :value="item"
-                          :key="item.id"
-                          :label="item.fullName"
-                        >
+                      <el-select v-model="assignedContractUsers" :disabled="assignedContractUsers &&
+            assignedContractUsers.length <= 0
+            " filterable class="w-100 el-popper" :popper-append-to-body="false" popper-class="select-popper" clearable
+                        multiple track-by="id" value-key="id" placeholder="No Users Assigned to this Project">
+                        <el-option v-for="item in programUsers" :value="item" :key="item.id" :label="item.fullName">
                         </el-option>
                       </el-select>
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  width="145"
-                  fixed="right"
-                  align="center"
-                  v-if="_isallowed('delete') || _isallowed('write')"
-                >
+                <el-table-column width="145" fixed="right" align="center"
+                  v-if="_isallowed('delete') || _isallowed('write')">
                   <template slot-scope="scope" class="px-0">
-                    <el-button
-                      size="small"
-                      type="default"
-                      @click="bulkChangeRole(scope.$index, scope.row)"
-                      v-if="scope.$index !== rowIndex_1 && _isallowed('write')"
-                      v-tooltip="`Change Role`"
-                      class="bg-light btn-sm mx-0 px-2"
-                    >
+                    <el-button size="small" type="default" @click="bulkChangeRole(scope.$index, scope.row)"
+                      v-if="scope.$index !== rowIndex_1 && _isallowed('write')" v-tooltip="`Change Role`"
+                      class="bg-light btn-sm mx-0 px-2">
                       <i class="fa-solid fa-users-gear text-primary"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      @click="saveBulkChangeRole(scope.$index, scope.row)"
-                      v-if="
-                        scope.$index == rowIndex_1 &&
-                          changeRoleMode &&
-                          (bulkChangeContractRoleNames.id ||
-                            currentRoleName.id) &&
-                          scope.row !== bulkChangeContractRoleNames.id &&
-                          scope.row !== currentRoleName.id
-                      "
-                      v-tooltip="`Save`"
-                      class="bg-primary btn-sm text-light mx-0 px-2"
-                    >
+                    <el-button size="small" type="default" @click="saveBulkChangeRole(scope.$index, scope.row)" v-if="scope.$index == rowIndex_1 &&
+            changeRoleMode &&
+            (bulkChangeContractRoleNames.id ||
+              currentRoleName.id) &&
+            scope.row !== bulkChangeContractRoleNames.id &&
+            scope.row !== currentRoleName.id
+            " v-tooltip="`Save`" class="bg-primary btn-sm text-light mx-0 px-2">
                       <i class="far fa-save"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      @click="saveRemoveUsers(scope.$index, scope.row)"
-                      v-if="isEditingRoles && scope.$index == rowIndex_1"
-                      v-tooltip="`Save`"
-                      class="bg-primary btn-sm text-light px-2"
-                    >
+                    <el-button size="small" type="default" @click="saveRemoveUsers(scope.$index, scope.row)"
+                      v-if="isEditingRoles && scope.$index == rowIndex_1" v-tooltip="`Save`"
+                      class="bg-primary btn-sm text-light px-2">
                       <i class="far fa-save"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      v-if="scope.$index !== rowIndex_1 && _isallowed('delete')"
+                    <el-button size="small" type="default" v-if="scope.$index !== rowIndex_1 && _isallowed('delete')"
                       v-tooltip="`Remove all users from this role`"
-                      @click.prevent="removeAllUsers(scope.$index, scope.row)"
-                      class="bg-danger btn-sm mx-0 px-2"
-                    >
+                      @click.prevent="removeAllUsers(scope.$index, scope.row)" class="bg-danger btn-sm mx-0 px-2">
                       <i class="fa-solid fa-users-slash mr-1 text-light"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      v-if="scope.$index !== rowIndex_1 && _isallowed('delete')"
-                      v-tooltip="`Remove user(s) from this role`"
-                      @click.prevent="editUsers(scope.$index, scope.row)"
-                      class="bg-danger text-light btn-sm mx-0 px-2"
-                    >
+                    <el-button size="small" type="default" v-if="scope.$index !== rowIndex_1 && _isallowed('delete')"
+                      v-tooltip="`Remove user(s) from this role`" @click.prevent="editUsers(scope.$index, scope.row)"
+                      class="bg-danger text-light btn-sm mx-0 px-2">
                       <i class="fa-solid fa-user-slash text-light"></i>
                     </el-button>
-                    <el-button
-                     size="small"
-                      type="default"
-                      v-if="isEditingRoles && scope.$index == rowIndex_1"
-                      v-tooltip="`Cancel`"
-                      @click.prevent="cancelEditRoles(scope.$index, scope.row)"
-                      class="btn btn-sm bg-secondary text-light px-2"
-                    >
+                    <el-button size="small" type="default" v-if="isEditingRoles && scope.$index == rowIndex_1"
+                      v-tooltip="`Cancel`" @click.prevent="cancelEditRoles(scope.$index, scope.row)"
+                      class="btn btn-sm bg-secondary text-light px-2">
                       <i class="fas fa-ban"></i>
                     </el-button>
-                    <el-button
-                      size="small"
-                      type="default"
-                      v-if="changeRoleMode && scope.$index == rowIndex_1"
-                      v-tooltip="`Cancel`"
-                      @click.prevent="
-                        cancelBulkChangeRole(scope.$index, scope.row)
-                      "
-                      class="btn btn-sm bg-secondary text-light mx-0 px-2"
-                    >
+                    <el-button size="small" type="default" v-if="changeRoleMode && scope.$index == rowIndex_1"
+                      v-tooltip="`Cancel`" @click.prevent="
+            cancelBulkChangeRole(scope.$index, scope.row)
+            " class="btn btn-sm bg-secondary text-light mx-0 px-2">
                       <i class="fas fa-ban"></i>
                     </el-button>
                   </template>
@@ -849,11 +518,8 @@
               </span>
 
               <div class="right mt-3">
-                <button
-                  @click.prevent="closeUserRoles"
-                  class="btn btn-md bg-secondary text-light modalBtns"
-                  v-tooltip="`Cancel`"
-                >
+                <button @click.prevent="closeUserRoles" class="btn btn-md bg-secondary text-light modalBtns"
+                  v-tooltip="`Cancel`">
                   <i class="fas fa-ban"></i>
                 </button>
               </div>
@@ -861,49 +527,30 @@
           </div>
         </div>
       </el-dialog>
-      <el-dialog
-        :visible.sync="vehicleDialogVisible"
-        append-to-body
-        center
-        class="contractForm addVehicle p-0"
-      >
-        <div class="row mb-3">
+      <el-dialog :visible.sync="vehicleDialogVisible" append-to-body center class="contractForm addVehicle p-0">
+        <div class="row mb-3 mt-1">
           <div class="col-5">
             <span slot="title" class="text-left add-groups-header ">
               <h5 class="text-dark">
-                <i class="far fa-plus-circle mr-1 mb-3"></i>Add Existing Vehicle
+                <i class="fas fa-plus-circle mr-1 mb-3"></i>Add Existing Vehicle
               </h5>
             </span>
           </div>
           <div class="col-7 text-right">
-            <el-input
-              type="search"
-              placeholder="Search by Vehicle Name, SINS/Subcategories, Contract Agency, or Type"
-              aria-label="Search"
-              class="w-100"
-              aria-describedby="search-addon"
-              v-model="searchContractVehiclesData"
-              data-cy=""
-            >
+            <el-input type="search" placeholder="Search by Vehicle Name, SINS/Subcategories, Contract Agency, or Type"
+              aria-label="Search" class="w-100" aria-describedby="search-addon" v-model="searchContractVehiclesData"
+              data-cy="">
               <el-button slot="prepend" icon="el-icon-search"></el-button>
             </el-input>
           </div>
         </div>
         <template>
-          <div
-            v-loading="!contractVehiclesLoaded"
-            element-loading-text="Fetching your data. Please wait..."
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="rgba(0, 0, 0, 0.8)"
-            class="addVehicleModal"
-          >
+          <div v-loading="!contractVehiclesLoaded" element-loading-text="Fetching your data. Please wait..."
+            element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+            class="addVehicleModal">
             <el-tabs type="border-card" @tab-click="handleClick">
               <el-tab-pane class="p-3" style="postion:relative" label="PRIME">
-                <el-table
-                  :data="allVehicles"
-                  v-if="allVehicles && allVehicles.length > 0"
-                  style="width: 100%"
-                >
+                <el-table :data="allVehicles" v-if="allVehicles && allVehicles.length > 0" style="width: 100%">
                   <el-table-column prop="prime_name" label="Prime">
                     <template slot-scope="scope">
                       <span v-if="scope.row.prime_name">
@@ -937,40 +584,28 @@
               </el-table-column> -->
                   <el-table-column label="Contracting Agency">
                     <template slot-scope="scope">
-                      <span
-                        v-if="
-                          scope.row.contract_agency &&
-                            scope.row.contract_agency.name !== null
-                        "
-                      >
+                      <span v-if="scope.row.contract_agency &&
+            scope.row.contract_agency.name !== null
+            ">
                         {{ scope.row.contract_agency.name }}
                       </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="Vehicle Type">
                     <template slot-scope="scope">
-                      <span
-                        v-if="
-                          scope.row.contract_vehicle_type &&
-                            scope.row.contract_vehicle_type.name !== null
-                        "
-                      >
+                      <span v-if="scope.row.contract_vehicle_type &&
+            scope.row.contract_vehicle_type.name !== null
+            ">
                         {{ scope.row.contract_vehicle_type.name }}
                       </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="Actions" fixed="right" align="right">
                     <template slot-scope="scope">
-                      <el-button
-                        size="small"
-                        type="default"
-                        v-tooltip="`Add Vehicle`"
-                        @click.prevent="
-                          addExistingVehicle(scope.$index, scope.row)
-                        "
-                        class="bg-primary text-light btn-sm"
-                      >
-                        <i class="far fa-plus-circle"></i>
+                      <el-button size="small" type="default" v-tooltip="`Add Vehicle`" @click.prevent="
+            addExistingVehicle(scope.$index, scope.row)
+            " class="bg-primary text-light btn-sm">
+                        <i class="fas fa-plus-circle"></i>
                       </el-button>
                     </template>
                   </el-table-column>
@@ -980,20 +615,9 @@
                 </span>
               </el-tab-pane>
 
-              <el-tab-pane
-                class="p-3"
-                style="postion:relative"
-                label="SUBCONTRACT"
-              >
-                <el-table
-                  :data="allSubVehicles"
-                  v-if="allSubVehicles && allSubVehicles.length > 0"
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    prop="subprime_name"
-                    label="Subcontract Prime"
-                  >
+              <el-tab-pane class="p-3" style="postion:relative" label="SUBCONTRACT">
+                <el-table :data="allSubVehicles" v-if="allSubVehicles && allSubVehicles.length > 0" style="width: 100%">
+                  <el-table-column prop="subprime_name" label="Subcontract Prime">
                   </el-table-column>
                   <el-table-column prop="name" label="Vehicle Nickname">
                   </el-table-column>
@@ -1013,40 +637,28 @@
                   </el-table-column>
                   <el-table-column label="Contracting Agency">
                     <template slot-scope="scope">
-                      <span
-                        v-if="
-                          scope.row.contract_agency &&
-                            scope.row.contract_agency.name !== null
-                        "
-                      >
+                      <span v-if="scope.row.contract_agency &&
+            scope.row.contract_agency.name !== null
+            ">
                         {{ scope.row.contract_agency.name }}
                       </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="Vehicle Type">
                     <template slot-scope="scope">
-                      <span
-                        v-if="
-                          scope.row.contract_vehicle_type &&
-                            scope.row.contract_vehicle_type.name !== null
-                        "
-                      >
+                      <span v-if="scope.row.contract_vehicle_type &&
+            scope.row.contract_vehicle_type.name !== null
+            ">
                         {{ scope.row.contract_vehicle_type.name }}
                       </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="Actions" fixed="right">
                     <template slot-scope="scope">
-                      <el-button
-                       size="small"
-                        type="default"
-                        v-tooltip="`Add Vehicle`"
-                        @click.prevent="
-                          addExistingVehicle(scope.$index, scope.row)
-                        "
-                        class="bg-primary text-light btn-sm"
-                      >
-                        <i class="far fa-plus-circle"></i>
+                      <el-button size="small" type="default" v-tooltip="`Add Vehicle`" @click.prevent="
+            addExistingVehicle(scope.$index, scope.row)
+            " class="bg-primary text-light btn-sm">
+                        <i class="fas fa-plus-circle"></i>
                       </el-button>
                     </template>
                   </el-table-column>
@@ -1362,6 +974,7 @@ export default {
         },
       };
       this.associateVehicleToProgram({ ...vehicleData });
+      this.vehicleDialogVisible = false
     },
     goToVehicle(index, rows) {
       console.log(rows);
@@ -1460,8 +1073,8 @@ export default {
             this.fetchVehicles();
             MessageDialogService.showDialog({
               message: `${rows.contract_vehicles.name} was deleted successfully.`,
-              
-              
+
+
             });
           }
         });
@@ -1776,8 +1389,8 @@ export default {
         if (this.vehicleStatus == 200) {
           MessageDialogService.showDialog({
             message: `Vehicle saved successfully.`,
-            
-            
+
+
           });
           this.newGroup = null;
           this.SET_VEHICLE_STATUS(0);
@@ -1791,8 +1404,8 @@ export default {
         if (this.vehiclesStatus == 200) {
           MessageDialogService.showDialog({
             message: `Successfully removed vehicle from program.`,
-            
-            
+
+
           });
           this.SET_VEHICLES_STATUS(0);
           this.fetchVehicles(this.$route.params.programId);
@@ -1806,8 +1419,8 @@ export default {
         if (this.associatedVehiclesStatus == 200) {
           MessageDialogService.showDialog({
             message: `Vehicle successfully added to program.`,
-            
-            
+
+
           });
           this.SET_ASSOCIATED_VEHICLES_STATUS(0);
           this.fetchContractVehicles(this.$route.params.programId);
@@ -1824,8 +1437,8 @@ export default {
         ) {
           MessageDialogService.showDialog({
             message: `Succesfully removed user(s) from role.`,
-            
-            
+
+
           });
           this.fetchRoles(this.$route.params.programId);
           this.SET_REMOVE_VEHICLE_ROLE_STATUS(0);
@@ -1844,8 +1457,8 @@ export default {
         ) {
           MessageDialogService.showDialog({
             message: `Succesfully added user/role to project.`,
-            
-            
+
+
           });
           this.SET_ADD_USER_TO_ROLE_STATUS(0);
           this.fetchCurrentProject(this.$route.params.programId);
@@ -1908,7 +1521,7 @@ export default {
   font-size: x-large;
 }
 
-::v-deep.el-table th.el-table__cell > .cell {
+::v-deep.el-table th.el-table__cell>.cell {
   color: #212529;
   font-size: 1rem;
   word-break: break-word;
@@ -1963,6 +1576,7 @@ a {
 .right-panel {
   height: calc(100vh - 100px);
   overflow-y: auto;
+  overflow-x: hidden
 }
 
 ::v-deep.el-input__inner {

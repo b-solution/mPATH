@@ -62,8 +62,6 @@
             :default-sort="{ prop: 'facilityName', order: 'ascending' }">
             <el-table-column prop="facilityName" sortable label="Project">
               <template slot-scope="scope">
-
-
                 <el-input size="small" v-if="rowId == scope.row.id" style="text-align:center"
                   v-model="scope.row.facilityName" controls-position="right"></el-input>
                 <span v-else>
@@ -94,7 +92,7 @@
               <template slot-scope="scope">
                 <el-button type="default" @click="saveEdits(scope.$index, scope.row)" v-if="scope.$index == rowIndex"
                   v-tooltip="`Save`" size="small" class="bg-primary btn-sm text-light px-2">
-                  <i class="far fa-save"></i>
+                  <i class="fas fa-save"></i>
                 </el-button>
                 <el-button type="default" v-tooltip="`Cancel Edit`" v-if="scope.$index == rowIndex"
                   @click.prevent="cancelEdits(scope.$index, scope.row)" size="small"
@@ -105,13 +103,13 @@
                   @click.prevent="editMode(scope.$index, scope.row)"
                   v-if="scope.$index !== rowIndex && !scope.row.isPortfolio && _isallowed('write')"
                   class="bg-light btn-sm px-2">
-                  <i class="fal fa-edit text-primary"></i>
+                  <i class="fas fa-edit text-primary"></i>
                 </el-button>
                 <el-button type="default" size="small" class="bg-light btn-sm px-2"
                   v-tooltip="'Remove Portfolio Project'" @click.prevent="removeProject(scope.$index, scope.row)" v-if="scope.$index !== rowIndex &&
             scope.row.isPortfolio && _isallowed('delete')
             ">
-                  <i class="fa-light fa-circle-minus text-danger"></i>
+                  <i class="fa fa-minus-circle text-danger"></i>
                 </el-button>
                 <el-button type="default" size="small" v-tooltip="'Delete Program Project'"
                   @click.prevent="deleteProject(scope.$index, scope.row)" v-if="_isallowed('delete') &&
@@ -123,9 +121,8 @@
                 <el-button type="default" size="small" v-tooltip="`Manage User(s)`"
                   @click.prevent="addUserRole(scope.$index, scope.row)" v-if="scope.$index !== rowIndex"
                   class="bg-primary text-light btn-sm px-2">
-                  <i class="fas fa-users-medical mr-1"></i>
+                  <i class="fas fa-users"></i>
                 </el-button>
-
                 <el-button size="small" type="default" v-tooltip="`Go to Project`"
                   @click.prevent="goToProject(scope.$index, scope.row)" class="bg-success text-light btn-sm px-2"
                   v-if="_isallowedProject(scope.row.facilityProjectId, 'read')">
@@ -182,7 +179,7 @@
                 <div class="row mb-2">
                   <div slot="title" class="col-8 pr-0 text-left">
                     <h5 class="text-dark addGroupsHeader"> <i
-                        class="fal fa-clipboard-list mr-2 mh-green-text"></i>Select Portfolio Project(s) to Add </h5>
+                        class="fas fa-clipboard-list mr-2 mh-green-text"></i>Select Portfolio Project(s) to Add </h5>
                   </div>
                   <div class="col-7 pt-0 text-left">
                     <el-input type="search" placeholder="Search Projects" aria-label="Search" class="w-100"
@@ -195,7 +192,7 @@
                     <el-button class="confirm-save-group-names btn text-light bg-primary modalBtns"
                       v-tooltip="`Save Project(s)`" @click.prevent="importProjectName"
                       :disabled="programProjects && programProjects.length <= 0">
-                      <i class="fal fa-save"></i>
+                      <i class="far fa-save"></i>
                     </el-button>
                     <el-button @click.prevent="closeImportProjectBtn" v-tooltip="`Cancel`"
                       class="btn bg-secondary ml-0 text-light modalBtns">
@@ -223,7 +220,7 @@
         <el-dialog :visible.sync="rolesVisible" append-to-body center class="contractForm p-0 addUserRole">
           <span slot="title" class="text-left add-groups-header ">
             <h5 style="color:#383838" v-if="projectRowData">
-              <i class="fal fa-clipboard-list mr-1 mb-2 mh-green-text"></i> {{ projectRowData.facilityName }}
+              <i class="fas fa-clipboard-list mr-1 mb-2 mh-green-text"></i> {{ projectRowData.facilityName }}
             </h5>
           </span>
           <div class="container-fluid p-0">
@@ -439,7 +436,7 @@ export default {
     this.fetchGroups(this.$route.params.programId);
     //Move fetchRole back to row click method
     this.fetchRoles(this.$route.params.programId)
-    this.fetchPortfolioProjects(this.$route.params.programId)
+    //this.fetchPortfolioProjects(this.$route.params.programId)
     this.fetchProgramSettingsProjects(this.$route.params.programId)
   },
   methods: {
@@ -712,7 +709,6 @@ export default {
       this.newProjectNameText = "";
     },
     editMode(index, rows) {
-      console.log(rows)
       this.rowIndex = index
       this.rowId = rows.id
     },
@@ -730,11 +726,9 @@ export default {
       return formData
     },
     saveNewProject(e) {
-      debugger
       e.preventDefault();
       let url = `${API_BASE_PATH}/program_settings/facilities?project_id=${this.$route.params.programId}`
       let method = "POST";
-      debugger
       axios({
         method: method,
         url: url,
@@ -753,6 +747,7 @@ export default {
           this.hideSaveBtn = true;
         }
       });
+      this.dialogVisible = false
     },
     cancelEdits(index, rows) {
       this.rowIndex = null;
@@ -776,24 +771,22 @@ export default {
     saveEdits(index, rows) {
       let updatedProjectName = rows.facilityName;
       let projectId = rows.id;
-      let formData = new FormData();
-      // console.log(rows)
-      formData.append("project_id", this.$route.params.programId);
-      formData.append("facility[facility_name]", updatedProjectName);
-      // Need one url to support these two data name edits
-      formData.append("facility[facility_group_id]", rows.facilityGroupId);
-      if (rows.facilityGroupId) {
-        formData.append("facility[facility_group_id]", rows.facilityGroupId);
+      let formData = {
+        "facility[project_id]": this.$route.params.programId,
+        "facility[facility_name]": updatedProjectName,
       }
       let url = `${API_BASE_PATH}/program_settings/facilities/${projectId}`;
       let method = "PUT";
+      if (rows.facilityGroupId) {
+        formData["facility[facility_group_id]"] = rows.facilityGroupId;
+      }
       axios({
         method: method,
         url: url,
         data: formData,
         headers: {
           "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')
-            .attributes["content"].value,
+            .attributes["content"].value
         },
       }).then((response) => {
         if (response.status === 200) {
@@ -1240,6 +1233,7 @@ a {
 .right-panel {
   height: calc(100vh - 100px);
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 ::v-deep.el-table__row .el-input .el-input__inner {

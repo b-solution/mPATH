@@ -109,9 +109,6 @@ export default {
       },
     };
   },
-  created() {
-    debugger
-  },
   mounted() {
     this.fetchCurrentProject(this.$route.params.programId)
   },

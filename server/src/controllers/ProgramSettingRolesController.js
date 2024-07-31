@@ -112,7 +112,7 @@ async function update_role_users(req, res) {
     let body = qs.parse(req.body);
     let params = qs.parse(req.params);
     let query = qs.parse(req.query);
-
+    console.log("update-role-users:---", body);
     const project = await db.Project.fineOne({ where: { id: params.project_id } });
     const roleUsers = await db.RoleUser.findAll({
       where: { id: body.role_user_ids, project_id: project.id },
@@ -210,8 +210,7 @@ async function update(req, res) {
   try {
     let body = qs.parse(req.body);
     let params = qs.parse(req.params);
-    let query = qs.parse(req.query);
-
+    console.log("update:---", body);
     printParams(req);
     let user = await getCurrentUser(req.headers["x-token"]);
     let role;
@@ -263,25 +262,23 @@ async function create(req, res) {
     let body = qs.parse(req.body);
     let params = qs.parse(req.params);
     let query = qs.parse(req.query);
-    console.log("**** headers", req.headers);
     printParams({ body, params, query });
     let user = await getCurrentUser(req.headers["x-token"]);
-    console.log("User: ", user);
+    console.log("User: ", body);
     let role;
     if (params.id) {
       role = await db.Role.findByPk(params.id);
     } else {
       role = db.Role.build();
     }
-    role.name = body.name;
+    role.name = body.role.name;
     role.is_portfolio = false;
-    role.project_id = body.project_id;
+    role.project_id = body.role.project_id;
     role.user_id = user.id;
     role.is_default = false;
-    role.type_of = body.type_of;
+    role.type_of = body.role.type_of;
     await role.save();
-    const rolePrivileges = body.role_privileges || [];
-
+    const rolePrivileges = body.role.role_privileges || [];
     if (rolePrivileges.length > 0) {
       let rps = [];
       for (var rp of rolePrivileges) {

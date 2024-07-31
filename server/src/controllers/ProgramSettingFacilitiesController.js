@@ -150,23 +150,20 @@ async function removeFacilityProject(req, res) {}
 async function update(req, res) {
   try {
     const { db } = require("../database/models");
-
     let body = qs.parse(req.body);
     let params = qs.parse(req.params);
-    let query = qs.parse(req.query);
     printParams(req);
-
     let facility = await db.Facility.findOne({ where: { id: params.id } });
+    console.log("Facility---", facility);
     facility.facility_name = body.facility.facility_name;
     await facility.save();
-
-    let facilityProject = await db.FacilityProject.findOne({ where: { project_id: body.project_id, facility_id: facility.id } });
+    let facilityProject = await db.FacilityProject.findOne({ where: { project_id: body.facility.project_id, facility_id: facility.id } });
     facilityProject.facility_group_id = body.facility.facility_group_id;
     await facilityProject.save();
-
     return { facility };
   } catch (error) {
     res.status(406);
+    console.log(error);
     return { error: "Error " + error };
   }
 }

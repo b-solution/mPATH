@@ -34,6 +34,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueDataTables from 'vue-data-tables'
 import VueCookies from 'vue-cookies'
 
+// import { FlatIcon } from '@flaticon/flaticon-uicons'
+
 // import ElementUI            from 'element-ui';
 // import locale               from 'element-ui/lib/locale/lang/en'
 
