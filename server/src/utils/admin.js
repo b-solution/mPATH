@@ -10,25 +10,20 @@ async function setAdminPanel(db, fastify) {
   ]);
 
   const validateForm = async (request, context) => {
-    console.log("context---", request);
     const password = request.body.password.value;
     const hashedPassword = await cryptPassword(password);
-    console.log("hashed---", hashedPassword);
     request.payload.encrypted_password = hashedPassword;
     return request;
   };
 
   const authenticate = async ({ email, password }, ctx) => {
-    console.log("Ctx---", ctx);
     const user_db = await db.User.findOne({ where: { email } });
     console.log(user_db);
     if (!user_db) {
       return null;
     } else {
       if (user_db.role === 1) {
-        console.log("Role---");
         const passwordMatch = await comparePassword(password, user_db.encrypted_password);
-        console.log("Match", passwordMatch);
         if (!passwordMatch) {
           return null;
         } else {

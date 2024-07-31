@@ -45,18 +45,14 @@ const get_user_privileges = async (req, res) => {
 };
 async function create(req, res) {
   try {
-    let params = qs.parse(req.params);
     let body = qs.parse(req.body);
-    console.log("Body: ", body);
     let user = await db.User.build();
     let hashedPassword = await cryptPassword("changeme");
-    console.log("Encrypt_Password: ", hashedPassword);
     user.encrypted_password = hashedPassword;
-    console.log("New User: ", user);
     user.setAttributes(body.user);
     if (await user.save()) {
       res.status(200);
-      return { msg: "User created successfully!" };
+      return { msg: user.id };
     } else {
       res.status(406);
       return { msg: "Error creating user" };
@@ -68,11 +64,9 @@ async function create(req, res) {
 }
 async function update(req, res) {
   try {
-    let params = qs.parse(req.body);
+    let params = qs.parse(req.params);
     let body = qs.parse(req.body);
-    console.log("****body", qs.parse(req.body));
-    console.log("****params", params);
-
+    console.log("Request--", body);
     let user = await db.User.findOne({ where: { id: params.id } });
     user.setAttributes(body.user);
     if (await user.save()) {
@@ -92,17 +86,14 @@ const remove_from_program = async (req, res) => {
     let params = qs.parse(req.body);
     let user = await db.User.findOne({ where: { id: params.user_id } });
     let program = await db.Project.findOne({ where: { id: params.program_id } });
-    console.log("Programs: ", program);
     let programAdminRole = await db.Role.programAdminUserRole({});
     let programAdminUsers = await program.getProgramAdmins();
     let role_id = programAdminRole.id;
     var program_admin_user_ids = _.compact(
       _.map(programAdminUsers, function (pu) {
         return pu.id;
-        // return pu.user_id;
       })
     );
-    console.log("Program Admin User Ids: ", program_admin_user_ids);
     if (_.compact(_.without(program_admin_user_ids, [user.id])).length < 1) {
       res.status(406);
       return { msg: "There must be at least 1 program admin exists in program! Please retry." };
@@ -113,6 +104,7 @@ const remove_from_program = async (req, res) => {
     }
   } catch (error) {
     res.status(500);
+    console.log(error);
     return { error: "Error removing user from program " + error };
   }
 };

@@ -31,8 +31,8 @@
       </div>
       <div class="grid-container program-name">
         <router-link v-for="project in this.allProjects" :key="project.id" :to="`/programs/${project.id}/sheet`"
-          class="" @click="fetchProgramRelatedData(project.id)">
-          <li class="list-group-item pb-0 portfolio-page">
+          class="">
+          <li class="list-group-item pb-0 portfolio-page" @click="fetchProgramRelatedData(project.id)">
             <div class="row program-row">
               <div class="col-12">
                 <div class="welcome-page-program-name" data-cy="project_name"><span class="absolute-center"></span>

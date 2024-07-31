@@ -145,7 +145,7 @@
                 <div class="col-12 py-1 text-right" style="line-height:6">
                   <button @click.prevent="createUser" v-show="email && lastName && firstName && !createAnotherUserBtn
             " class="btn btn-md bg-primary text-light modalBtns" v-tooltip="`Save`">
-                    <i class="fa-solid fa-flopy-disk"></i>
+                    <i class="fas fa-save"></i>
                   </button>
                   <button type="default" v-tooltip="`Create another user`" @click.prevent="createAnotherUser" v-if="email && lastName && firstName && createAnotherUserBtn
             " class="btn btn-md btn-primary text-light modalBtns">
@@ -1241,6 +1241,10 @@ export default {
       this.createNewUser({
         ...newUserData,
       });
+      this.firstName = ''
+      this.lastName = ''
+      this.email = ''
+      this.newUserDialogVisible = false
       // this.hideSaveBtn = true;
     },
     openEditUser(index, rows) {
@@ -1294,6 +1298,9 @@ export default {
     },
     cancelAddNewUser() {
       this.newUserDialogVisible = false;
+      this.firstName = ''
+      this.lastName = ''
+      this.email = ''
     },
     cancelAddUser() {
       this.dialogVisible = false;

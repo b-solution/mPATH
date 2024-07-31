@@ -23,11 +23,12 @@ module.exports = (sequelize, DataTypes) => {
     async toJSON() {
       const _response = this.get({ plain: true });
       let contract_vehicle = await this.getContractVehicle();
+      console.log("contract_vehicle----", contract_vehicle);
       _response.contract_vehicle = await contract_vehicle.toJSON();
 
       let facility_group = await this.getFacilityGroup();
-      _response.facility_group = await facility_group.toJSON();
-
+      if (facility_group) _response.facility_group = await facility_group.toJSON();
+      console.log(_response);
       return _response;
     }
   }

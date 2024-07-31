@@ -44,7 +44,6 @@ import VueCookies from 'vue-cookies'
 Vue.use(vco)
 Vue.mixin(utils)
 Vue.use(AuthorizationService)
-console.log('MessageDialogService')
 Vue.use(MessageDialogService)
 Vue.use(VTooltip)
 Vue.use(VModal)
@@ -81,7 +80,6 @@ Vue.prototype.$mpath_instance = window.mpath_instance
 Vue.prototype.checkPrivileges = (page, salut, route, extraData) => {
   return AuthorizationService.checkPrivileges(page, salut, route, extraData)
 }
-AuthorizationService.getRolePrivileges()
 Vue.prototype.$currentUser = AuthorizationService.current_user
 Vue.prototype.$topNavigationPermissions = AuthorizationService.topNavigationPermissions()
 Vue.prototype.$preferences = AuthorizationService.preferences

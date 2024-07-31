@@ -97,8 +97,6 @@ async function create(req, res) {
 async function show(req, res) {
   try {
     const { db } = require("../database/models");
-
-    let body = qs.parse(req.body);
     let params = qs.parse(req.params);
     let query = qs.parse(req.query);
     printParams(req);
@@ -146,7 +144,18 @@ async function bulkProjectsUpdate(req, res) {
     return { error: "Error " + error };
   }
 }
-async function removeFacilityProject(req, res) {}
+async function removeFacilityProject(req, res) {
+  try {
+    const query = qs.parse(req.query);
+    const facilityProject = await db.FacilityProject.findOne({ where: { id: query.facility_project_id } });
+    if (facilityProject) {
+      facilityProject.destroy();
+      return { facilityProject };
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 async function update(req, res) {
   try {
     const { db } = require("../database/models");

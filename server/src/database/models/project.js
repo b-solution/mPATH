@@ -448,6 +448,8 @@ module.exports = (sequelize, DataTypes) => {
         let facility = _.find(all_facilities, function (f) {
           return f.id == facility_project.facility_id;
         });
+        console.log("all_facility_groups---", all_facility_groups);
+        console.log("facility_projects---", facility_project);
         let facility_group = _.find(all_facility_groups, function (f) {
           return f.id == facility_project.facility_group_id;
         });
@@ -461,10 +463,13 @@ module.exports = (sequelize, DataTypes) => {
         }
         facility_hash["facility_name"] = facility.dataValues.facility_name;
         facility_hash["facility"] = facility.toJSON();
-        let fg_hash = facility_group.toJSON();
-        facility_hash["facility"]["facility_group_id"] = fg_hash["id"];
-        facility_hash["facility"]["facility_group_name"] = fg_hash["name"];
-        facility_hash["facility"]["facility_group_status"] = fg_hash["status"];
+        console.log("facilityGroup---", facility_group);
+        if (facility_group) {
+          let fg_hash = facility_group.toJSON();
+          facility_hash["facility"]["facility_group_id"] = fg_hash["id"];
+          facility_hash["facility"]["facility_group_name"] = fg_hash["name"];
+          facility_hash["facility"]["facility_group_status"] = fg_hash["status"];
+        }
         // facility_hash['facility']["status"] = facility_hash['facility']["status"]
         facility_hash["facility"]["project_id"] = this.id;
 

@@ -22,6 +22,7 @@ async function index(req, res) {
     return { contract_vehicles, totalCount: contract_vehicles.length };
   } catch (error) {
     res.status(500);
+    console.log(error);
     return { error: "Error fetching contract vehicles " + error };
   }
 }

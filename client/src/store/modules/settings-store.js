@@ -1051,16 +1051,16 @@ const settingsStore = {
     },
     updateUserData({ commit, getters }, { userData, program_id }) {
       commit('TOGGLE_PROGRAM_USERS_LOADED', false)
-      let formData = new FormData()
-      console.log(userData)
-      formData.append('user[first_name]', userData.fName)
-      formData.append('user[last_name]', userData.lName)
-      formData.append('user[email]', userData.email)
-      formData.append('user[title]', userData.title)
-      formData.append('user[organization_id]', userData.org)
-      formData.append('user[address]', userData.address)
-      formData.append('user[phone_number]', userData.phNumber)
-      formData.append('program_id', program_id)
+      let formData = {
+        'user[first_name]': userData.fName,
+        'user[last_name]': userData.lName,
+        'user[email]': userData.email,
+        'user[title]': userData.title,
+        'user[organization_id]': userData.org,
+        'user[address]': userData.address,
+        'user[phone_number]': userData.phNumber,
+        program_id: program_id
+      }
       axios({
         method: 'PATCH',
         url: `${API_BASE_PATH}/program_settings/users/${userData.id}`,
@@ -1085,14 +1085,13 @@ const settingsStore = {
     addUsersToProgram({ commit, getters }, { addedUsers }) {
       commit('TOGGLE_ADDED_PROGRAM_USERS_LOADED', false)
       console.log(addedUsers)
-      let formData = new FormData()
-
-      formData.append('program_id', addedUsers.programId)
+      let formData = {
+        program_id: addedUsers.programId
+      }
       var arrayCount = 0
       addedUsers.userIds.forEach((ids) => {
-        formData.append('user_ids[' + arrayCount++ + ']', ids)
+        formData['user_ids[' + arrayCount++ + ']'] = ids
       })
-
       axios({
         method: 'POST',
         url: `${API_BASE_PATH}/program_settings/users/add_to_program`,
@@ -1117,11 +1116,12 @@ const settingsStore = {
     createNewUser({ commit, getters }, { newUser }) {
       commit('TOGGLE_NEW_USER_LOADED', false)
       //  console.log(newUser.fName)
-      let formData = new FormData()
-      formData.append('user[first_name]', newUser.fName)
-      formData.append('user[last_name]', newUser.lName)
-      formData.append('user[email]', newUser.email)
-      formData.append('program_id', newUser.pId)
+      let formData = {
+        'user[first_name]': newUser.fName,
+        'user[last_name]': newUser.lName,
+        'user[email]': newUser.email,
+        program_id: newUser.pId
+      }
       axios({
         method: 'POST',
         url: `${API_BASE_PATH}/program_settings/users`,
@@ -1573,11 +1573,10 @@ const settingsStore = {
     },
     removeProgramUser({ commit, getters }, { userData }) {
       commit('TOGGLE_PROGRAM_USERS_LOADED', false)
-      let formData = new FormData()
-
-      formData.append('program_id', userData.programId)
-      formData.append('user_id', userData.id)
-
+      let formData = {
+        program_id: userData.programId,
+        user_id: userData.id
+      }
       axios({
         method: 'DELETE',
         data: formData,

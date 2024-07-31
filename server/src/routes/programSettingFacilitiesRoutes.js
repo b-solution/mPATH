@@ -1,12 +1,12 @@
 // const { Router } = require("express");
-const { 
+const {
   index,
   create,
   show,
   bulkProjectsUpdate,
   removeFacilityProject,
   update,
-  destroy
+  destroy,
 } = require("../controllers/ProgramSettingFacilitiesController");
 
 // const router = Router();
@@ -24,14 +24,13 @@ const {
 
 // module.exports = router;
 
-async function routes (fastify, options) {
+async function routes(fastify, options) {
   fastify.get("/api/v1/program_settings/facilities", index);
   fastify.post("/api/v1/program_settings/facilities", create);
   fastify.get("/api/v1/program_settings/facilities/:id", show);
   fastify.put("/api/v1/program_settings/facilities/bulk_projects_update", bulkProjectsUpdate);
-  // fastify.post("/api/v1/program_settings/facilities", removeFacilityProject);
+  fastify.delete("/api/v1/program_settings/facilities/remove_facility_project", removeFacilityProject);
   fastify.put("/api/v1/program_settings/facilities/:id", update);
   fastify.delete("/api/v1/program_settings/facilities/:id", destroy);
-
 }
-module.exports = routes
+module.exports = routes;
