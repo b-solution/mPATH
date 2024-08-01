@@ -29,15 +29,15 @@
     " class="d-flex align-items-center my-1 ml-1">
           <!-- <span class="fbody-icon"><i class="fas fa-suitcase"></i></span> -->
           <h5 class="f-head mb-0" v-if="currentContract && $route.params.contractId">
-            <i class="far fa-file-contract mh-orange-text"></i>
+            <i class="fas fa-file-contract mh-orange-text"></i>
             {{ currentContract.name || "Loading..." }}
           </h5>
           <h5 class="f-head mb-0" v-if="currentVehicle && $route.params.vehicleId">
-            <i class="far fa-car text-info"></i>
+            <i class="fas fa-car text-info"></i>
             {{ currentVehicle.name || "Loading..." }}
           </h5>
           <h5 class="f-head mb-0" v-if="currentFacility && $route.params.projectId">
-            <i class="fal fa-clipboard-list mh-green-text"></i>
+            <i class="fas fa-clipboard-list mh-green-text"></i>
             {{ currentFacility.facilityName || "Loading..." }}
           </h5>
         </div>

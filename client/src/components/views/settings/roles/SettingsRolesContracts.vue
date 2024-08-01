@@ -57,7 +57,6 @@
               <span
                 v-if="scope.row.role_privileges.map(t => t.privilege.includes('W') && t.role_type).includes(contract.analytics)">
                 <i class="el-icon-success text-success" style="font-size: 1.35rem"></i>
-
               </span>
               <span v-else>
                 <i class="el-icon-error text-secondary" style="font-size: 1.35rem"></i>
@@ -81,7 +80,6 @@
               <span
                 v-if="scope.row.role_privileges.map(t => t.privilege.includes('D') && t.role_type).includes(contract.analytics)">
                 <i class="el-icon-success text-success" style="font-size: 1.35rem"></i>
-
               </span>
               <span v-else>
                 <i class="el-icon-error text-secondary" style="font-size: 1.35rem"></i>

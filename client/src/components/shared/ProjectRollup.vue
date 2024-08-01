@@ -23,7 +23,7 @@
           v-if="projectContracts.length > 0 || projectVehicles.length > 0">
           <el-button :class="[getShowProjectStats == 0 ? 'lightBtn' : 'inactive']" @click.prevent="showProjectStats"
             class="p-2">
-            <i class="fal fa-clipboard-list mr-1"
+            <i class="fas fa-clipboard-list mr-1"
               :class="[getShowProjectStats == 0 ? 'mh-green-text' : 'inactive']"></i>PROJECTS
             <span v-if="currentProject && currentProject.facilities && currentProject.facilities.length > 0"
               class="ml-1 badge badge-secondary badge-pill pill pill-toggle">{{ currentProject.facilities.length }}
@@ -33,8 +33,13 @@
           </el-button>
           <el-button :class="[getShowContractStats ? 'lightBtn' : 'inactive']" @click.prevent="showContractStats"
             class="p-2" v-show="isSheetsView">
-            <i class="far fa-file-contract mr-1"
-              :class="[getShowContractStats ? 'mh-orange-text' : 'inactive']"></i>CONTRACTS
+            <svg style="width: 12px;" class="svgAlignment" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path :style="{ fill: getShowContractStats ? '#dd9036' : 'lightgray' }"
+                d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zM64 72c0-4.4 3.6-8 8-8h80c4.4 0 8 3.6 8 8v16c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8V72zm0 64c0-4.4 3.6-8 8-8h80c4.4 0 8 3.6 8 8v16c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8v-16zm192.8 248H304c8.8 0 16 7.2 16 16s-7.2 16-16 16h-47.2c-16.5 0-31.3-9.1-38.6-23.9-3-5.9-8.1-6.5-10.2-6.5s-7.2 .6-10 6.2l-7.7 15.3a16 16 0 0 1 -14.3 8.8c-.4 0-.8 0-1.1-.1-6.5-.5-12-4.8-14-10.9L144 354.6l-10.6 31.9c-5.9 17.7-22.4 29.5-41 29.5H80c-8.8 0-16-7.2-16-16s7.2-16 16-16h12.4c4.8 0 9.1-3.1 10.6-7.7l18.2-54.6c3.3-9.8 12.4-16.4 22.8-16.4s19.5 6.6 22.8 16.4l13.9 41.6c19.8-16.2 54.1-9.7 66 14.2 2 4.1 6 6.5 10.2 6.5zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z" />
+            </svg>CONTRACTS
+            <!-- <i class="fas fa-file-contract mr-1"
+              :class="[getShowContractStats ? 'mh-orange-text' : 'inactive']"></i>CONTRACTS -->
             <span v-if="projectContracts && projectContracts.length > 0"
               class="ml-1 badge badge-secondary badge-pill pill pill-toggle">{{ projectContracts.length }}
             </span>
@@ -43,7 +48,7 @@
           </el-button>
           <el-button :class="[getShowVehicleStats ? 'lightBtn' : 'inactive']" @click.prevent="showVehicleStats"
             class="p-2" v-show="isSheetsView">
-            <i class="far fa-car mr-1" :class="[getShowVehicleStats ? 'text-info' : 'inactive']"></i>VEHICLES
+            <i class="fas fa-car mr-1" :class="[getShowVehicleStats ? 'text-info' : 'inactive']"></i>VEHICLES
             <span v-if="projectVehicles && projectVehicles.length > 0"
               class="ml-1 badge badge-secondary badge-pill pill pill-toggle">{{ projectVehicles.length }}
             </span>
@@ -397,7 +402,7 @@
             <div v-if="tableData && tableData.length > 0" class="row ml-1" :load="log(programTaskEffort)">
 
               <div class="taskUserInfo mb-4 col-11"
-                v-for="user, userIndex in     tableData.filter(t => t.facilities.map(t => t.tasks.length > 0))     "
+                v-for="user, userIndex in             tableData.filter(t => t.facilities.map(t => t.tasks.length > 0))             "
                 :key="user.id">
                 <!-- <button 
         v-tooltip="`Print All`"   
@@ -755,7 +760,7 @@
       class="pt-0 pb-2 my-2" show-icon>
       <template slot="title">
         You have {{ overdueTasks.value7.length}} Task(s) due within the next 7 days:
-        <span v-for="    t, i     in     overdueTasks.value7    " :key=" i ">
+        <span v-for="            t, i             in             overdueTasks.value7            " :key=" i ">
           <router-link :to="`/programs/${$route.params.programId}/sheet/projects/${t.facilityId}/tasks/${t.id}`">
             <span style="cursor: pointer; color:#e6a23c">
               {{ t.text }}
@@ -904,7 +909,8 @@
                           <span class="underline" :class="{ 'font-sm': isMapView }">PROGRESS</span>
                         </div>
                       </div>
-                      <div v-for="(    task, index    ) in     currentTaskTypes    " :key=" index ">
+                      <div v-for="(            task, index            ) in             currentTaskTypes            "
+                        :key=" index ">
                         <div class="row font-sm" v-if=" task._display ">
                           <div class="col-6">
                             <span class="font-sm"> {{ task.name }}</span>
@@ -1086,7 +1092,8 @@
                             <span class="underline" :class="{ 'font-sm': isMapView }">PROGRESS</span>
                           </div>
                         </div>
-                        <div v-for="(    issue, index    ) in     issueTaskCATEGORIES    " :key=" index ">
+                        <div v-for="(            issue, index            ) in             issueTaskCATEGORIES            "
+                          :key=" index ">
                           <div class="row" v-if=" issue._display ">
                             <div class="col-6">
                               <span> {{ issue.name }}</span>
@@ -1111,7 +1118,8 @@
                       <div class="col mt-2 mb-1 pl-0 underline">
                         ISSUE TYPES
                       </div>
-                      <div v-for="    issue     in     currentIssueTypes    " :key=" issue.id ">
+                      <div v-for="            issue             in             currentIssueTypes            "
+                        :key=" issue.id ">
                         <div class="row font-sm" v-if=" issue._display ">
                           <div class="col-6">
                             <span> {{ issue.name }}</span>
@@ -1301,7 +1309,8 @@
                         </div>
                       </div>
 
-                      <div v-for="    risk     in     currentRiskTypes    " :key=" risk.id ">
+                      <div v-for="            risk             in             currentRiskTypes            "
+                        :key=" risk.id ">
                         <div class="row" v-if=" risk._display ">
                           <div class="col-6">
                             <span> {{ risk.name }}</span>
@@ -1462,7 +1471,8 @@
                       <div class="col-6 pb-0">#</div>
                     </div>
 
-                    <div class="row" v-for="(    lesson, index    ) in     lessonStats    " :key=" index ">
+                    <div class="row" v-for="(            lesson, index            ) in             lessonStats            "
+                      :key=" index ">
                       <div class="col-6 pb-0 font-sm pr-0">
                         <span> {{ lesson.name }}</span>
                       </div>
@@ -1514,7 +1524,8 @@
                       <small class="underline">Total Progress</small>
                     </div>
                   </div>
-                  <div v-for="(    group, index    ) in     facilityGroups.filter(t => t.contracts.length > 0)    "
+                  <div
+                    v-for="(            group, index            ) in             facilityGroups.filter(t => t.contracts.length > 0)            "
                     :key=" index ">
                     <div class="row py-1">
                       <div class="col-5 mb-2">
@@ -1603,7 +1614,8 @@
                       <small class="underline">Total Progress</small>
                     </div>
                   </div>
-                  <div v-for="(    group, index    ) in facilityGroups.filter(t => t.contractVehicles.length > 0)"
+                  <div
+                    v-for="(            group, index            ) in   facilityGroups.filter(t => t.contractVehicles.length > 0)  "
                     :key=" index ">
                     <div class="row py-1">
                       <div class="col-5 mb-2">
@@ -1619,9 +1631,9 @@
                       </div>
                       <div class="col-5">
                         <span class="w-100 mt-1 ml-2 progress pg-content" :class="{
-                    'font-sm': isMapView,
-                    'progress-0': facilityGroupProgress(group) <= 0,
-                  }">
+    'font-sm': isMapView,
+    'progress-0': facilityGroupProgress(group) <= 0,
+  }">
                           <div class="progress-bar bg-info" :style="`width: ${facilityGroupProgress(group)}%`">
                             {{ facilityGroupProgress(group) }} %
                           </div>
@@ -1666,13 +1678,13 @@
               </div>
             </el-card>
             <el-card class="box-card" data-cy="projet_group_summary" style="max-height: auto"
-              v-if="getShowProjectStats == 0">
+              v-if=" getShowProjectStats == 0">
               <div class="row">
                 <div class="col">
                   <h5 class="d-inline"><i class="fas fa-clipboard-list mh-green-text mr-1"></i>
                     PROJECTS
                   </h5>
-                  <h4 v-if="contentLoaded" class="d-inline">
+                  <h4 v-if=" contentLoaded " class="d-inline">
                     <span class="badge bg-secondary text-light badge-pill float-right">
                       {{ C_facilityCount }}
                     </span>
@@ -1697,7 +1709,8 @@
                     <small class="underline">Total Progress</small>
                   </div>
                 </div>
-                <div v-for="(group, index) in facilityGroups.filter(t => t.facilities.length > 0)" :key="index">
+                <div v-for="(  group, index  ) in   facilityGroups.filter(t => t.facilities.length > 0)  "
+                  :key=" index ">
 
                   <div class="row py-1">
                     <div class="col-5 mb-2">
@@ -1713,9 +1726,9 @@
                     </div>
                     <div class="col-5">
                       <span class="w-100 mt-1 ml-2 progress pg-content" :class="{
-                    'font-sm': isMapView,
-                    'progress-0': facilityGroupProgress(group) <= 0,
-                  }">
+    'font-sm': isMapView,
+    'progress-0': facilityGroupProgress(group) <= 0,
+  }">
                         <div class="progress-bar bg-info" :style="`width: ${facilityGroupProgress(group)}%`">
                           {{ facilityGroupProgress(group) }} %
                         </div>
@@ -1725,7 +1738,7 @@
                 </div>
                 <el-collapse id="roll_up">
                   <el-collapse-item title="..." name="1">
-                    <div v-if="contentLoaded && C_facilityCount > 0">
+                    <div v-if=" contentLoaded && C_facilityCount > 0">
                       <div style="height:215px; overflow-y:auto; overflow-x:hidden;" class="pb-2">
                         <div class="row">
                           <div class="col-5 mb-0 card-title">
@@ -1738,7 +1751,7 @@
                             Project Distribution
                           </div>
                         </div>
-                        <div class="row mb-2" v-for="(status, index) in projectStatuses" :key="index">
+                        <div class="row mb-2" v-for="(  status, index  ) in   projectStatuses  " :key=" index ">
                           <div class="col-5 mb-1">
                             <span class="badge badge-pill badge-color" :class="{ 'font-sm': isMapView }"
                               :style="`background: ${status.color}`">&nbsp;</span>
@@ -1752,9 +1765,9 @@
                           </div>
                           <div class="col-5">
                             <span class="w-100 mt-1 ml-2 progress pg-content" :class="{
-                      'font-sm': isMapView,
-                      'progress-0': status.progress <= 0,
-                    }">
+    'font-sm': isMapView,
+    'progress-0': status.progress <= 0,
+  }">
                               <div class="progress-bar bg-info" :style="`width: ${status.progress}%`">
                                 {{ status.progress }} %
                               </div>
@@ -1771,7 +1784,7 @@
               </div>
             </el-card>
           </div>
-          <div class="col-3 pl-2 pt-0" :class="[isMapView ? 'd-none' : '']">
+          <div class="col-3 pl-2 pt-0" :class=" [isMapView ? 'd-none' : '']">
             <el-card class="box-card" style="background-color:#fff">
               <div class="row">
                 <div class="col text-center bg-secondary py-0">
@@ -1796,7 +1809,7 @@
                   <h4 class="text-center">
                     <span :class="{ 'progress-0': projectTotalProgress <= 0 }">
                       <el-progress type="circle" class="pt-4 pb-3"
-                        :percentage="Math.round(projectTotalProgress)"></el-progress>
+                        :percentage=" Math.round(projectTotalProgress) "></el-progress>
                     </span>
                   </h4>
                 </div>
@@ -1825,7 +1838,7 @@
 
         <!-- ROW FOR FILTERS -->
         <div class="row">
-          <div class="col-6 py-0 px-0" :class="[isMapView ? 'col-12' : '']">
+          <div class="col-6 py-0 px-0" :class=" [isMapView ? 'col-12' : '']">
             <!-- SEARCH BAR -->
           </div>
           <div class="col-6 py-0 px-0">
@@ -1835,9 +1848,9 @@
         </div>
 
         <div class="row">
-          <ProgramContractsSheet v-if="this.getShowContractStats" />
-          <ProgramProjectsSheet v-if="this.getShowProjectStats == 0" />
-          <ProgramVehiclesSheet v-if="this.getShowVehicleStats" />
+          <ProgramContractsSheet v-if=" this.getShowContractStats " />
+          <ProgramProjectsSheet v-if=" this.getShowProjectStats == 0 " />
+          <ProgramVehiclesSheet v-if=" this.getShowVehicleStats " />
         </div>
       </el-tab-pane>
 
