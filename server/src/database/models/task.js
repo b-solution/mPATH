@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.Facility, { through: models.FacilityProject, foreignKey: "facility_id" });
       // this.belongsTo(models.Contract);
       this.belongsTo(models.ProjectContract, { foreignKey: "project_contract_id" });
-      this.belongsTo(models.ProjectContractVehicle);
+      this.belongsTo(models.ProjectContractVehicle, { foreignKey: "project_contract_vehicle_id" });
       this.hasMany(models.Checklist, { as: "listable", foreignKey: "listable_id", onDelete: "CASCADE", hooks: true });
       this.hasMany(models.RelatedTask, {
         foreignKey: "relatable_id",

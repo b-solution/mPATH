@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.FacilityGroup, { foreignKey: "facility_group_id" });
       this.hasMany(models.Task, { foreignKey: "project_contract_id" });
       this.hasMany(models.Issue, { foreignKey: "project_contract_id" });
-      // this.hasMany(models.Risk);
-      // this.hasMany(models.Lesson);
+      this.hasMany(models.Risk, { foreignKey: "project_contract_id" });
+      this.hasMany(models.Lesson, { foreignKey: "project_contract_id" });
       // this.hasMany(models.Note)
     }
     // async toJSON() {

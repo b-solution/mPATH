@@ -54,7 +54,6 @@ const index = async (req, res) => {
 };
 
 const show = async (req, res) => {
-  console.log("Testin 1234 ata idr he hai");
   try {
     const { getCurrentUser, printParams, compactAndUniq } = require("../utils/helpers.js");
     let body = qs.parse(req.body);
@@ -63,27 +62,21 @@ const show = async (req, res) => {
     printParams(req);
 
     var programId = params.id;
-    console.log("Program Id: ", programId);
-    // console.log(req.params)
-    // console.log(db)
-    // authorized facility_ids
-    console.log("****requiest", typeof req);
     let user = await getCurrentUser(req.headers["x-token"]);
     console.log("User: ", user);
     // Fetch all users from the database
     const program = await db.Project.findOne({ where: { id: programId } });
-    console.log("Program---- :", program);
     let response = await program.build_json_response({ user: user });
 
     //As response contains all data, we will add data in steps.
     // For now returning static response. and then will override
     // the data with real data
-
     res.code(200);
     return { project: response };
     // console.log("Program: ", program);
   } catch (error) {
     res.code(500);
+    console.log(error);
     return { error: "Error fetching program " + error.stack };
   }
 };

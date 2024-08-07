@@ -139,7 +139,7 @@
                 <span v-if="rowId !== scope.row.id && scope.$index !== createRow && scope.row.contract_number">
                   {{ scope.row.contract_number.name }}
                 </span>
-                <span v-else-if="scope.$index !== createRow">N/A
+                <span v-else-if="scope.$index !== createRow && rowId !== scope.row.id">N/A
                 </span>
 
               </template>
@@ -481,6 +481,8 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import AuthorizationService from "../../../../services/authorization_service";
+import MessageDialogService from '../../../../services/message_dialog_service'
+
 Vue.filter('toCurrency', function (value) {
   if (typeof value !== "number") {
     return value;
@@ -608,8 +610,7 @@ export default {
     },
     editMode(index, rows) {
       this.rowIndex = index,
-        console.log(rows);
-      this.rowId = rows.id
+        this.rowId = rows.id
       let formattedCeiling = parseFloat(rows.ceiling)
       if (rows.ceiling == null) {
         this.updateCeiling = ""
@@ -886,8 +887,6 @@ export default {
         if (this.contractVehicleStatus == 200) {
           MessageDialogService.showDialog({
             message: `Vehicle data saved successfully.`,
-
-
           });
           this.SET_CONTRACT_VEHICLE_STATUS(0);
           this.fetchContractVehicles();

@@ -27,8 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.FacilityProject, { foreignKey: "facility_project_id", onDelete: "CASCADE", as: "RiskFacilityProject" });
       this.belongsToMany(models.Project, { through: models.FacilityProject, foreignKey: "project_id" });
       // this.belongsTo(models.Contract);
-      // this.belongsTo(models.ProjectContract);
-      // this.belongsTo(models.ProjectContractVehicle);
+      this.belongsTo(models.ProjectContract, { foreignKey: "project_contract_id" });
+      this.belongsTo(models.ProjectContractVehicle, { foreignKey: "project_contract_vehicle_id" });
       this.hasMany(models.Checklist, {
         as: "listable",
         foreignKey: "listable_id",

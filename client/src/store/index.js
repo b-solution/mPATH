@@ -3242,6 +3242,7 @@ export default new Vuex.Store({
           url = `${API_BASE_PATH}/program_settings/programs/${id}.json`
         }
       }
+      debugger
       return new Promise((resolve, reject) => {
         http
           .get(url)

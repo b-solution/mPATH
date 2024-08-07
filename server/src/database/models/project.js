@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
         other_key: "contract_project_datum_id",
       });
       this.hasMany(models.ProjectContractVehicle);
-      //this.belongsToMany(models.ContractVehicle, { through: models.ProjectContractVehicle, foreignKey: "project_id", otherKey:'contract_vehicle_id' });
+      this.belongsToMany(models.ContractVehicle, { through: models.ProjectContractVehicle, foreignKey: "project_id" });
       // // this.hasMany(models.ProjectContractVehicleGroup)
     }
     toJSON() {
@@ -170,7 +170,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     async build_json_response(options) {
       const { db } = require("./index.js");
-      const { getCurrentUser, printParams, compactAndUniq } = require("../../utils/helpers.js");
+      const { compactAndUniq } = require("../../utils/helpers.js");
 
       let response = this.toJSON();
       let all_tasks = [];
@@ -448,8 +448,6 @@ module.exports = (sequelize, DataTypes) => {
         let facility = _.find(all_facilities, function (f) {
           return f.id == facility_project.facility_id;
         });
-        console.log("all_facility_groups---", all_facility_groups);
-        console.log("facility_projects---", facility_project);
         let facility_group = _.find(all_facility_groups, function (f) {
           return f.id == facility_project.facility_group_id;
         });
@@ -463,7 +461,6 @@ module.exports = (sequelize, DataTypes) => {
         }
         facility_hash["facility_name"] = facility.dataValues.facility_name;
         facility_hash["facility"] = facility.toJSON();
-        console.log("facilityGroup---", facility_group);
         if (facility_group) {
           let fg_hash = facility_group.toJSON();
           facility_hash["facility"]["facility_group_id"] = fg_hash["id"];
@@ -630,8 +627,11 @@ module.exports = (sequelize, DataTypes) => {
         let c = _.find(all_contract_project_data, function (cpd) {
           return cpd.id == project_contract.contract_project_datum_id;
         });
+        let facilityGroup = await project_contract.getFacilityGroup();
+        c.dataValues.projectContractId = Number(project_contract.dataValues.id);
+        c.dataValues.facilityGroup = facilityGroup;
+        c.dataValues.facilityGroupId = Number(facilityGroup.id);
         let c_hash = await c.toJSON({ project_contract: project_contract });
-
         //Adding tasks
         c_hash.tasks = [];
         var tasks = await db.Task.findAll({ where: { project_contract_id: project_contract.id } });
@@ -700,6 +700,18 @@ module.exports = (sequelize, DataTypes) => {
       // Contract Vehicles
       let all_project_contract_vehicles = await db.ProjectContractVehicle.findAll({
         where: { project_id: this.id, id: authorized_project_contract_vehicle_ids },
+        attributes: [
+          "id",
+          "project_id",
+          "contract_vehicle_id",
+          "user_id",
+          "facility_group_id",
+          "progeress",
+          "created_at",
+          "updated_at",
+          "ContractVehicleId",
+          "ProjectId",
+        ],
       }); //await this.getProjectContractVehicles()
       let contract_vehicle_ids = _.uniq(
         _.map(all_project_contract_vehicles, function (pc) {
@@ -707,19 +719,20 @@ module.exports = (sequelize, DataTypes) => {
         })
       );
       let all_contract_vehicles = await db.ContractVehicle.findAll({ where: { id: contract_vehicle_ids } });
-
       response.contract_vehicles = [];
-      var contract_vehicle_hash = [];
       var project_contract_vehicle_hash2 = {};
       for (var project_contract_vehicle of all_project_contract_vehicles) {
         var c = _.find(all_contract_vehicles, function (cpd) {
           return cpd.id == project_contract_vehicle.contract_vehicle_id;
         });
-        let c_hash = c.toJSON();
-
+        let facilityGroup = await project_contract_vehicle.getFacilityGroup();
+        let c_hash = await c.toJSON();
+        c_hash.projectContractVehicleId = Number(project_contract_vehicle.dataValues.id);
+        c_hash.FacilityGroup = facilityGroup;
+        console.log("c---", c_hash, project_contract_vehicle);
         //Adding tasks
         c_hash.tasks = [];
-        var tasks = await db.Task.findAll({ where: { project_contract_vehicle_id: project_contract_vehicle.id } });
+        var tasks = await db.Task.findAll({ where: { project_contract_vehicle_id: c_hash.projectContractVehicleId } });
         all_tasks = all_tasks.concat(tasks);
         var task_ids = _.uniq(
           tasks.map(function (e) {
@@ -866,7 +879,6 @@ module.exports = (sequelize, DataTypes) => {
       response.contract_primes = await db.ContractPrime.findAll();
       response.contract_current_pops = await db.ContractCurrentPop.findAll();
       response.contract_classifications = await db.ContractClassification.findAll();
-
       return response;
     }
   }

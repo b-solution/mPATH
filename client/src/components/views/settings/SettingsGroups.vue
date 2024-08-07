@@ -320,10 +320,8 @@
             " class="bg-light btn-sm">
                     <i class="far fa-trash-alt text-danger "></i>
                   </el-button>
-
                 </template>
               </el-table-column>
-
             </el-table>
           </div>
           <div v-else class="text-danger mx-2 mt-5">

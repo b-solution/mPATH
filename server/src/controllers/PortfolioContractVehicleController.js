@@ -54,9 +54,9 @@ async function index(req, res) {
     });
     const getContractVehicles = await db.ContractVehicle.findAll({
       include: [
-        // {
-        //   model: db.Project,
-        // },
+        {
+          model: db.Project,
+        },
         {
           model: db.ProjectContractVehicle,
         },
@@ -96,7 +96,28 @@ async function index(req, res) {
     return { error: "Error fetching contract vehicles " + error };
   }
 }
-
+async function create(req, res) {
+  try {
+    const body = qs.parse(req.body);
+    const user = await getCurrentUser(req.headers["x-token"]);
+    const contractVehicle = await db.ContractVehicle.createOrUpdateContractVehicle(body, user);
+    return { contract_vehicle: await contractVehicle.toJSON() };
+  } catch (error) {
+    console.log(error);
+  }
+}
+async function update(req, res) {
+  try {
+    const body = qs.parse(req.body);
+    const user = await getCurrentUser(req.headers["x-token"]);
+    const contractVehicle = await db.ContractVehicle.createOrUpdateContractVehicle(body, user);
+    return { contract_vehicle: await contractVehicle.toJSON() };
+  } catch (error) {
+    console.log(error);
+  }
+}
 module.exports = {
   index,
+  create,
+  update,
 };

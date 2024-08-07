@@ -17,9 +17,7 @@ const index = async (req, res) => {
         console.log("Loop Project Contract: ", projectContract.ContractProjectDatum);
         contracts.push(await projectContract.ContractProjectDatum.toJSON({ project_contract: projectContract }));
       }
-      console.log("Contracts---: ", contracts[0]);
       const totalCount = contracts.length;
-      console.log("Total-Count: ", totalCount);
       return res.send({ contracts: contracts, total_count: totalCount });
       // return { contracts: await contracts[0].toJSON(), total_count: totalCount };
     }
@@ -37,10 +35,8 @@ const show = async (req, res) => {
     let user = await getCurrentUser(req.headers["x-token"]);
     console.log;
     const authorizedProgramIds = await user.authorizedProgramIds();
-    console.log("Author: ", authorizedProgramIds);
     if (authorizedProgramIds.includes(params.id)) {
       let project_contract = await db.ProjectContract.findOne({ where: { project_id: params.id }, include: [{ model: db.ContractProjectDatum }] });
-      //console.log("Single-Contract: ", project_contract);
       return { contract: await project_contract.ContractProjectDatum.toJSON({ project_contract: project_contract }) };
     }
   } catch (error) {

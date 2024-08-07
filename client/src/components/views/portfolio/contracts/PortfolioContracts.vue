@@ -1293,8 +1293,6 @@ export default {
         if (this.contractProjectStatus == 200) {
           MessageDialogService.showDialog({
             message: `Contract Project saved successfully.`,
-
-
           });
           this.contractStartDate = null;
           this.contractEndDate = null;
@@ -1324,8 +1322,6 @@ export default {
         if (this.contractPOCsStatus == 200) {
           MessageDialogService.showDialog({
             message: `POC data saved successfully.`,
-
-
           });
           this.SET_CONTRACT_POCS_STATUS(0);
           this.fetchContractPOCs();
